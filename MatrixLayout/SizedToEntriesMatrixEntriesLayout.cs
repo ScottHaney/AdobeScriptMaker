@@ -29,11 +29,13 @@ namespace MatrixLayout
             Columns = columns;
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResult(ITextMeasurer textMeasurer, Font font, params double[] entries)
+        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
         {
-            var relativeSizeValue = textMeasurer.MeasureText("0", font).Height;
+            var inputs = (SizedMatrixEntriesLayoutInputParams)inputParams;
 
-            var sizes = entries.Select(x => textMeasurer.MeasureText(x.ToString(), font)).ToList();
+            var relativeSizeValue = inputs.TextMeasurer.MeasureText("0", inputs.Font).Height;
+
+            var sizes = inputs.Entries.Select(x => inputs.TextMeasurer.MeasureText(x.ToString(), inputs.Font)).ToList();
 
             var combiner = new MatrixEntriesSizeCombiner();
             var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
@@ -59,6 +61,22 @@ namespace MatrixLayout
             }
 
             return new MatrixEntriesLayoutResult(results, Columns);
+        }
+    }
+
+    public class SizedMatrixEntriesLayoutInputParams: IMatrixEntriesLayoutInputParams
+    {
+        public readonly ITextMeasurer TextMeasurer;
+        public readonly Font Font;
+        public readonly double[] Entries;
+
+        public SizedMatrixEntriesLayoutInputParams(ITextMeasurer textMeasurer,
+            Font font,
+            params double[] entries)
+        {
+            TextMeasurer = textMeasurer;
+            Font = font;
+            Entries = entries;
         }
     }
 

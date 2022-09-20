@@ -17,14 +17,9 @@ namespace MatrixLayout
             _bracketThickness = bracketThickness;
         }
 
-        public FullMatrixLayoutResult GetLayoutResult(RectangleF availableSpace)
+        public FullMatrixLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
         {
-            var entriesRect = new RectangleF(availableSpace.Left + _bracketThickness,
-                availableSpace.Top + _bracketThickness,
-                availableSpace.Width - 2 * _bracketThickness,
-                availableSpace.Height - 2 * _bracketThickness);
-
-            var entriesLayoutResult = _entriesLayout.GetLayoutResult(entriesRect);
+            var entriesLayoutResult = _entriesLayout.GetLayoutResult(inputParams);
             return new FullMatrixLayoutResult(entriesLayoutResult, _bracketThickness);
         }
     }
@@ -43,7 +38,12 @@ namespace MatrixLayout
 
         public RectangleF GetEntryBounds(int rowIndex, int columnIndex)
         {
-            return _entriesResult.GetEntryBounds(rowIndex, columnIndex);
+            var innerBounds = _entriesResult.GetEntryBounds(rowIndex, columnIndex);
+
+            return new RectangleF(innerBounds.Left + _bracketThickness,
+                innerBounds.Top + _bracketThickness,
+                innerBounds.Width,
+                innerBounds.Height);
         }
     }
 }

@@ -29,24 +29,26 @@ namespace MatrixLayout
             Columns = columns;
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResult(RectangleF availableSpace)
+        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
         {
-            var innerWidth = (1 - 2 * OuterPaddingPercentage) * availableSpace.Width;
-            var innerHeight = (1 - 2 * OuterPaddingPercentage) * availableSpace.Height;
+            var inputs = (UniformMatrixEntriesLayoutInputParams)inputParams;
 
-            var rowHeight = (innerHeight - (Rows - 1) * RowGapPercentage * availableSpace.Height) / Rows;
-            var colWidth = (innerWidth - (Columns - 1) * ColumnGapPercentage * availableSpace.Width) / Columns;
+            var innerWidth = (1 - 2 * OuterPaddingPercentage) * inputs.AvailableSpace.Width;
+            var innerHeight = (1 - 2 * OuterPaddingPercentage) * inputs.AvailableSpace.Height;
 
-            var leftX = availableSpace.Left + (availableSpace.Width * OuterPaddingPercentage);
-            var topY = availableSpace.Top + (availableSpace.Height * OuterPaddingPercentage);
+            var rowHeight = (innerHeight - (Rows - 1) * RowGapPercentage * inputs.AvailableSpace.Height) / Rows;
+            var colWidth = (innerWidth - (Columns - 1) * ColumnGapPercentage * inputs.AvailableSpace.Width) / Columns;
+
+            var leftX = inputs.AvailableSpace.Left + (inputs.AvailableSpace.Width * OuterPaddingPercentage);
+            var topY = inputs.AvailableSpace.Top + (inputs.AvailableSpace.Height * OuterPaddingPercentage);
 
             var results = new List<RectangleF>();
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < Columns; columnIndex++)
                 {
-                    var left = leftX + (columnIndex * colWidth) + (columnIndex * ColumnGapPercentage * availableSpace.Width);
-                    var top = topY + (rowIndex * rowHeight) + (rowIndex * RowGapPercentage * availableSpace.Height);
+                    var left = leftX + (columnIndex * colWidth) + (columnIndex * ColumnGapPercentage * inputs.AvailableSpace.Width);
+                    var top = topY + (rowIndex * rowHeight) + (rowIndex * RowGapPercentage * inputs.AvailableSpace.Height);
 
                     var rect = new RectangleF(left, top, colWidth, rowHeight);
                     results.Add(rect);
@@ -55,8 +57,16 @@ namespace MatrixLayout
 
             return new MatrixEntriesLayoutResult(results, Columns);
         }
+    }
 
-        
+    public class UniformMatrixEntriesLayoutInputParams: IMatrixEntriesLayoutInputParams
+    {
+        public readonly RectangleF AvailableSpace;
+
+        public UniformMatrixEntriesLayoutInputParams(RectangleF availableSpace)
+        {
+            AvailableSpace = availableSpace;
+        }
     }
 
     public class MatrixEntriesLayoutResult
