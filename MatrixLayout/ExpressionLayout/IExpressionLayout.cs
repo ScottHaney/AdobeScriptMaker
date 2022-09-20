@@ -7,6 +7,9 @@ namespace MatrixLayout.ExpressionLayout
 {
     public interface IExpressionLayout
     {
-        void Layout(IEquationComponent item);
+        IComponentLayoutResult Layout(IExpressionComponent item);
     }
+
+    public interface IComponentLayoutResult
+    { }
 }

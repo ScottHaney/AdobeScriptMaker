@@ -10,6 +10,6 @@ namespace MatrixLayout.ExpressionDecorators
         { }
     }
 
-    public interface IEquationComponent
+    public interface IEquationComponent : IExpressionComponent
     { }
 }

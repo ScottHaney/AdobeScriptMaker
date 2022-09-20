@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatrixLayout.ExpressionLayout;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -82,7 +83,7 @@ namespace MatrixLayout
         }
     }
 
-    public class MatrixEntriesLayoutResult
+    public class MatrixEntriesLayoutResult : IComponentLayoutResult
     {
         private readonly IList<RectangleF> _results;
         private readonly int _columns;

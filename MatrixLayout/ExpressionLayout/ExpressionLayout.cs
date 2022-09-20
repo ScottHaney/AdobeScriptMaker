@@ -29,12 +29,25 @@ namespace MatrixLayout.ExpressionLayout
             _matrixColumnGap = matrixColumnGap;
         }
 
-        public void Layout(IEquationComponent item)
+        public IComponentLayoutResult Layout(IExpressionComponent item)
         {
+            return LayoutComponent((dynamic)item);
+        }
+
+        private IComponentLayoutResult LayoutComponent(NumericMultiplierComponent multiplierComponent)
+        {
+            var innerResult = Layout(multiplierComponent.Target);
+
+            using (var textMeasurer = new TextMeasurer())
+            {
+                var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), _font);
+
+            }
+
             throw new NotImplementedException();
         }
 
-        private MatrixEntriesLayoutResult Layout(MatrixComponent matrixComponent)
+        private MatrixEntriesLayoutResult LayoutComponent(MatrixComponent matrixComponent)
         {
             var layout = new SizedToEntriesMatrixEntriesLayout(_innerMatrixEntriesPadding,
                 _matrixRowGap,
