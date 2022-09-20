@@ -13,15 +13,15 @@ namespace MatrixLayout.Tests.ExpressionDecorators
         {
             var expression = new Expression(
                 new MultiplyComponents(
-                    new MatrixComponent(),
-                    new MatrixComponent()));
+                    new MatrixComponent(1, 1, 1),
+                    new MatrixComponent(1, 1, 1)));
         }
 
         [Test]
         public void CanRepresentMultiplyingAMatrixByANumber()
         {
             var expression = new Expression(
-                new NumericMultiplierComponent(2, new MatrixComponent()));
+                new NumericMultiplierComponent(2, new MatrixComponent(1, 1, 1)));
         }
 
         [Test]
@@ -29,19 +29,19 @@ namespace MatrixLayout.Tests.ExpressionDecorators
         {
             var expression = new Expression(
                 new AddComponents(
-                    new NumericMultiplierComponent(2, new MatrixComponent()),
-                    new NumericMultiplierComponent(3, new MatrixComponent())));
+                    new NumericMultiplierComponent(2, new MatrixComponent(1, 1, 1)),
+                    new NumericMultiplierComponent(3, new MatrixComponent(1, 1, 1))));
         }
 
         [Test]
         public void CanRepresentAnEquationForMultiplyingTwoMatrices()
         {
             var lhs = new Expression(new MultiplyComponents(
-                new MatrixComponent(),
-                new MatrixComponent()));
+                new MatrixComponent(1, 1, 1),
+                new MatrixComponent(1, 1, 1)));
 
             var rhs = new Expression(
-                new MatrixComponent());
+                new MatrixComponent(1, 1, 1));
 
             var equation = new Equation(lhs, rhs);
         }
@@ -49,9 +49,9 @@ namespace MatrixLayout.Tests.ExpressionDecorators
         [Test]
         public void CanRepresentMultipleEqualsSignsOnTheSameLine_MultipleEquations()
         {
-            var leftPart = new Expression(new MatrixComponent());
-            var middlePart = new Expression(new MatrixComponent());
-            var rightPart = new Expression(new MatrixComponent());
+            var leftPart = new Expression(new MatrixComponent(1, 1, 1));
+            var middlePart = new Expression(new MatrixComponent(1, 1, 1));
+            var rightPart = new Expression(new MatrixComponent(1, 1, 1));
 
             var equation = new Equation(
                 new Equation(leftPart, middlePart),

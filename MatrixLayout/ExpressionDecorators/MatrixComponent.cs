@@ -6,7 +6,15 @@ namespace MatrixLayout.ExpressionDecorators
 {
     public class MatrixComponent : IAddableComponent, IMultipliableComponent, INumericMultiplierCapableComponent, IExpressionComponent
     {
-        public MatrixComponent()
-        { }
+        public readonly int Rows;
+        public readonly int Columns;
+        public readonly double[] Entries;
+
+        public MatrixComponent(int rows, int columns, params double[] entries)
+        {
+            Rows = rows;
+            Columns = columns;
+            Entries = entries;
+        }
     }
 }
