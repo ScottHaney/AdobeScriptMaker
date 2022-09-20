@@ -1,0 +1,10 @@
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\bin\Debug\netcoreapp3.1\MatrixLayout.deps.json
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\bin\Debug\netcoreapp3.1\MatrixLayout.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\bin\Debug\netcoreapp3.1\MatrixLayout.pdb
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.csproj.AssemblyReference.cache
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.AssemblyInfoInputs.cache
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.AssemblyInfo.cs
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.csproj.CoreCompileInputs.cache
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout\obj\Debug\netcoreapp3.1\MatrixLayout.pdb
