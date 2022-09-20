@@ -6,7 +6,7 @@ namespace MatrixLayout.ExpressionDecorators
 {
     public class Expression : IExpressionComponent
     {
-        public Expression(IExpressionComponent lhs, IExpressionComponent rhs)
+        public Expression(params IExpressionComponent[] components)
         {
 
         }

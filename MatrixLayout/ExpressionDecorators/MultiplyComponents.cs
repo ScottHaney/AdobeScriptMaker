@@ -4,14 +4,20 @@ using System.Text;
 
 namespace MatrixLayout.ExpressionDecorators
 {
-    public class MultiplyComponents : IAddableComponent, IOutsideMultiplierCapableComponent, IExpressionComponent
+    public class MultiplyComponents : IAddableComponent, INumericMultiplierCapableComponent, IExpressionComponent
     {
-        public MultiplyComponents(IMultipliableComponent lhs, IMultipliableComponent rhs)
+        public MultiplyComponents(ILeftMultipliableComponent lhs, IRightMultipliableComponent rhs)
         {
 
         }
     }
 
-    public interface IMultipliableComponent
+    public interface ILeftMultipliableComponent
+    { }
+
+    public interface IRightMultipliableComponent
+    { }
+
+    public interface IMultipliableComponent : ILeftMultipliableComponent, IRightMultipliableComponent
     { }
 }
