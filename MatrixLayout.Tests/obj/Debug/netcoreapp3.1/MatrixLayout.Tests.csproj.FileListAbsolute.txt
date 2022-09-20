@@ -104,3 +104,8 @@ C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcorea
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\System.Drawing.Common.dll
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\Autofac.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\Autofac.Extras.Moq.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\Castle.Core.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\Moq.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll

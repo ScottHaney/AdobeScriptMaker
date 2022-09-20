@@ -29,7 +29,7 @@ namespace MatrixLayout
             Columns = columns;
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResult(ITextMeasurer textMeasurer, Font font, double[] entries)
+        public MatrixEntriesLayoutResult GetLayoutResult(ITextMeasurer textMeasurer, Font font, params double[] entries)
         {
             var relativeSizeValue = textMeasurer.MeasureText("0", font).Height;
 
