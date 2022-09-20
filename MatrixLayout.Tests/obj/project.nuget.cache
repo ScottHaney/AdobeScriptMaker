@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "n6rWXED3GnhWoBMj2UitNAxPgzrV9THcfRm0nGv8slmSZ+B0l6SofPtxhPhCuH2LHm0d1OvamjXVyXbfTvwJIw==",
+  "dgSpecHash": "JIjvm8pSBE4MUzOKkpc3cXoutcdp6aUcYHw3p3ewzRXdyLIycCrb04ijHusRsrW2JHQp9RT+y6Jxl6J4ta/2gA==",
   "success": true,
   "projectFilePath": "C:\\Users\\scott\\githubCode\\AdobeScriptMaker\\MatrixLayout.Tests\\MatrixLayout.Tests.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\scott\\.nuget\\packages\\microsoft.netcore.targets\\1.0.1\\microsoft.netcore.targets.1.0.1.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\microsoft.testplatform.objectmodel\\16.11.0\\microsoft.testplatform.objectmodel.16.11.0.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\microsoft.testplatform.testhost\\16.11.0\\microsoft.testplatform.testhost.16.11.0.nupkg.sha512",
+    "C:\\Users\\scott\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\nuget.frameworks\\5.0.0\\nuget.frameworks.5.0.0.nupkg.sha512",
@@ -20,6 +21,7 @@
     "C:\\Users\\scott\\.nuget\\packages\\system.collections\\4.0.11\\system.collections.4.0.11.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\system.diagnostics.debug\\4.0.11\\system.diagnostics.debug.4.0.11.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\system.diagnostics.tools\\4.0.1\\system.diagnostics.tools.4.0.1.nupkg.sha512",
+    "C:\\Users\\scott\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\system.dynamic.runtime\\4.0.11\\system.dynamic.runtime.4.0.11.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\system.globalization\\4.0.11\\system.globalization.4.0.11.nupkg.sha512",
     "C:\\Users\\scott\\.nuget\\packages\\system.io\\4.1.0\\system.io.4.1.0.nupkg.sha512",
