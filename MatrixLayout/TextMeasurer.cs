@@ -5,21 +5,27 @@ using System.Text;
 
 namespace MatrixLayout
 {
-    public class TextMeasurer : ITextMeasurer
+    public class TextMeasurer : ITextMeasurer, IDisposable
     {
+        private readonly Bitmap _bitmap;
+        private readonly Graphics _graphics;
+
+        public TextMeasurer()
+        {
+            _bitmap = new Bitmap(500, 200);
+            _graphics = Graphics.FromImage(_bitmap);
+        }
+
         public SizeF MeasureText(string text, Font font)
         {
-            Bitmap objBitmap = default(Bitmap);
-            Graphics objGraphics = default(Graphics);
-
-            objBitmap = new Bitmap(500, 200);
-            objGraphics = Graphics.FromImage(objBitmap);
-
-            SizeF stringSize = objGraphics.MeasureString(text, font);
-
-            objBitmap.Dispose();
-            objGraphics.Dispose();
+            var stringSize = _graphics.MeasureString(text, font);
             return stringSize;
+        }
+
+        public void Dispose()
+        {
+            _bitmap.Dispose();
+            _graphics.Dispose();
         }
     }
 

@@ -10,8 +10,8 @@ namespace MatrixLayout.Tests
         [Test]
         public void RunsWithoutError()
         {
-            var textMeasurer = new TextMeasurer();
-            textMeasurer.MeasureText("Testing", new System.Drawing.Font("Arial", 12));
+            using (var textMeasurer = new TextMeasurer())
+                textMeasurer.MeasureText("Testing", new System.Drawing.Font("Arial", 12));
         }
     }
 }
