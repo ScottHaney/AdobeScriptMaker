@@ -1,4 +1,5 @@
 ﻿using MatrixLayout.ExpressionLayout;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -83,23 +84,5 @@ namespace MatrixLayout
         }
     }
 
-    public class MatrixEntriesLayoutResult : IComponentLayoutResult
-    {
-        private readonly IList<RectangleF> _results;
-        private readonly int _columns;
-
-        public IEnumerable<RectangleF> Results => new ReadOnlyCollection<RectangleF>(_results);
-
-        public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns)
-        {
-            _results = results;
-            _columns = columns;
-        }
-
-        public RectangleF GetEntryBounds(int rowIndex, int columnIndex)
-        {
-            var entryIndex = columnIndex + (rowIndex * _columns);
-            return _results[entryIndex];
-        }
-    }
+    
 }

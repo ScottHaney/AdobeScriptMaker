@@ -1,4 +1,5 @@
 ﻿using MatrixLayout.ExpressionDecorators;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,12 +30,12 @@ namespace MatrixLayout.ExpressionLayout
             _matrixColumnGap = matrixColumnGap;
         }
 
-        public IComponentLayoutResult Layout(IExpressionComponent item)
+        public ILayoutResults Layout(IExpressionComponent item)
         {
             return LayoutComponent((dynamic)item);
         }
 
-        private IComponentLayoutResult LayoutComponent(NumericMultiplierComponent multiplierComponent)
+        private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent)
         {
             var innerResult = Layout(multiplierComponent.Target);
 
