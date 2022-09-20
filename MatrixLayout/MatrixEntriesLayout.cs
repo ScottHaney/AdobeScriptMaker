@@ -80,6 +80,16 @@ namespace MatrixLayout
                 .Select(x => x.Max(y => y.Value))
                 .ToList();
         }
+
+        public List<float> GetMaxForEachRow(IEnumerable<float> values, int numColumns)
+        {
+            return values
+                .Select((x, i) => new { Value = x, Index = i })
+                .GroupBy(x => x.Index / numColumns)
+                .OrderBy(x => x.Key)
+                .Select(x => x.Max(y => y.Value))
+                .ToList();
+        }
     }
 
     public class MatrixEntriesLayoutResult

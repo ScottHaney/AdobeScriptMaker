@@ -52,5 +52,14 @@ namespace MatrixLayout.Tests
 
             CollectionAssert.AreEqual(new[] { 7, 8, 9 }, results);
         }
+
+        [Test]
+        public void FindsTheMaximumValueInEachRow()
+        {
+            var combiner = new MatrixEntriesSizeCombiner();
+            var results = combiner.GetMaxForEachRow(new List<float>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3);
+
+            CollectionAssert.AreEqual(new[] { 3, 6, 9 }, results);
+        }
     }
 }
