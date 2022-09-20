@@ -56,17 +56,35 @@ namespace MatrixLayout
             return new MatrixEntriesLayoutResult(results, Columns);
         }
 
-        /*public MatrixEntriesLayoutResult GetLayoutResult(TextMeasurer textMeasurer, Font font, double[] entries)
+        public MatrixEntriesLayoutResult GetLayoutResult(ITextMeasurer textMeasurer, Font font, double[] entries)
         {
             var sizes = entries.Select(x => textMeasurer.MeasureText(x.ToString(), font)).ToList();
 
-            var columnWidths = sizes
-                .Select((x, i) => new { Size = x, Index = i })
-                .GroupBy(x => x.Index % Columns)
-                .OrderBy(x => x.Key)
-                .Select(x => x.Max())
-                .ToList();
-        }*/
+            var combiner = new MatrixEntriesSizeCombiner();
+            var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
+            var rowHeights = combiner.GetMaxForEachRow(sizes.Select(x => x.Height), Columns);
+
+            var rowGap = RowGapPercentage * rowHeights.Max();
+            var columnGap = ColumnGapPercentage * rowHeights.Max();
+
+            var leftX = 0;
+            var topY = 0;
+
+            var results = new List<RectangleF>();
+            for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
+            {
+                for (int columnIndex = 0; columnIndex < Columns; columnIndex++)
+                {
+                    var left = leftX + (columnIndex * columnWidths.Take(columnIndex).DefaultIfEmpty(0).Sum()) + (columnIndex * columnGap);
+                    var top = topY + (rowIndex * rowHeights.Take(columnIndex).DefaultIfEmpty(0).Sum()) + (rowIndex * rowGap);
+
+                    var rect = new RectangleF(left, top, columnWidths[columnIndex], rowHeights[rowIndex]);
+                    results.Add(rect);
+                }
+            }
+
+            return new MatrixEntriesLayoutResult(results, Columns);
+        }
     }
 
     public class MatrixEntriesSizeCombiner
