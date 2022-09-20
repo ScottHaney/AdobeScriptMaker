@@ -96,3 +96,6 @@ C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\obj\Debug\netcorea
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\obj\Debug\netcoreapp3.1\MatrixLayout.Tests.dll
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\obj\Debug\netcoreapp3.1\MatrixLayout.Tests.pdb
 C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\obj\Debug\netcoreapp3.1\MatrixLayout.Tests.genruntimeconfig.cache
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\CoverletSourceRootsMapping
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\MatrixLayout.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\MatrixLayout.Tests\bin\Debug\netcoreapp3.1\MatrixLayout.pdb

@@ -882,6 +882,16 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
+      },
+      "MatrixLayout/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/MatrixLayout.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MatrixLayout.dll": {}
+        }
       }
     }
   },
@@ -3844,10 +3854,16 @@
         "system.xml.xdocument.4.0.11.nupkg.sha512",
         "system.xml.xdocument.nuspec"
       ]
+    },
+    "MatrixLayout/1.0.0": {
+      "type": "project",
+      "path": "../MatrixLayout/MatrixLayout.csproj",
+      "msbuildProject": "../MatrixLayout/MatrixLayout.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "MatrixLayout >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 16.11.0",
       "NUnit >= 3.13.2",
       "NUnit3TestAdapter >= 4.0.0",
@@ -3880,7 +3896,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\scott\\githubCode\\AdobeScriptMaker\\MatrixLayout\\MatrixLayout.csproj": {
+              "projectPath": "C:\\Users\\scott\\githubCode\\AdobeScriptMaker\\MatrixLayout\\MatrixLayout.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
