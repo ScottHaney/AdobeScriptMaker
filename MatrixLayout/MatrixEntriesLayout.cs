@@ -44,8 +44,8 @@ namespace MatrixLayout
             {
                 for (int columnIndex = 0; columnIndex < Columns; columnIndex++)
                 {
-                    var left = leftX + (columnIndex * colWidth) + (columnIndex * ColumnGapPercentage);
-                    var top = topY + (rowIndex * rowHeight) + (rowIndex * RowGapPercentage);
+                    var left = leftX + (columnIndex * colWidth) + (columnIndex * ColumnGapPercentage * availableSpace.Width);
+                    var top = topY + (rowIndex * rowHeight) + (rowIndex * RowGapPercentage * availableSpace.Height);
 
                     var rect = new RectangleF(left, top, colWidth, rowHeight);
                     results.Add(rect);
