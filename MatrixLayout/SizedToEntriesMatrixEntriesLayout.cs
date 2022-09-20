@@ -51,7 +51,7 @@ namespace MatrixLayout
                 for (int columnIndex = 0; columnIndex < Columns; columnIndex++)
                 {
                     var left = leftX + (columnIndex * columnWidths.Take(columnIndex).DefaultIfEmpty(0).Sum()) + (columnIndex * columnGap);
-                    var top = topY + (rowIndex * rowHeights.Take(columnIndex).DefaultIfEmpty(0).Sum()) + (rowIndex * rowGap);
+                    var top = topY + (rowIndex * rowHeights.Take(rowIndex).DefaultIfEmpty(0).Sum()) + (rowIndex * rowGap);
 
                     var rect = new RectangleF(left, top, columnWidths[columnIndex], rowHeights[rowIndex]);
                     results.Add(rect);
