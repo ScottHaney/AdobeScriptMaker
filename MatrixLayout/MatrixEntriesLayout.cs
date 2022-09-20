@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace MatrixLayout
 {
@@ -53,6 +54,31 @@ namespace MatrixLayout
             }
 
             return new MatrixEntriesLayoutResult(results, Columns);
+        }
+
+        /*public MatrixEntriesLayoutResult GetLayoutResult(TextMeasurer textMeasurer, Font font, double[] entries)
+        {
+            var sizes = entries.Select(x => textMeasurer.MeasureText(x.ToString(), font)).ToList();
+
+            var columnWidths = sizes
+                .Select((x, i) => new { Size = x, Index = i })
+                .GroupBy(x => x.Index % Columns)
+                .OrderBy(x => x.Key)
+                .Select(x => x.Max())
+                .ToList();
+        }*/
+    }
+
+    public class MatrixEntriesSizeCombiner
+    {
+        public List<float> GetMaxForEachColumn(IEnumerable<float> values, int numColumns)
+        {
+            return values
+                .Select((x, i) => new { Value = x, Index = i })
+                .GroupBy(x => x.Index % numColumns)
+                .OrderBy(x => x.Key)
+                .Select(x => x.Max(y => y.Value))
+                .ToList();
         }
     }
 
