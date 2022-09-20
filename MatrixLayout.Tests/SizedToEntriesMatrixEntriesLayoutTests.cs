@@ -44,5 +44,26 @@ namespace MatrixLayout.Tests
                 Assert.AreEqual(new RectangleF(0, 0, 50, 35), results.GetEntryBounds(0, 0));
             }
         }
+
+        [Test]
+        public void SingleEntryMatrixWithOuterPaddingTakesUpTheEntireSpaceMinusTheOuterPadding()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var textMeasurer = mock.Mock<ITextMeasurer>();
+                textMeasurer
+                    .Setup(x => x.MeasureText("12", It.IsAny<Font>()))
+                    .Returns(new SizeF(50, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("0", It.IsAny<Font>()))
+                    .Returns(new SizeF(25, 35));
+
+                var layout = new SizedToEntriesMatrixEntriesLayout(0.10f, 0, 0, 1, 1);
+                var results = layout.GetLayoutResult(textMeasurer.Object, null, 12);
+
+                Assert.AreEqual(new RectangleF(3.5f, 3.5f, 50, 35), results.GetEntryBounds(0, 0));
+            }
+        }
     }
 }

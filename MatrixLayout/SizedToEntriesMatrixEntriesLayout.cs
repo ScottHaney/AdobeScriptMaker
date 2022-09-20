@@ -42,8 +42,8 @@ namespace MatrixLayout
             var rowGap = RowGapPercentage * relativeSizeValue;
             var columnGap = ColumnGapPercentage * relativeSizeValue;
 
-            var leftX = 0;
-            var topY = 0;
+            var leftX = OuterPaddingPercentage * relativeSizeValue;
+            var topY = OuterPaddingPercentage * relativeSizeValue;
 
             var results = new List<RectangleF>();
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
