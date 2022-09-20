@@ -36,8 +36,8 @@ namespace MatrixLayout
             var rowHeight = (innerHeight - (Rows - 1) * RowGapPercentage * availableSpace.Height) / Rows;
             var colWidth = (innerWidth - (Columns - 1) * ColumnGapPercentage * availableSpace.Width) / Columns;
 
-            var leftX = availableSpace.Left;
-            var topY = availableSpace.Top;
+            var leftX = availableSpace.Left + (availableSpace.Width * OuterPaddingPercentage);
+            var topY = availableSpace.Top + (availableSpace.Height * OuterPaddingPercentage);
 
             var results = new List<RectangleF>();
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
