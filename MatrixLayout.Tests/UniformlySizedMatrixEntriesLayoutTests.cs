@@ -43,5 +43,14 @@ namespace MatrixLayout.Tests
             Assert.AreEqual(new RectangleF(10, 10, 80, 35), results.GetEntryBounds(0, 0));
             Assert.AreEqual(new RectangleF(10, 55, 80, 35), results.GetEntryBounds(0, 1));
         }
+
+        [Test]
+        public void SingleEntryMatrixWithBrackets()
+        {
+            var layout = new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1);
+            var results = layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), 1);
+
+            Assert.AreEqual(new RectangleF(1, 1, 98, 98), results.GetEntryBounds(0, 0));
+        }
     }
 }

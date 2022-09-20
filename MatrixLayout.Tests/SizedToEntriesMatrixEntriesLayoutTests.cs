@@ -117,5 +117,26 @@ namespace MatrixLayout.Tests
                 Assert.AreEqual(new RectangleF(3.5f, 42, 50, 33), results.GetEntryBounds(1, 0));
             }
         }
+
+        [Test]
+        public void SingleEntryMatrixWithBrackets()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var textMeasurer = mock.Mock<ITextMeasurer>();
+                textMeasurer
+                    .Setup(x => x.MeasureText("12", It.IsAny<Font>()))
+                    .Returns(new SizeF(50, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("0", It.IsAny<Font>()))
+                    .Returns(new SizeF(25, 35));
+
+                var layout = new SizedToEntriesMatrixEntriesLayout(0, 0, 0, 1, 1);
+                var results = layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, null, 12), 1);
+
+                Assert.AreEqual(new RectangleF(1, 1, 50, 35), results.GetEntryBounds(0, 0));
+            }
+        }
     }
 }

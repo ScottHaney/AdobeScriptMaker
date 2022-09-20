@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MatrixLayout
 {
-    public class SizedToEntriesMatrixEntriesLayout
+    public class SizedToEntriesMatrixEntriesLayout : IMatrixEntriesLayout
     {
         public readonly float OuterPaddingPercentage;
         public readonly float RowGapPercentage;
@@ -61,6 +61,16 @@ namespace MatrixLayout
             }
 
             return new MatrixEntriesLayoutResult(results, Columns);
+        }
+
+        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        {
+            var originalResult = GetLayoutResult(inputParams);
+            var updatedEntries = originalResult.Results
+                .Select(x => new RectangleF(x.Left + bracketThickness, x.Top + bracketThickness, x.Width, x.Height))
+                .ToList();
+
+            return new MatrixEntriesLayoutResult(updatedEntries, Columns);
         }
     }
 

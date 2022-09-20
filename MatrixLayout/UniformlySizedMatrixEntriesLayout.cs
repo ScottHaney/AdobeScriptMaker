@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 
 namespace MatrixLayout
 {
-    public class UniformlySizedMatrixEntriesLayout
+    public class UniformlySizedMatrixEntriesLayout : IMatrixEntriesLayout
     {
         public readonly float OuterPaddingPercentage;
         public readonly float RowGapPercentage;
@@ -57,6 +58,18 @@ namespace MatrixLayout
 
             return new MatrixEntriesLayoutResult(results, Columns);
         }
+
+        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        {
+            var originalRect = ((UniformMatrixEntriesLayoutInputParams)inputParams).AvailableSpace;
+
+            var updatedRect = new RectangleF(originalRect.Left + bracketThickness,
+                originalRect.Top + bracketThickness,
+                originalRect.Width - 2 * bracketThickness,
+                originalRect.Height - 2 * bracketThickness);
+
+            return GetLayoutResult(new UniformMatrixEntriesLayoutInputParams(updatedRect));
+        }
     }
 
     public class UniformMatrixEntriesLayoutInputParams: IMatrixEntriesLayoutInputParams
@@ -73,7 +86,9 @@ namespace MatrixLayout
     {
         private readonly IList<RectangleF> _results;
         private readonly int _columns;
-        
+
+        public IEnumerable<RectangleF> Results => new ReadOnlyCollection<RectangleF>(_results);
+
         public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns)
         {
             _results = results;
