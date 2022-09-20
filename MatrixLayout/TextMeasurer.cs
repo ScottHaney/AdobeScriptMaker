@@ -29,7 +29,7 @@ namespace MatrixLayout
         }
     }
 
-    public interface ITextMeasurer
+    public interface ITextMeasurer : IDisposable
     {
         SizeF MeasureText(string text, Font font);
     }
