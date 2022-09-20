@@ -11,7 +11,7 @@ namespace MatrixLayout.Tests
         [Test]
         public void SingleEntryMatrixWithBrackets()
         {
-            var layout = new FullMatrixLayout(new MatrixEntriesLayout(0, 0, 0, 1, 1), 1);
+            var layout = new FullMatrixLayout(new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1), 1);
             var results = layout.GetLayoutResult(new RectangleF(0, 0, 100, 100));
 
             Assert.AreEqual(new RectangleF(1, 1, 98, 98), results.GetEntryBounds(0, 0));

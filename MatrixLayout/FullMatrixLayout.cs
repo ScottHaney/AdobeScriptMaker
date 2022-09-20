@@ -7,10 +7,10 @@ namespace MatrixLayout
 {
     public class FullMatrixLayout
     {
-        private readonly MatrixEntriesLayout _entriesLayout;
+        private readonly UniformlySizedMatrixEntriesLayout _entriesLayout;
         private readonly float _bracketThickness;
 
-        public FullMatrixLayout(MatrixEntriesLayout entriesLayout,
+        public FullMatrixLayout(UniformlySizedMatrixEntriesLayout entriesLayout,
             float bracketThickness)
         {
             _entriesLayout = entriesLayout;
