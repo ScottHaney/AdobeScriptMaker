@@ -58,14 +58,16 @@ namespace MatrixLayout
 
         public MatrixEntriesLayoutResult GetLayoutResult(ITextMeasurer textMeasurer, Font font, double[] entries)
         {
+            var relativeSizeValue = textMeasurer.MeasureText("0", font).Height;
+
             var sizes = entries.Select(x => textMeasurer.MeasureText(x.ToString(), font)).ToList();
 
             var combiner = new MatrixEntriesSizeCombiner();
             var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
             var rowHeights = combiner.GetMaxForEachRow(sizes.Select(x => x.Height), Columns);
 
-            var rowGap = RowGapPercentage * rowHeights.Max();
-            var columnGap = ColumnGapPercentage * rowHeights.Max();
+            var rowGap = RowGapPercentage * relativeSizeValue;
+            var columnGap = ColumnGapPercentage * relativeSizeValue;
 
             var leftX = 0;
             var topY = 0;
