@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MatrixLayout.ExpressionDecorators
 {
-    public class Expression : IExpressionComponent
+    public class Expression : IExpressionComponent, IEquationComponent
     {
         public Expression(params IExpressionComponent[] components)
         {
