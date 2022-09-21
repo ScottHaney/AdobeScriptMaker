@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 
-namespace MatrixLayout
+namespace MatrixLayout.ExpressionLayout.Matrices
 {
     public class UniformlySizedMatrixEntriesLayout : IMatrixEntriesLayout
     {

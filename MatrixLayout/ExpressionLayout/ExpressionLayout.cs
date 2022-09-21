@@ -1,5 +1,6 @@
 ﻿using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.ExpressionLayout.LayoutResults;
+using MatrixLayout.ExpressionLayout.Matrices;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MatrixLayout
+namespace MatrixLayout.ExpressionLayout.Matrices
 {
     public interface IMatrixEntriesLayoutInputParams
     {
