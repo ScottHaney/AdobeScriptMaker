@@ -41,9 +41,29 @@ namespace MatrixLayout.ExpressionLayout
             return LayoutComponent((dynamic)item, startingLeft);
         }
 
+        private ILayoutResults LayoutComponent(Equation equation, float startingLeft)
+        {
+            var leftLayout = LayoutComponentSwitch(equation.Lhs, startingLeft);
+
+            using (var textMeasurer = new TextMeasurer())
+            {
+                var equalsSize = textMeasurer.MeasureText("=", _font);
+                var spacing = 15;
+
+                var equalsBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
+                    0,
+                    equalsSize.Width,
+                    equalsSize.Height));
+
+                var rightLayout = LayoutComponentSwitch(equation.Rhs, equalsBox.Bounds.Right + spacing);
+
+                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout);
+            }
+        }
+
         private ILayoutResults LayoutComponent(AddComponents addComponents, float startingLeft)
         {
-            var leftLayout = (ILayoutResults)LayoutComponent((dynamic)addComponents.Lhs, startingLeft);
+            var leftLayout = LayoutComponentSwitch(addComponents.Lhs, startingLeft);
 
             using (var textMeasurer = new TextMeasurer())
             {
@@ -55,7 +75,7 @@ namespace MatrixLayout.ExpressionLayout
                     additionSize.Width,
                     additionSize.Height));
 
-                var rightLayout = (ILayoutResults)LayoutComponent((dynamic)addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
+                var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
 
                 return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
             }
@@ -63,12 +83,12 @@ namespace MatrixLayout.ExpressionLayout
 
         private ILayoutResults LayoutComponent(MultiplyComponents multiplyComponents, float startingLeft)
         {
-            var leftLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Lhs, startingLeft);
+            var leftLayout = LayoutComponentSwitch(multiplyComponents.Lhs, startingLeft);
 
             var spacing = 8;
             startingLeft = leftLayout.BoundingBox.Right + spacing;
 
-            var rightLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Rhs, startingLeft);
+            var rightLayout = LayoutComponentSwitch(multiplyComponents.Rhs, startingLeft);
 
             return new LayoutResultsComposite(leftLayout, rightLayout);
         }

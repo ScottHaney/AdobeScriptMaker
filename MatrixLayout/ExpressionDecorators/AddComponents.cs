@@ -16,7 +16,7 @@ namespace MatrixLayout.ExpressionDecorators
         }
     }
 
-    public interface IAddableComponent
+    public interface IAddableComponent : IExpressionComponent
     {
 
     }

@@ -16,10 +16,10 @@ namespace MatrixLayout.ExpressionDecorators
         }
     }
 
-    public interface ILeftMultipliableComponent
+    public interface ILeftMultipliableComponent : IExpressionComponent
     { }
 
-    public interface IRightMultipliableComponent
+    public interface IRightMultipliableComponent : IExpressionComponent
     { }
 
     public interface IMultipliableComponent : ILeftMultipliableComponent, IRightMultipliableComponent
