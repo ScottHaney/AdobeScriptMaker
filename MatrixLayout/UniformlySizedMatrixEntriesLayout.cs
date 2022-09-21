@@ -33,6 +33,21 @@ namespace MatrixLayout
         }
 
         public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
+            => GetLayoutResultInternal(inputParams, 0);
+
+        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        {
+            var originalRect = ((UniformMatrixEntriesLayoutInputParams)inputParams).AvailableSpace;
+
+            var updatedRect = new RectangleF(originalRect.Left + bracketThickness,
+                originalRect.Top + bracketThickness,
+                originalRect.Width - 2 * bracketThickness,
+                originalRect.Height - 2 * bracketThickness);
+
+            return GetLayoutResultInternal(new UniformMatrixEntriesLayoutInputParams(updatedRect), bracketThickness);
+        }
+
+        public MatrixEntriesLayoutResult GetLayoutResultInternal(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
         {
             var inputs = (UniformMatrixEntriesLayoutInputParams)inputParams;
 
@@ -58,19 +73,7 @@ namespace MatrixLayout
                 }
             }
 
-            return new MatrixEntriesLayoutResult(results, Columns);
-        }
-
-        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
-        {
-            var originalRect = ((UniformMatrixEntriesLayoutInputParams)inputParams).AvailableSpace;
-
-            var updatedRect = new RectangleF(originalRect.Left + bracketThickness,
-                originalRect.Top + bracketThickness,
-                originalRect.Width - 2 * bracketThickness,
-                originalRect.Height - 2 * bracketThickness);
-
-            return GetLayoutResult(new UniformMatrixEntriesLayoutInputParams(updatedRect));
+            return new MatrixEntriesLayoutResult(results, Columns, bracketThickness);
         }
     }
 

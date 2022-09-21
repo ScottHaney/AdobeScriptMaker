@@ -61,7 +61,7 @@ namespace MatrixLayout
                 }
             }
 
-            return new MatrixEntriesLayoutResult(results, Columns);
+            return new MatrixEntriesLayoutResult(results, Columns, 0);
         }
 
         public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
@@ -71,7 +71,7 @@ namespace MatrixLayout
                 .Select(x => new RectangleF(x.Left + bracketThickness, x.Top + bracketThickness, x.Width, x.Height))
                 .ToList();
 
-            return new MatrixEntriesLayoutResult(updatedEntries, Columns);
+            return new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketThickness);
         }
     }
 

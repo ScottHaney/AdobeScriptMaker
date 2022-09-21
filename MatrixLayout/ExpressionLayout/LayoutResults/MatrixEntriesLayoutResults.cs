@@ -11,15 +11,17 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     {
         private readonly IList<RectangleF> _results;
         private readonly int _columns;
+        private readonly float _bracketThickness;
 
         public IEnumerable<RectangleF> Results => new ReadOnlyCollection<RectangleF>(_results);
 
         public RectangleF BoundingBox => GetBoundingBox();
 
-        public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns)
+        public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns, float bracketThickness)
         {
             _results = results;
             _columns = columns;
+            _bracketThickness = bracketThickness;
         }
 
         public RectangleF GetEntryBounds(int rowIndex, int columnIndex)
@@ -38,10 +40,10 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             var topLeft = GetEntryBounds(0, 0);
             var bottomRight = GetEntryBounds(_results.Count / _columns - 1, _columns - 1);
 
-            return new RectangleF(topLeft.Left,
-                topLeft.Top,
-                bottomRight.Right - topLeft.Left,
-                bottomRight.Bottom - topLeft.Top);
+            return new RectangleF(topLeft.Left - _bracketThickness,
+                topLeft.Top - _bracketThickness,
+                bottomRight.Right - topLeft.Left + 2 * _bracketThickness,
+                bottomRight.Bottom - topLeft.Top + 2 * _bracketThickness);
         }
     }
 
