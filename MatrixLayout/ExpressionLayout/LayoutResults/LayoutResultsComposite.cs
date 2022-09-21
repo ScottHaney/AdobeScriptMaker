@@ -33,7 +33,7 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return new RectangleF(left,
                 top,
                 right - left,
-                top - bottom);
+                bottom - top);
         }
     }
 }

@@ -36,12 +36,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         private RectangleF GetBoundingBox()
         {
             var topLeft = GetEntryBounds(0, 0);
-            var bottomRight = GetEntryBounds(_results.Count / _columns, _columns - 1);
+            var bottomRight = GetEntryBounds(_results.Count / _columns - 1, _columns - 1);
 
             return new RectangleF(topLeft.Left,
                 topLeft.Top,
                 bottomRight.Right - topLeft.Left,
-                topLeft.Top - bottomRight.Bottom);
+                bottomRight.Bottom - topLeft.Top);
         }
     }
 

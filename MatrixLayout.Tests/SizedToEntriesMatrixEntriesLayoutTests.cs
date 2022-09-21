@@ -119,6 +119,40 @@ namespace MatrixLayout.Tests
         }
 
         [Test]
+        public void TwoByTwoMatrixEntriesHaveTheCorrectBoundingBox()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var textMeasurer = mock.Mock<ITextMeasurer>();
+                textMeasurer
+                    .Setup(x => x.MeasureText("1", It.IsAny<Font>()))
+                    .Returns(new SizeF(25, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("12", It.IsAny<Font>()))
+                    .Returns(new SizeF(50, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("34", It.IsAny<Font>()))
+                    .Returns(new SizeF(50, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("5", It.IsAny<Font>()))
+                    .Returns(new SizeF(25, 35));
+
+                textMeasurer
+                    .Setup(x => x.MeasureText("0", It.IsAny<Font>()))
+                    .Returns(new SizeF(25, 35));
+
+                var layout = new SizedToEntriesMatrixEntriesLayout(0, 0, 0, 2, 2);
+                var results = layout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, null, 1, 12, 34, 5));
+
+                var boundingBox = results.BoundingBox;
+                Assert.AreEqual(new RectangleF(0, 0, 100, 70), boundingBox);
+            }
+        }
+
+        [Test]
         public void SingleEntryMatrixWithBrackets()
         {
             using (var mock = AutoMock.GetLoose())
