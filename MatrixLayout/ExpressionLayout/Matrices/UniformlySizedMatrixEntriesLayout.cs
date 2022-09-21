@@ -33,7 +33,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
         }
 
         public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams, float startingLeft = 0)
-            => GetLayoutResultInternal(inputParams, 0);
+            => GetLayoutResultInternal(inputParams, 0, startingLeft);
 
         public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
         {
@@ -44,10 +44,10 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                 originalRect.Width - 2 * bracketThickness,
                 originalRect.Height - 2 * bracketThickness);
 
-            return GetLayoutResultInternal(new UniformMatrixEntriesLayoutInputParams(updatedRect), bracketThickness);
+            return GetLayoutResultInternal(new UniformMatrixEntriesLayoutInputParams(updatedRect), bracketThickness, startingLeft);
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResultInternal(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        public MatrixEntriesLayoutResult GetLayoutResultInternal(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
         {
             var inputs = (UniformMatrixEntriesLayoutInputParams)inputParams;
 
@@ -57,7 +57,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var rowHeight = (innerHeight - (Rows - 1) * RowGapPercentage * inputs.AvailableSpace.Height) / Rows;
             var colWidth = (innerWidth - (Columns - 1) * ColumnGapPercentage * inputs.AvailableSpace.Width) / Columns;
 
-            var leftX = inputs.AvailableSpace.Left + (inputs.AvailableSpace.Width * OuterPaddingPercentage);
+            var leftX = startingLeft + inputs.AvailableSpace.Left + (inputs.AvailableSpace.Width * OuterPaddingPercentage);
             var topY = inputs.AvailableSpace.Top + (inputs.AvailableSpace.Height * OuterPaddingPercentage);
 
             var results = new List<RectangleF>();

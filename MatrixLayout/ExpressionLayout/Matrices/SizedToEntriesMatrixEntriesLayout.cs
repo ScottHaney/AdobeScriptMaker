@@ -45,7 +45,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var rowGap = RowGapPercentage * relativeSizeValue;
             var columnGap = ColumnGapPercentage * relativeSizeValue;
 
-            var leftX = OuterPaddingPercentage * relativeSizeValue;
+            var leftX = startingLeft + OuterPaddingPercentage * relativeSizeValue;
             var topY = OuterPaddingPercentage * relativeSizeValue;
 
             var results = new List<RectangleF>();
@@ -66,7 +66,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 
         public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
         {
-            var originalResult = GetLayoutResult(inputParams);
+            var originalResult = GetLayoutResult(inputParams, startingLeft);
             var updatedEntries = originalResult.Results
                 .Select(x => new RectangleF(x.Left + bracketThickness, x.Top + bracketThickness, x.Width, x.Height))
                 .ToList();

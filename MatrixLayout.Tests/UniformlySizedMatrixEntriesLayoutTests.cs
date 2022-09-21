@@ -17,6 +17,24 @@ namespace MatrixLayout.Tests
         }
 
         [Test]
+        public void SingleEntryMatrixWithoutBracketsUsesTheLeftOffsetCorrectly()
+        {
+            var layout = new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1);
+            var results = layout.GetLayoutResult(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), 99);
+
+            Assert.AreEqual(new RectangleF(99, 0, 100, 100), results.GetEntryBounds(0, 0));
+        }
+
+        [Test]
+        public void SingleEntryMatrixWithBracketsUsesTheLeftOffsetCorrectly()
+        {
+            var layout = new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1);
+            var results = layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), 5, 99);
+
+            Assert.AreEqual(new RectangleF(104, 5, 90, 90), results.GetEntryBounds(0, 0));
+        }
+
+        [Test]
         public void SingleEntryMatrixWithOuterPaddingTakesUpTheEntireSpaceMinusTheOuterPadding()
         {
             var layout = new UniformlySizedMatrixEntriesLayout(0.10f, 0, 0, 1, 1);
