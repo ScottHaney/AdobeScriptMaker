@@ -33,38 +33,46 @@ namespace MatrixLayout.ExpressionLayout
 
         public ILayoutResults Layout(IExpressionComponent item)
         {
-            return LayoutComponent((dynamic)item);
+            return LayoutComponentSwitch((dynamic)item, 0);
         }
 
-        private ILayoutResults LayoutComponent(MultiplyComponents multiplyComponents)
+        private ILayoutResults LayoutComponentSwitch(IExpressionComponent item, float startingLeft)
         {
-            var leftLayout = LayoutComponent((dynamic)multiplyComponents.Lhs);
-            var rightLayout = LayoutComponent((dynamic)multiplyComponents.Rhs);
-
-            throw new NotImplementedException();
+            return LayoutComponent((dynamic)item, startingLeft);
         }
 
-        private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent)
+        private ILayoutResults LayoutComponent(MultiplyComponents multiplyComponents, float startingLeft)
         {
-            var innerResult = Layout(multiplierComponent.Target);
+            var leftLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Lhs, startingLeft);
 
+            var spacing = 8;
+            startingLeft = leftLayout.BoundingBox.Right + spacing;
+
+            var rightLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Rhs, spacing);
+
+            return new LayoutResultsComposite(leftLayout, rightLayout);
+        }
+
+        private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent, float startingLeft)
+        {
             using (var textMeasurer = new TextMeasurer())
             {
                 var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), _font);
-
                 var spacing = 5;
 
-                var entryBoundary = innerResult.BoundingBox;
-                var multiplierBox = new TextLayoutResult(new RectangleF(entryBoundary.Left - multiplierSize.Width - spacing,
+                var multiplierBox = new TextLayoutResult(new RectangleF(startingLeft,
                     0,
                     multiplierSize.Width,
                     multiplierSize.Height));
+
+                startingLeft += multiplierSize.Width + spacing;
+                var innerResult = LayoutComponentSwitch(multiplierComponent.Target, startingLeft);
 
                 return new LayoutResultsComposite(new LayoutResultsCollection(multiplierBox), innerResult);
             }
         }
 
-        private MatrixEntriesLayoutResult LayoutComponent(MatrixComponent matrixComponent)
+        private ILayoutResults LayoutComponent(MatrixComponent matrixComponent, float startingLeft)
         {
             var layout = new SizedToEntriesMatrixEntriesLayout(_innerMatrixEntriesPadding,
                 _matrixRowGap,
