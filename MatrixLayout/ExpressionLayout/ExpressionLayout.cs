@@ -35,6 +35,14 @@ namespace MatrixLayout.ExpressionLayout
             return LayoutComponent((dynamic)item);
         }
 
+        private ILayoutResults LayoutComponent(MultiplyComponents multiplyComponents)
+        {
+            var leftLayout = LayoutComponent((dynamic)multiplyComponents.Lhs);
+            var rightLayout = LayoutComponent((dynamic)multiplyComponents.Rhs);
+
+            throw new NotImplementedException();
+        }
+
         private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent)
         {
             var innerResult = Layout(multiplierComponent.Target);
@@ -47,7 +55,7 @@ namespace MatrixLayout.ExpressionLayout
 
                 var entryBoundary = innerResult.BoundingBox;
                 var multiplierBox = new TextLayoutResult(new RectangleF(entryBoundary.Left - multiplierSize.Width - spacing,
-                    entryBoundary.Top - entryBoundary.Height / 2 + multiplierSize.Height / 2,
+                    0,
                     multiplierSize.Width,
                     multiplierSize.Height));
 
