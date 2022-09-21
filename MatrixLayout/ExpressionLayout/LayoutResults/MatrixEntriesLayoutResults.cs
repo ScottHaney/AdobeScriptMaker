@@ -14,6 +14,8 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         public IEnumerable<RectangleF> Results => new ReadOnlyCollection<RectangleF>(_results);
 
+        public RectangleF BoundingBox => GetBoundingBox();
+
         public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns)
         {
             _results = results;
@@ -29,6 +31,17 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public IEnumerable<ILayoutResult> GetResults()
         {
             return _results.Select(x => new MatrixEntryLayoutResult(x));
+        }
+
+        private RectangleF GetBoundingBox()
+        {
+            var topLeft = GetEntryBounds(0, 0);
+            var bottomRight = GetEntryBounds(_results.Count / _columns, _columns - 1);
+
+            return new RectangleF(topLeft.Left,
+                topLeft.Top,
+                bottomRight.Right - topLeft.Left,
+                topLeft.Top - bottomRight.Bottom);
         }
     }
 

@@ -43,9 +43,16 @@ namespace MatrixLayout.ExpressionLayout
             {
                 var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), _font);
 
-            }
+                var spacing = 5;
 
-            throw new NotImplementedException();
+                var entryBoundary = innerResult.BoundingBox;
+                var multiplierBox = new TextLayoutResult(new RectangleF(entryBoundary.Left - multiplierSize.Width - spacing,
+                    entryBoundary.Top - entryBoundary.Height / 2 + multiplierSize.Height / 2,
+                    multiplierSize.Width,
+                    multiplierSize.Height));
+
+                return new LayoutResultsComposite(new LayoutResultsCollection(multiplierBox), innerResult);
+            }
         }
 
         private MatrixEntriesLayoutResult LayoutComponent(MatrixComponent matrixComponent)
