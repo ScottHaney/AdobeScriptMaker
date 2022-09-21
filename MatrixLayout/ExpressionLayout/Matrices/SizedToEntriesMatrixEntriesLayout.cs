@@ -30,7 +30,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             Columns = columns;
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
+        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams, float startingLeft = 0)
         {
             var inputs = (SizedMatrixEntriesLayoutInputParams)inputParams;
 
@@ -64,7 +64,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             return new MatrixEntriesLayoutResult(results, Columns, 0);
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
         {
             var originalResult = GetLayoutResult(inputParams);
             var updatedEntries = originalResult.Results

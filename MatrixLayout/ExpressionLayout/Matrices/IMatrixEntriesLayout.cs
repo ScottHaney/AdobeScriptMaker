@@ -7,7 +7,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 {
     public interface IMatrixEntriesLayout
     {
-        MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams);
-        MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness);
+        MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams, float startingLeft = 0);
+        MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0);
     }
 }

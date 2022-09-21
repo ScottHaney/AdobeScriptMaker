@@ -32,10 +32,10 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             Columns = columns;
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams)
+        public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams, float startingLeft = 0)
             => GetLayoutResultInternal(inputParams, 0);
 
-        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness)
+        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
         {
             var originalRect = ((UniformMatrixEntriesLayoutInputParams)inputParams).AvailableSpace;
 
