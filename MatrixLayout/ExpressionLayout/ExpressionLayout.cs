@@ -41,6 +41,26 @@ namespace MatrixLayout.ExpressionLayout
             return LayoutComponent((dynamic)item, startingLeft);
         }
 
+        private ILayoutResults LayoutComponent(AddComponents addComponents, float startingLeft)
+        {
+            var leftLayout = (ILayoutResults)LayoutComponent((dynamic)addComponents.Lhs, startingLeft);
+
+            using (var textMeasurer = new TextMeasurer())
+            {
+                var additionSize = textMeasurer.MeasureText("+", _font);
+                var spacing = 15;
+
+                var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
+                    0,
+                    additionSize.Width,
+                    additionSize.Height));
+
+                var rightLayout = (ILayoutResults)LayoutComponent((dynamic)addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
+
+                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
+            }
+        }
+
         private ILayoutResults LayoutComponent(MultiplyComponents multiplyComponents, float startingLeft)
         {
             var leftLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Lhs, startingLeft);
