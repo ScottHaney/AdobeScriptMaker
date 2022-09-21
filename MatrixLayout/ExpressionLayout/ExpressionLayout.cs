@@ -48,7 +48,7 @@ namespace MatrixLayout.ExpressionLayout
             var spacing = 8;
             startingLeft = leftLayout.BoundingBox.Right + spacing;
 
-            var rightLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Rhs, spacing);
+            var rightLayout = (ILayoutResults)LayoutComponent((dynamic)multiplyComponents.Rhs, startingLeft);
 
             return new LayoutResultsComposite(leftLayout, rightLayout);
         }
