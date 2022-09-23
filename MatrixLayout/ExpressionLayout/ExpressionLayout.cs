@@ -4,6 +4,7 @@ using MatrixLayout.ExpressionLayout.Matrices;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace MatrixLayout.ExpressionLayout
@@ -34,6 +35,22 @@ namespace MatrixLayout.ExpressionLayout
         public ILayoutResults Layout(IExpressionComponent item)
         {
             return LayoutComponentSwitch((dynamic)item, 0);
+        }
+
+        private void CenterComponents(ILayoutResults layoutResults)
+        {
+            var flattenedResults = GetFlattenedResults(layoutResults);
+            var maxHeight = flattenedResults.Max(x => x.BoundingBox.Height);
+
+            
+        }
+
+        private IEnumerable<ILayoutResults> GetFlattenedResults(ILayoutResults layoutResults)
+        {
+            if (layoutResults is LayoutResultsComposite composite)
+                return composite.Items.SelectMany(x => GetFlattenedResults(x));
+            else
+                return new [] { layoutResults };
         }
 
         private ILayoutResults LayoutComponentSwitch(IExpressionComponent item, float startingLeft)
@@ -124,6 +141,19 @@ namespace MatrixLayout.ExpressionLayout
             {
                 return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, _font, matrixComponent.Entries), _bracketThickness);
             }
+        }
+    }
+
+    public class ExpressionLayoutResults
+    {
+        private readonly ILayoutResults _layoutResults;
+        private readonly float _maxItemHeight;
+
+        public ExpressionLayoutResults(ILayoutResults layoutResults,
+            float maxItemHeight)
+        {
+            _layoutResults = layoutResults;
+            _maxItemHeight = maxItemHeight;
         }
     }
 }
