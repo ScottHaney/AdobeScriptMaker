@@ -9,15 +9,15 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 {
     public class MatrixEntriesLayoutResult : ILayoutResults
     {
-        private readonly IList<RectangleF> _results;
+        private readonly IList<MatrixEntryLayoutResult> _results;
         private readonly int _columns;
         private readonly float _bracketThickness;
 
-        public IEnumerable<RectangleF> Results => new ReadOnlyCollection<RectangleF>(_results);
+        public IEnumerable<MatrixEntryLayoutResult> Results => new ReadOnlyCollection<MatrixEntryLayoutResult>(_results);
 
         public RectangleF BoundingBox => GetBoundingBox();
 
-        public MatrixEntriesLayoutResult(IList<RectangleF> results, int columns, float bracketThickness)
+        public MatrixEntriesLayoutResult(IList<MatrixEntryLayoutResult> results, int columns, float bracketThickness)
         {
             _results = results;
             _columns = columns;
@@ -27,12 +27,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public RectangleF GetEntryBounds(int rowIndex, int columnIndex)
         {
             var entryIndex = columnIndex + (rowIndex * _columns);
-            return _results[entryIndex];
+            return _results[entryIndex].Bounds;
         }
 
         public IEnumerable<ILayoutResult> GetResults()
         {
-            return _results.Select(x => new MatrixEntryLayoutResult(x));
+            return Results;
         }
 
         private RectangleF GetBoundingBox()
@@ -50,10 +50,13 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     public class MatrixEntryLayoutResult : ILayoutResult
     {
         public RectangleF Bounds { get; private set; }
+        public string Text { get; private set; }
 
-        public MatrixEntryLayoutResult(RectangleF bounds)
+        public MatrixEntryLayoutResult(RectangleF bounds,
+            string text)
         {
             Bounds = bounds;
+            Text = text;
         }
     }
 }

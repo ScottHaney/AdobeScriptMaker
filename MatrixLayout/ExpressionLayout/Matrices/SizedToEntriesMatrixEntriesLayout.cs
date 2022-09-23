@@ -43,7 +43,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var leftX = startingLeft + _marginsSettings.EntriesPaddingPercentage * relativeSizeValue;
             var topY = _marginsSettings.EntriesPaddingPercentage * relativeSizeValue;
 
-            var results = new List<RectangleF>();
+            var results = new List<MatrixEntryLayoutResult>();
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < Columns; columnIndex++)
@@ -52,7 +52,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                     var top = topY + (rowIndex * rowHeights.Take(rowIndex).DefaultIfEmpty(0).Sum()) + (rowIndex * rowGap);
 
                     var rect = new RectangleF(left, top, columnWidths[columnIndex], rowHeights[rowIndex]);
-                    results.Add(rect);
+                    results.Add(new MatrixEntryLayoutResult(rect, inputs.Entries[rowIndex * Columns + columnIndex].ToString()));
                 }
             }
 
@@ -63,7 +63,9 @@ namespace MatrixLayout.ExpressionLayout.Matrices
         {
             var originalResult = GetLayoutResult(inputParams, startingLeft);
             var updatedEntries = originalResult.Results
-                .Select(x => new RectangleF(x.Left + bracketThickness, x.Top + bracketThickness, x.Width, x.Height))
+                .Select(x => new MatrixEntryLayoutResult(
+                    new RectangleF(x.Bounds.Left + bracketThickness, x.Bounds.Top + bracketThickness, x.Bounds.Width, x.Bounds.Height),
+                    x.Text))
                 .ToList();
 
             return new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketThickness);
