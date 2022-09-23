@@ -1,5 +1,6 @@
 ﻿using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.ExpressionLayout;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.InputDescriptions;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,10 @@ namespace MatrixLayout
             _settings = settings;
         }
 
-        public void Render(IExpressionComponent expression)
+        public ILayoutResults Render(IExpressionComponent expression)
         {
             var layout = new MatrixExpressionLayout(_settings.TextSettings, _settings.MatrixSettings);
+            return layout.Layout(expression);
         }
     }
 
