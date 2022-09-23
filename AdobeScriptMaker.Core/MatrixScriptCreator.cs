@@ -8,15 +8,18 @@ namespace AdobeScriptMaker.Core
     {
         public string CreateScript(ILayoutResults layoutResults)
         {
+            var compositionItem = "app.project.activeItem";
+
+            var results = new StringBuilder();
             foreach (var result in layoutResults.GetResults())
             {
-                if (result is TextLayoutResult textLayoutResult)
+                if (result is MatrixEntryLayoutResult entryResult)
                 {
-
+                    results.AppendLine(CreateTextLayer(compositionItem, entryResult.Text, "Arial", 12));
                 }
             }
 
-            throw new NotImplementedException();
+            return results.ToString();
         }
 
         private string CreateTextLayer(string adobeCompositionItem, string value, string fontName, double fontSize)
@@ -24,7 +27,7 @@ namespace AdobeScriptMaker.Core
             var lines = new StringBuilder();
 
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
-            lines.AppendLine($"var layer = {adobeCompositionItem}.layers.addText(new TextDocument('{value}'));");
+            lines.Append($"var layer = {adobeCompositionItem}.layers.addText(new TextDocument('{value}'));");
 
             return lines.ToString();
         }

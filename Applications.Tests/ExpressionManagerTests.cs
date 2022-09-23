@@ -1,13 +1,12 @@
-﻿using MatrixLayout.ExpressionDecorators;
+using AdobeScriptMaker.Core;
+using MatrixLayout;
+using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.InputDescriptions;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace MatrixLayout.Tests
+namespace Applications.Tests
 {
-    public class ExpressionManagerTests
+    public class Tests
     {
         [Test]
         public void Test()
@@ -21,6 +20,9 @@ namespace MatrixLayout.Tests
             var expression = new MatrixComponent(new MatrixValuesDescription(2, 2, 1, 2, 3, 4));
 
             var result = expressionManager.Render(expression);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(result);
         }
     }
 }
