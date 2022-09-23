@@ -1,4 +1,5 @@
 ﻿using MatrixLayout.ExpressionLayout.LayoutResults;
+using MatrixLayout.InputDescriptions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,22 +10,16 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 {
     public class SizedToEntriesMatrixEntriesLayout : IMatrixEntriesLayout
     {
-        public readonly float OuterPaddingPercentage;
-        public readonly float RowGapPercentage;
-        public readonly float ColumnGapPercentage;
+        private readonly MatrixInteriorMarginsDescription _marginsSettings;
 
         public readonly int Rows;
         public readonly int Columns;
 
-        public SizedToEntriesMatrixEntriesLayout(float outerPaddingPercentage,
-            float rowGapPercentage,
-            float columnGapPercentage,
+        public SizedToEntriesMatrixEntriesLayout(MatrixInteriorMarginsDescription marginsSettings,
             int rows,
             int columns)
         {
-            OuterPaddingPercentage = outerPaddingPercentage;
-            RowGapPercentage = rowGapPercentage;
-            ColumnGapPercentage = columnGapPercentage;
+            _marginsSettings = marginsSettings;
 
             Rows = rows;
             Columns = columns;
@@ -42,11 +37,11 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
             var rowHeights = combiner.GetMaxForEachRow(sizes.Select(x => x.Height), Columns);
 
-            var rowGap = RowGapPercentage * relativeSizeValue;
-            var columnGap = ColumnGapPercentage * relativeSizeValue;
+            var rowGap = _marginsSettings.RowGapPercentage * relativeSizeValue;
+            var columnGap = _marginsSettings.ColumnGapPercentage * relativeSizeValue;
 
-            var leftX = startingLeft + OuterPaddingPercentage * relativeSizeValue;
-            var topY = OuterPaddingPercentage * relativeSizeValue;
+            var leftX = startingLeft + _marginsSettings.EntriesPaddingPercentage * relativeSizeValue;
+            var topY = _marginsSettings.EntriesPaddingPercentage * relativeSizeValue;
 
             var results = new List<RectangleF>();
             for (int rowIndex = 0; rowIndex < Rows; rowIndex++)

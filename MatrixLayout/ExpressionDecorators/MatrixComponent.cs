@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatrixLayout.InputDescriptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +16,13 @@ namespace MatrixLayout.ExpressionDecorators
             Rows = rows;
             Columns = columns;
             Entries = entries;
+        }
+
+        public MatrixComponent(MatrixValuesDescription valuesDescription)
+        {
+            Rows = valuesDescription.Rows;
+            Columns = valuesDescription.Columns;
+            Entries = valuesDescription.Entries;
         }
     }
 }

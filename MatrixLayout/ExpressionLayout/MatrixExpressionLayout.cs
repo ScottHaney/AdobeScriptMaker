@@ -1,6 +1,7 @@
 ﻿using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.ExpressionLayout.Matrices;
+using MatrixLayout.InputDescriptions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,27 +10,16 @@ using System.Text;
 
 namespace MatrixLayout.ExpressionLayout
 {
-    public class ExpressionLayout : IExpressionLayout
+    public class MatrixExpressionLayout : IExpressionLayout
     {
-        private readonly Font _font;
-        private readonly float _bracketThickness;
+        private readonly TextDisplayDescription _textSettings;
+        private readonly MatrixLayoutDescription _matrixSettings;
 
-        private readonly float _innerMatrixEntriesPadding;
-        private readonly float _matrixRowGap;
-        private readonly float _matrixColumnGap;
-
-        public ExpressionLayout(Font font,
-            float bracketThickness,
-            float innerMatrixEntriesPadding = 0.1f,
-            float matrixRowGap = 0.8f,
-            float matrixColumnGap = 0.5f)
+        public MatrixExpressionLayout(TextDisplayDescription textSettings,
+            MatrixLayoutDescription matrixSettings)
         {
-            _font = font;
-            _bracketThickness = bracketThickness;
-
-            _innerMatrixEntriesPadding = innerMatrixEntriesPadding;
-            _matrixRowGap = matrixRowGap;
-            _matrixColumnGap = matrixColumnGap;
+            _textSettings = textSettings;
+            _matrixSettings = matrixSettings;
         }
 
         public ILayoutResults Layout(IExpressionComponent item)
@@ -64,7 +54,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                var equalsSize = textMeasurer.MeasureText("=", _font);
+                var equalsSize = textMeasurer.MeasureText("=", new Font(_textSettings.FontName, _textSettings.FontSize));
                 var spacing = 15;
 
                 var equalsBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
@@ -84,7 +74,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                var additionSize = textMeasurer.MeasureText("+", _font);
+                var additionSize = textMeasurer.MeasureText("+", new Font(_textSettings.FontName, _textSettings.FontSize));
                 var spacing = 15;
 
                 var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
@@ -114,7 +104,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             using (var textMeasurer = new TextMeasurer())
             {
-                var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), _font);
+                var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), new Font(_textSettings.FontName, _textSettings.FontSize));
                 var spacing = 5;
 
                 var multiplierBox = new TextLayoutResult(new RectangleF(startingLeft,
@@ -131,15 +121,13 @@ namespace MatrixLayout.ExpressionLayout
 
         private ILayoutResults LayoutComponent(MatrixComponent matrixComponent, float startingLeft)
         {
-            var layout = new SizedToEntriesMatrixEntriesLayout(_innerMatrixEntriesPadding,
-                _matrixRowGap,
-                _matrixColumnGap,
+            var layout = new SizedToEntriesMatrixEntriesLayout(_matrixSettings.InteriorMarginsDescription,
                 matrixComponent.Rows,
                 matrixComponent.Columns);
 
             using (var textMeasurer = new TextMeasurer())
             {
-                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, _font, matrixComponent.Entries), _bracketThickness);
+                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSize), matrixComponent.Entries), _matrixSettings.BracketsDescription.Thickness);
             }
         }
     }
