@@ -1,5 +1,6 @@
 ﻿using MatrixLayout.ExpressionLayout.LayoutResults;
 using System;
+using System.Text;
 
 namespace AdobeScriptMaker.Core
 {
@@ -18,18 +19,14 @@ namespace AdobeScriptMaker.Core
             throw new NotImplementedException();
         }
 
-        private string CreateTextLayer(string source, string value, string fontName, double fontSize)
+        private string CreateTextLayer(string adobeCompositionItem, string value, string fontName, double fontSize)
         {
+            var lines = new StringBuilder();
+
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
-            var layer = $"var layer = {source}.layers.addText({value});";
+            lines.AppendLine($"var layer = {adobeCompositionItem}.layers.addText(new TextDocument('{value}'));");
 
-            //https://www.youtube.com/watch?v=6P76aFYmOR8&t=11s
-            var setText = $@"var textDocument = new TextDocument('{value}');
-textDocument.text = '{value}';
-textDocument.font = '{fontName}';
-layer.property('Source Text').setValue(textDocument);";
-
-            return string.Join(Environment.NewLine, layer, setText);
+            return lines.ToString();
         }
     }
 }
