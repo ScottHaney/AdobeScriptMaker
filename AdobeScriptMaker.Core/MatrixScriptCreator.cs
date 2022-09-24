@@ -1,5 +1,7 @@
 ﻿using MatrixLayout.ExpressionLayout.LayoutResults;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace AdobeScriptMaker.Core
@@ -17,28 +19,34 @@ namespace AdobeScriptMaker.Core
             {
                 if (result is MatrixEntryLayoutResult entryResult)
                 {
-                    results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, "Arial", 12));
+                    results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, entryResult.Bounds, "Arial", 12));
                 }
             }
 
             return results.ToString();
         }
 
-        private string CreateTextLayer(ScriptContext context, string adobeCompositionItem, string value, string fontName, double fontSize)
+        private string CreateTextLayer(ScriptContext context, string adobeCompositionItem, string value, RectangleF bounds, string fontName, double fontSize)
         {
-            var lines = new StringBuilder();
+            var lines = new List<string>();
 
             //https://ae-scripting.docsforadobe.dev/other/textdocument.html?highlight=TextDocument#textdocument
             var textDocVar = context.GetNextAutoVariable();
-            lines.AppendLine(@$"var {textDocVar} = new TextDocument('{value}');
-{textDocVar}.font = 'Arial';
+            lines.Add($"var {textDocVar} = new TextDocument('{value}');");
+
+            //Make sure to add the text document to the layer before setting properties on the layer
+            //otherwise a runtime exception will be thrown by adobe
+            //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
+            var layerVar = context.GetNextAutoVariable();
+            lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText({value});");
+            lines.Add($"{layerVar}.position.setValue([{ bounds.Left}, {bounds.Top}]);");
+
+            lines.Add($"var {textDocVar} = {layerVar}.text.sourceText.value;");
+            lines.Add($@"{textDocVar}.font = 'Arial';
 {textDocVar}.fontSize = 12;
 {textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
 
-            //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
-            lines.Append($"{adobeCompositionItem}.layers.addText({textDocVar});");
-
-            return lines.ToString();
+            return string.Join(Environment.NewLine, lines.ToArray());
         }
     }
 
