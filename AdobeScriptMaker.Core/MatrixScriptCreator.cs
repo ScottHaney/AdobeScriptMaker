@@ -25,7 +25,7 @@ namespace AdobeScriptMaker.Core
                 }
                 else if (result is MatrixBracketsLayoutResult bracketsResult)
                 {
-                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints()));
+                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
                 }
             }
 
@@ -60,7 +60,7 @@ var {textDocVar} = {sourceTextVar}.value;
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
-        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints)
+        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints, List<PointF> rightBracketPoints)
         {
             var lines = new List<string>();
 
@@ -70,18 +70,33 @@ var {textDocVar} = {sourceTextVar}.value;
             var leftBracketPathVar = context.GetNextAutoVariable();
             var leftBracketShapeVar = context.GetNextAutoVariable();
             var strokeGroupVar = context.GetNextAutoVariable();
+            var bracketsPathGroupVar = context.GetNextAutoVariable();
 
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
-var {leftBracketPathVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group').addProperty('ADBE Vector Shape - Group');
-var {leftBracketShapeVar} = new Shape();
-{leftBracketShapeVar}.vertices = {ConvertPointsToJavascriptArg(leftBracketPoints)};
-{leftBracketShapeVar}.closed = true;
-{leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});
-var {strokeGroupVar} = {shapeLayerVar}.property('Contents').property('Group 1').property('Contents').addProperty('ADBE Vector Graphic - Stroke');
-{strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('{bracketsSettings.Thickness}');
-{strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
+var {bracketsPathGroupVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+{CreateBracketsScript(context, bracketsPathGroupVar, bracketsSettings, leftBracketPoints)}
+{CreateBracketsScript(context, bracketsPathGroupVar, bracketsSettings, rightBracketPoints)}");
 
             return string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        private string CreateBracketsScript(ScriptContext context,
+            string bracketsPathGroupVar,
+            MatrixBracketsDescription bracketsSettings,
+            List<PointF> bracketPoints)
+        {
+            var bracketPathVar = context.GetNextAutoVariable();
+            var bracketShapeVar = context.GetNextAutoVariable();
+            var strokeGroupVar = context.GetNextAutoVariable();
+
+            return $@"var {bracketPathVar} = {bracketsPathGroupVar}.addProperty('ADBE Vector Shape - Group')
+var {bracketShapeVar} = new Shape();
+{bracketShapeVar}.vertices = { ConvertPointsToJavascriptArg(bracketPoints)};
+{bracketShapeVar}.closed = true;
+{bracketPathVar}.property('Path').setValue({ bracketShapeVar});
+var {strokeGroupVar} = {bracketsPathGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
+{ strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('{bracketsSettings.Thickness}');
+{ strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);";
         }
 
         private string ConvertPointsToJavascriptArg(List<PointF> points)
