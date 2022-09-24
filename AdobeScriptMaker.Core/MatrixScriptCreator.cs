@@ -41,13 +41,28 @@ namespace AdobeScriptMaker.Core
             lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText({value});");
             lines.Add($"{layerVar}.position.setValue([{ bounds.Left}, {bounds.Top}]);");
 
+            //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
+            //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185
             var sourceTextVar = context.GetNextAutoVariable();
-            lines.Add($"var {sourceTextVar} = {layerVar}.text.sourceText;");
-            lines.Add($"var {textDocVar} = {sourceTextVar}.value;");
-            lines.Add($@"{textDocVar}.font = '{textSettings.FontName}';
+            lines.Add(@$"var {sourceTextVar} = {layerVar}.text.sourceText;
+var {textDocVar} = {sourceTextVar}.value;
+{textDocVar}.font = '{textSettings.FontName}';
 {textDocVar}.fontSize = {textSettings.FontSize};
-{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
-            lines.Add($"{sourceTextVar}.setValue({textDocVar});");
+{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;
+{sourceTextVar}.setValue({textDocVar});");
+
+            return string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem)
+        {
+            var lines = new List<string>();
+
+            //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addshape
+            //For a tutorial on how to add paths to shape layers: https://www.youtube.com/watch?v=zGbd-tEyryg
+            var shapeLayerVar = context.GetNextAutoVariable();
+            lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
+{shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group');");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
