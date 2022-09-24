@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Linq;
 
 namespace AdobeScriptMaker.Core
 {
@@ -65,8 +66,15 @@ var {textDocVar} = {sourceTextVar}.value;
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addshape
             //For a tutorial on how to add paths to shape layers: https://www.youtube.com/watch?v=zGbd-tEyryg
             var shapeLayerVar = context.GetNextAutoVariable();
+            var leftBracketPathVar = context.GetNextAutoVariable();
+            var leftBracketShapeVar = context.GetNextAutoVariable();
+
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
-{shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group');");
+var {leftBracketPathVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group').addProperty('ADBE Vector Shape - Group');
+var {leftBracketShapeVar} = new Shape();
+{leftBracketShapeVar}.vertices = [[0,0], [100,100], [100,0], [0, 100]];
+{leftBracketShapeVar}.closed = true;
+{leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
