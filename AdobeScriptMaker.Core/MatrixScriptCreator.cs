@@ -41,10 +41,13 @@ namespace AdobeScriptMaker.Core
             lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText({value});");
             lines.Add($"{layerVar}.position.setValue([{ bounds.Left}, {bounds.Top}]);");
 
-            lines.Add($"var {textDocVar} = {layerVar}.text.sourceText.value;");
+            var sourceTextVar = context.GetNextAutoVariable();
+            lines.Add($"var {sourceTextVar} = {layerVar}.text.sourceText;");
+            lines.Add($"var {textDocVar} = {sourceTextVar}.value;");
             lines.Add($@"{textDocVar}.font = '{textSettings.FontName}';
 {textDocVar}.fontSize = {textSettings.FontSize};
 {textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
+            lines.Add($"{sourceTextVar}.setValue({textDocVar});");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
