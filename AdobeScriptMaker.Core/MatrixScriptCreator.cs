@@ -68,13 +68,17 @@ var {textDocVar} = {sourceTextVar}.value;
             var shapeLayerVar = context.GetNextAutoVariable();
             var leftBracketPathVar = context.GetNextAutoVariable();
             var leftBracketShapeVar = context.GetNextAutoVariable();
+            var strokeGroupVar = context.GetNextAutoVariable();
 
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
 var {leftBracketPathVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group').addProperty('ADBE Vector Shape - Group');
 var {leftBracketShapeVar} = new Shape();
-{leftBracketShapeVar}.vertices = [[0,0], [100,100], [100,0], [0, 100]];
+{leftBracketShapeVar}.vertices = [[0,0], [300,0], [300,300], [0, 300]];
 {leftBracketShapeVar}.closed = true;
-{leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});");
+{leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});
+var {strokeGroupVar} = {shapeLayerVar}.property('Contents').property('Group 1').property('Contents').addProperty('ADBE Vector Graphic - Stroke');
+{strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('15');
+{strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
