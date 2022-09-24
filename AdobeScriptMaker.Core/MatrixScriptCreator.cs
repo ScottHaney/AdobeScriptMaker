@@ -25,7 +25,7 @@ namespace AdobeScriptMaker.Core
                 }
                 else if (result is MatrixBracketsLayoutResult bracketsResult)
                 {
-                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings));
+                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints()));
                 }
             }
 
@@ -60,7 +60,7 @@ var {textDocVar} = {sourceTextVar}.value;
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
-        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings)
+        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints)
         {
             var lines = new List<string>();
 
@@ -74,7 +74,7 @@ var {textDocVar} = {sourceTextVar}.value;
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
 var {leftBracketPathVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group').addProperty('ADBE Vector Shape - Group');
 var {leftBracketShapeVar} = new Shape();
-{leftBracketShapeVar}.vertices = [[0,0], [300,0], [300,300], [0, 300]];
+{leftBracketShapeVar}.vertices = {ConvertPointsToJavascriptArg(leftBracketPoints)};
 {leftBracketShapeVar}.closed = true;
 {leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});
 var {strokeGroupVar} = {shapeLayerVar}.property('Contents').property('Group 1').property('Contents').addProperty('ADBE Vector Graphic - Stroke');
@@ -82,6 +82,12 @@ var {strokeGroupVar} = {shapeLayerVar}.property('Contents').property('Group 1').
 {strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
 
             return string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        private string ConvertPointsToJavascriptArg(List<PointF> points)
+        {
+            var pointArgs = string.Join(",", points.Select(x => $"[{x.X},{x.Y}]"));
+            return $"[{pointArgs}]";
         }
     }
 

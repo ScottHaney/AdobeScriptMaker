@@ -18,5 +18,32 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             BracketsSettings = bracketsSettings;
         }
 
+        public List<PointF> GetLeftBracketPathPoints()
+        {
+            var points = new List<PointF>();
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness + BracketsSettings.PincerWidth,
+                Bounds.Top));
+
+            points.Add(new PointF(Bounds.Left, Bounds.Top));
+            points.Add(new PointF(Bounds.Left, Bounds.Bottom));
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness + BracketsSettings.PincerWidth,
+                Bounds.Bottom));
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness + BracketsSettings.PincerWidth,
+                            Bounds.Bottom - BracketsSettings.Thickness));
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness,
+                Bounds.Bottom - BracketsSettings.Thickness));
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness,
+                Bounds.Top + BracketsSettings.Thickness));
+
+            points.Add(new PointF(Bounds.Left + BracketsSettings.Thickness + BracketsSettings.PincerWidth,
+                Bounds.Top + BracketsSettings.Thickness));
+
+            return points;
+        }
     }
 }
