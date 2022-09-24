@@ -61,19 +61,31 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             return new MatrixEntriesLayoutResult(results, Columns, 0);
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
+        public ILayoutResults GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, MatrixBracketsDescription bracketsSettings, float startingLeft = 0)
         {
             var inputs = (SizedMatrixEntriesLayoutInputParams)inputParams;
 
             var originalResult = GetLayoutResult(inputParams, startingLeft);
             var updatedEntries = originalResult.Results
                 .Select(x => new MatrixEntryLayoutResult(
-                    new RectangleF(x.Bounds.Left + bracketThickness, x.Bounds.Top + bracketThickness, x.Bounds.Width, x.Bounds.Height),
+                    new RectangleF(x.Bounds.Left + bracketsSettings.Thickness, x.Bounds.Top + bracketsSettings.Thickness, x.Bounds.Width, x.Bounds.Height),
                     new TextSettings(inputs.Font.Name, inputs.Font.Size),
                     x.Text))
                 .ToList();
 
-            return new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketThickness);
+            var originalBounds = originalResult.BoundingBox;
+            var outerBounds = new RectangleF(
+                originalBounds.Left,
+                originalBounds.Top,
+                originalBounds.Width + 2 * bracketsSettings.Thickness,
+                originalBounds.Height + 2 * bracketsSettings.Thickness);
+
+            var bracketsResult = new MatrixBracketsLayoutResult(
+                outerBounds,
+                bracketsSettings);
+
+            return new LayoutResultsComposite(new LayoutResultsCollection(bracketsResult),
+                new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketsSettings.Thickness));
         }
     }
 

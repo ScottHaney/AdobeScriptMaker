@@ -127,7 +127,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSize), matrixComponent.Entries), _matrixSettings.BracketsDescription.Thickness);
+                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSize), matrixComponent.Entries), _matrixSettings.BracketsDescription);
             }
         }
     }

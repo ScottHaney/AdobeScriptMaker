@@ -7,12 +7,12 @@ namespace MatrixLayout.InputDescriptions
     public class MatrixBracketsDescription
     {
         public readonly float Thickness;
-        public readonly float PincerWidthPercentage;
+        public readonly float PincerWidth;
 
-        public MatrixBracketsDescription(float thickness, float pincerWidthPercentage)
+        public MatrixBracketsDescription(float thickness, float pincerWidth)
         {
             Thickness = thickness;
-            PincerWidthPercentage = pincerWidthPercentage;
+            PincerWidth = pincerWidth;
         }
     }
 }

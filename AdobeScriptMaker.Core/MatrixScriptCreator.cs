@@ -21,6 +21,10 @@ namespace AdobeScriptMaker.Core
                 {
                     results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
                 }
+                else if (result is MatrixBracketsLayoutResult bracketsResult)
+                {
+                    results.AppendLine(CreatePathLayer(context, compositionItem));
+                }
             }
 
             return results.ToString();

@@ -1,7 +1,10 @@
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.ExpressionLayout.Matrices;
+using MatrixLayout.InputDescriptions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace MatrixLayout.Tests
 {
@@ -29,7 +32,7 @@ namespace MatrixLayout.Tests
         public void SingleEntryMatrixWithBracketsUsesTheLeftOffsetCorrectly()
         {
             var layout = new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1);
-            var results = layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), 5, 99);
+            var results = (MatrixEntriesLayoutResult)layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), new MatrixBracketsDescription(5, 20), 99);
 
             Assert.AreEqual(new RectangleF(104, 5, 90, 90), results.GetEntryBounds(0, 0));
         }
@@ -67,7 +70,7 @@ namespace MatrixLayout.Tests
         public void SingleEntryMatrixWithBrackets()
         {
             var layout = new UniformlySizedMatrixEntriesLayout(0, 0, 0, 1, 1);
-            var results = layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), 1);
+            var results = (MatrixEntriesLayoutResult)layout.GetLayoutResultWithBrackets(new UniformMatrixEntriesLayoutInputParams(new RectangleF(0, 0, 100, 100)), new MatrixBracketsDescription(1, 20));
 
             Assert.AreEqual(new RectangleF(1, 1, 98, 98), results.GetEntryBounds(0, 0));
         }

@@ -1,5 +1,6 @@
 ﻿using MatrixLayout.ExpressionLayout;
 using MatrixLayout.ExpressionLayout.LayoutResults;
+using MatrixLayout.InputDescriptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,21 +34,21 @@ namespace MatrixLayout.ExpressionLayout.Matrices
         }
 
         public MatrixEntriesLayoutResult GetLayoutResult(IMatrixEntriesLayoutInputParams inputParams, float startingLeft = 0)
-            => GetLayoutResultInternal(inputParams, 0, startingLeft);
+            => GetLayoutResultInternal(inputParams, new MatrixBracketsDescription(0, 0), startingLeft);
 
-        public MatrixEntriesLayoutResult GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
+        public ILayoutResults GetLayoutResultWithBrackets(IMatrixEntriesLayoutInputParams inputParams, MatrixBracketsDescription bracketsSettings, float startingLeft = 0)
         {
             var originalRect = ((UniformMatrixEntriesLayoutInputParams)inputParams).AvailableSpace;
 
-            var updatedRect = new RectangleF(originalRect.Left + bracketThickness,
-                originalRect.Top + bracketThickness,
-                originalRect.Width - 2 * bracketThickness,
-                originalRect.Height - 2 * bracketThickness);
+            var updatedRect = new RectangleF(originalRect.Left + bracketsSettings.Thickness,
+                originalRect.Top + bracketsSettings.Thickness,
+                originalRect.Width - 2 * bracketsSettings.Thickness,
+                originalRect.Height - 2 * bracketsSettings.Thickness);
 
-            return GetLayoutResultInternal(new UniformMatrixEntriesLayoutInputParams(updatedRect), bracketThickness, startingLeft);
+            return GetLayoutResultInternal(new UniformMatrixEntriesLayoutInputParams(updatedRect), bracketsSettings, startingLeft);
         }
 
-        public MatrixEntriesLayoutResult GetLayoutResultInternal(IMatrixEntriesLayoutInputParams inputParams, float bracketThickness, float startingLeft = 0)
+        public MatrixEntriesLayoutResult GetLayoutResultInternal(IMatrixEntriesLayoutInputParams inputParams, MatrixBracketsDescription bracketsSettings, float startingLeft = 0)
         {
             var inputs = (UniformMatrixEntriesLayoutInputParams)inputParams;
 
@@ -73,7 +74,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                 }
             }
 
-            return new MatrixEntriesLayoutResult(results, Columns, bracketThickness);
+            return new MatrixEntriesLayoutResult(results, Columns, bracketsSettings.Thickness);
         }
     }
 
