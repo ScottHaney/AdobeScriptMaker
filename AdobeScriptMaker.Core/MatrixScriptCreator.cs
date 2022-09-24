@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Linq;
+using MatrixLayout.InputDescriptions;
 
 namespace AdobeScriptMaker.Core
 {
@@ -24,7 +25,7 @@ namespace AdobeScriptMaker.Core
                 }
                 else if (result is MatrixBracketsLayoutResult bracketsResult)
                 {
-                    results.AppendLine(CreatePathLayer(context, compositionItem));
+                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings));
                 }
             }
 
@@ -59,7 +60,7 @@ var {textDocVar} = {sourceTextVar}.value;
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
-        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem)
+        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings)
         {
             var lines = new List<string>();
 
@@ -77,7 +78,7 @@ var {leftBracketShapeVar} = new Shape();
 {leftBracketShapeVar}.closed = true;
 {leftBracketPathVar}.property('Path').setValue({leftBracketShapeVar});
 var {strokeGroupVar} = {shapeLayerVar}.property('Contents').property('Group 1').property('Contents').addProperty('ADBE Vector Graphic - Stroke');
-{strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('15');
+{strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('{bracketsSettings.Thickness}');
 {strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
 
             return string.Join(Environment.NewLine, lines.ToArray());
