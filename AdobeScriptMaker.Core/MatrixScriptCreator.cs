@@ -67,29 +67,26 @@ var {textDocVar} = {sourceTextVar}.value;
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addshape
             //For a tutorial on how to add paths to shape layers: https://www.youtube.com/watch?v=zGbd-tEyryg
             var shapeLayerVar = context.GetNextAutoVariable();
-            var leftBracketPathVar = context.GetNextAutoVariable();
-            var leftBracketShapeVar = context.GetNextAutoVariable();
-            var strokeGroupVar = context.GetNextAutoVariable();
-            var bracketsPathGroupVar = context.GetNextAutoVariable();
 
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
-var {bracketsPathGroupVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
-{CreateBracketsScript(context, bracketsPathGroupVar, bracketsSettings, leftBracketPoints)}
-{CreateBracketsScript(context, bracketsPathGroupVar, bracketsSettings, rightBracketPoints)}");
+{CreateBracketsScript(context, shapeLayerVar, bracketsSettings, leftBracketPoints)}
+{CreateBracketsScript(context, shapeLayerVar, bracketsSettings, rightBracketPoints)}");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
         private string CreateBracketsScript(ScriptContext context,
-            string bracketsPathGroupVar,
+            string shapeLayerVar,
             MatrixBracketsDescription bracketsSettings,
             List<PointF> bracketPoints)
         {
+            var bracketsPathGroupVar = context.GetNextAutoVariable();
             var bracketPathVar = context.GetNextAutoVariable();
             var bracketShapeVar = context.GetNextAutoVariable();
             var strokeGroupVar = context.GetNextAutoVariable();
 
-            return $@"var {bracketPathVar} = {bracketsPathGroupVar}.addProperty('ADBE Vector Shape - Group')
+            return $@"var {bracketsPathGroupVar} = {shapeLayerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+var {bracketPathVar} = {bracketsPathGroupVar}.addProperty('ADBE Vector Shape - Group')
 var {bracketShapeVar} = new Shape();
 {bracketShapeVar}.vertices = { ConvertPointsToJavascriptArg(bracketPoints)};
 {bracketShapeVar}.closed = true;
