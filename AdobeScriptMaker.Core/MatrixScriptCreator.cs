@@ -19,14 +19,14 @@ namespace AdobeScriptMaker.Core
             {
                 if (result is MatrixEntryLayoutResult entryResult)
                 {
-                    results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, entryResult.Bounds, "Arial", 12));
+                    results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
                 }
             }
 
             return results.ToString();
         }
 
-        private string CreateTextLayer(ScriptContext context, string adobeCompositionItem, string value, RectangleF bounds, string fontName, double fontSize)
+        private string CreateTextLayer(ScriptContext context, string adobeCompositionItem, string value, RectangleF bounds, TextSettings textSettings)
         {
             var lines = new List<string>();
 
@@ -42,8 +42,8 @@ namespace AdobeScriptMaker.Core
             lines.Add($"{layerVar}.position.setValue([{ bounds.Left}, {bounds.Top}]);");
 
             lines.Add($"var {textDocVar} = {layerVar}.text.sourceText.value;");
-            lines.Add($@"{textDocVar}.font = 'Arial';
-{textDocVar}.fontSize = 12;
+            lines.Add($@"{textDocVar}.font = '{textSettings.FontName}';
+{textDocVar}.fontSize = {textSettings.FontSize};
 {textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
 
             return string.Join(Environment.NewLine, lines.ToArray());

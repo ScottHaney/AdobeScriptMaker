@@ -50,13 +50,29 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     public class MatrixEntryLayoutResult : ILayoutResult
     {
         public RectangleF Bounds { get; private set; }
+        public TextSettings TextSettings { get; private set; }
         public string Text { get; private set; }
 
         public MatrixEntryLayoutResult(RectangleF bounds,
+            TextSettings textSettings,
             string text)
         {
             Bounds = bounds;
+            TextSettings = textSettings;
             Text = text;
+        }
+    }
+
+    public class TextSettings
+    {
+        public readonly string FontName;
+        public readonly float FontSize;
+
+        public TextSettings(string fontName,
+            float fontSize)
+        {
+            FontName = fontName;
+            FontSize = fontSize;
         }
     }
 }

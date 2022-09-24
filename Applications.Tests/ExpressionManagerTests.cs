@@ -12,7 +12,7 @@ namespace Applications.Tests
         public void Test()
         {
             var expressionManager = new ExpressionManager(new ExpressionDisplaySettings(
-                new TextDisplayDescription("Arial", 12),
+                new TextDisplayDescription("Arial", 72),
                 new MatrixLayoutDescription(
                     new MatrixBracketsDescription(2, 0.15f),
                     new MatrixInteriorMarginsDescription(0.10f, 0.8f, 0.5f))));

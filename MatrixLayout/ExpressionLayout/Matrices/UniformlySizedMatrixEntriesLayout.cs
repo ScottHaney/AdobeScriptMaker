@@ -69,7 +69,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                     var top = topY + (rowIndex * rowHeight) + (rowIndex * RowGapPercentage * inputs.AvailableSpace.Height);
 
                     var rect = new RectangleF(left, top, colWidth, rowHeight);
-                    results.Add(new MatrixEntryLayoutResult(rect, ""));
+                    results.Add(new MatrixEntryLayoutResult(rect, null, ""));
                 }
             }
 
