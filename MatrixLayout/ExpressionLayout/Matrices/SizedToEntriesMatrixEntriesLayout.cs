@@ -73,10 +73,12 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                     x.Text))
                 .ToList();
 
+            var relativeSizeValue = inputs.TextMeasurer.MeasureText("0", inputs.Font).Height;
+
             var originalBounds = originalResult.BoundingBox;
             var outerBounds = new RectangleF(
-                originalBounds.Left,
-                originalBounds.Top,
+                originalBounds.Left - _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
+                originalBounds.Top - _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
                 originalBounds.Width + 2 * bracketsSettings.Thickness,
                 originalBounds.Height + 2 * bracketsSettings.Thickness);
 
