@@ -92,8 +92,9 @@ var {bracketShapeVar} = new Shape();
 {bracketShapeVar}.closed = true;
 {bracketPathVar}.property('Path').setValue({ bracketShapeVar});
 var {strokeGroupVar} = {bracketsPathGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
-{ strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('{bracketsSettings.Thickness}');
-{ strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);";
+{strokeGroupVar}.property('ADBE Vector Stroke Width').setValue('{bracketsSettings.Thickness}');
+{strokeGroupVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
+var w = {shapeLayerVar}.property('Transform').property('Position').setValue([0, 0]);";
         }
 
         private string ConvertPointsToJavascriptArg(List<PointF> points)
