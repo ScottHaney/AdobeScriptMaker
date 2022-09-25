@@ -45,7 +45,7 @@ namespace AdobeScriptMaker.Core
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
             var layerVar = context.GetNextAutoVariable();
             lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText({value});");
-            lines.Add($"{layerVar}.position.setValue([{bounds.Left + bounds.Width / 2}, {bounds.Top + bounds.Height / 2}]);");
+            lines.Add($"{layerVar}.position.setValue([{bounds.Left}, {bounds.Top + bounds.Height}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
             //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185

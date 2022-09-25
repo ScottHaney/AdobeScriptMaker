@@ -15,9 +15,9 @@ namespace Applications.Tests
                 new TextDisplayDescription("Arial", 72),
                 new MatrixLayoutDescription(
                     new MatrixBracketsDescription(2, 35),
-                    new MatrixInteriorMarginsDescription(0.10f, 0.8f, 0.5f))));
+                    new MatrixInteriorMarginsDescription(0, 0, 0))));
 
-            var expression = new MatrixComponent(new MatrixValuesDescription(2, 2, 1, 2, 3, 4));
+            var expression = new MatrixComponent(new MatrixValuesDescription(2, 2, 1, 1, 1, 1));
 
             var result = expressionManager.Render(expression);
 

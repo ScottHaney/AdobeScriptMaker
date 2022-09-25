@@ -35,7 +35,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 
             var combiner = new MatrixEntriesSizeCombiner();
             var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
-            var rowHeights = combiner.GetMaxForEachRow(sizes.Select(x => x.Height), Columns);
+            var rowHeights = combiner.GetMaxForEachRow(sizes.Select(x => inputs.Font.Size), Columns);
 
             var rowGap = _marginsSettings.RowGapPercentage * relativeSizeValue;
             var columnGap = _marginsSettings.ColumnGapPercentage * relativeSizeValue;

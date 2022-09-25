@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixLayout", "MatrixLayou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixLayout.Tests", "MatrixLayout.Tests\MatrixLayout.Tests.csproj", "{FF449114-E15B-4608-B967-333AD25E01AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications", "Applications\Applications.csproj", "{DAC62982-8CC3-43E5-9F8F-03BF04A64773}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications", "Applications\Applications.csproj", "{DAC62982-8CC3-43E5-9F8F-03BF04A64773}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Applications.Tests", "Applications.Tests\Applications.Tests.csproj", "{EE6D75D5-B9F6-4C53-B0F2-EC6E06D37531}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications.Tests", "Applications.Tests\Applications.Tests.csproj", "{EE6D75D5-B9F6-4C53-B0F2-EC6E06D37531}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
 
 namespace MatrixLayout
 {
@@ -18,7 +19,7 @@ namespace MatrixLayout
 
         public SizeF MeasureText(string text, Font font)
         {
-            var stringSize = _graphics.MeasureString(text, font);
+            var stringSize = TextRenderer.MeasureText(text, font);
             return stringSize;
         }
 
