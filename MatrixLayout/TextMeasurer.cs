@@ -20,7 +20,7 @@ namespace MatrixLayout
         public SizeF MeasureText(string text, Font font)
         {
             var stringSize = TextRenderer.MeasureText(text, font);
-            return stringSize;
+            return new SizeF(stringSize.Width, font.Size);
         }
 
         public void Dispose()
