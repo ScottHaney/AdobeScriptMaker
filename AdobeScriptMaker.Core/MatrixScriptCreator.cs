@@ -17,22 +17,26 @@ namespace AdobeScriptMaker.Core
             var compositionItem = "app.project.activeItem";
 
             var results = new StringBuilder();
+
+            var nullLayerVar = context.GetNextAutoVariable();
+            results.AppendLine($"var {nullLayerVar} = {compositionItem}.layers.addNull();");
+
             foreach (var result in layoutResults.GetResults())
             {
                 if (result is MatrixEntryLayoutResult entryResult)
                 {
-                    results.AppendLine(CreateTextLayer(context, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
+                    results.AppendLine(CreateTextLayer(context, nullLayerVar, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
                 }
                 else if (result is MatrixBracketsLayoutResult bracketsResult)
                 {
-                    results.AppendLine(CreatePathLayer(context, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
+                    results.AppendLine(CreatePathLayer(context, nullLayerVar, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
                 }
             }
 
             return results.ToString();
         }
 
-        private string CreateTextLayer(ScriptContext context, string adobeCompositionItem, string value, RectangleF bounds, TextSettings textSettings)
+        private string CreateTextLayer(ScriptContext context, string nullLayerVar, string adobeCompositionItem, string value, RectangleF bounds, TextSettings textSettings)
         {
             var lines = new List<string>();
 
@@ -55,12 +59,13 @@ var {textDocVar} = {sourceTextVar}.value;
 {textDocVar}.font = '{textSettings.FontName}';
 {textDocVar}.fontSize = {textSettings.FontSize};
 {textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;
-{sourceTextVar}.setValue({textDocVar});");
+{sourceTextVar}.setValue({textDocVar});
+{layerVar}.parent = {nullLayerVar};");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
 
-        private string CreatePathLayer(ScriptContext context, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints, List<PointF> rightBracketPoints)
+        private string CreatePathLayer(ScriptContext context, string nullLayerVar, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints, List<PointF> rightBracketPoints)
         {
             var lines = new List<string>();
 
@@ -70,7 +75,8 @@ var {textDocVar} = {sourceTextVar}.value;
 
             lines.Add(@$"var {shapeLayerVar} = {adobeCompositionItem}.layers.addShape();
 {CreateBracketsScript(context, shapeLayerVar, bracketsSettings, leftBracketPoints)}
-{CreateBracketsScript(context, shapeLayerVar, bracketsSettings, rightBracketPoints)}");
+{CreateBracketsScript(context, shapeLayerVar, bracketsSettings, rightBracketPoints)}
+{shapeLayerVar}.parent = {nullLayerVar};");
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
