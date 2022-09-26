@@ -10,7 +10,7 @@ namespace AdobeScriptMaker.Core
 {
     public class MatrixScriptCreator
     {
-        public string CreateScript(ILayoutResults layoutResults)
+        public string CreateScript(params ILayoutResults[] layoutResults)
         {
             var context = new ScriptContext();
 
@@ -18,18 +18,21 @@ namespace AdobeScriptMaker.Core
 
             var results = new StringBuilder();
 
-            var nullLayerVar = context.GetNextAutoVariable();
-            results.AppendLine($"var {nullLayerVar} = {compositionItem}.layers.addNull();");
-
-            foreach (var result in layoutResults.GetResults())
+            foreach (var layoutResult in layoutResults)
             {
-                if (result is MatrixEntryLayoutResult entryResult)
+                var nullLayerVar = context.GetNextAutoVariable();
+                results.AppendLine($"var {nullLayerVar} = {compositionItem}.layers.addNull();");
+
+                foreach (var result in layoutResult.GetResults())
                 {
-                    results.AppendLine(CreateTextLayer(context, nullLayerVar, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
-                }
-                else if (result is MatrixBracketsLayoutResult bracketsResult)
-                {
-                    results.AppendLine(CreatePathLayer(context, nullLayerVar, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
+                    if (result is MatrixEntryLayoutResult entryResult)
+                    {
+                        results.AppendLine(CreateTextLayer(context, nullLayerVar, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
+                    }
+                    else if (result is MatrixBracketsLayoutResult bracketsResult)
+                    {
+                        results.AppendLine(CreatePathLayer(context, nullLayerVar, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
+                    }
                 }
             }
 
