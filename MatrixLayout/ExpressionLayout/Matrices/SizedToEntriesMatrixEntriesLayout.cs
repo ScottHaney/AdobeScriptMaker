@@ -53,7 +53,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 
                     var rect = new RectangleF(left, top, columnWidths[columnIndex], rowHeights[rowIndex]);
                     results.Add(new MatrixEntryLayoutResult(rect,
-                        new TextSettings(inputs.Font.Name, inputs.Font.Size),
+                        new TextSettings(inputs.Font),
                         inputs.Entries[rowIndex * Columns + columnIndex].ToString()));
                 }
             }
@@ -69,7 +69,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var updatedEntries = originalResult.Results
                 .Select(x => new MatrixEntryLayoutResult(
                     new RectangleF(x.Bounds.Left + bracketsSettings.Thickness, x.Bounds.Top + bracketsSettings.Thickness, x.Bounds.Width, x.Bounds.Height),
-                    new TextSettings(inputs.Font.Name, inputs.Font.Size),
+                    new TextSettings(inputs.Font),
                     x.Text))
                 .ToList();
 

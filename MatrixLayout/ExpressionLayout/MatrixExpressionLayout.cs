@@ -54,7 +54,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                var equalsSize = textMeasurer.MeasureText("=", new Font(_textSettings.FontName, _textSettings.FontSize));
+                var equalsSize = textMeasurer.MeasureText("=", new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 15;
 
                 var equalsBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
@@ -74,7 +74,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                var additionSize = textMeasurer.MeasureText("+", new Font(_textSettings.FontName, _textSettings.FontSize));
+                var additionSize = textMeasurer.MeasureText("+", new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 15;
 
                 var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
@@ -104,7 +104,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             using (var textMeasurer = new TextMeasurer())
             {
-                var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), new Font(_textSettings.FontName, _textSettings.FontSize));
+                var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 5;
 
                 var multiplierBox = new TextLayoutResult(new RectangleF(startingLeft,
@@ -127,7 +127,7 @@ namespace MatrixLayout.ExpressionLayout
 
             using (var textMeasurer = new TextMeasurer())
             {
-                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSize), matrixComponent.Entries), _matrixSettings.BracketsDescription, startingLeft);
+                return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel), matrixComponent.Entries), _matrixSettings.BracketsDescription, startingLeft);
             }
         }
     }

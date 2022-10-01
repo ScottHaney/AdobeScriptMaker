@@ -66,13 +66,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     public class TextSettings
     {
         public readonly string FontName;
-        public readonly float FontSize;
+        public readonly float FontSizeInPixels;
 
-        public TextSettings(string fontName,
-            float fontSize)
+        public TextSettings(Font font)
         {
-            FontName = fontName;
-            FontSize = fontSize;
+            FontName = font.Name;
+            FontSizeInPixels = (font.SizeInPoints * 4) / 3;
         }
     }
 }
