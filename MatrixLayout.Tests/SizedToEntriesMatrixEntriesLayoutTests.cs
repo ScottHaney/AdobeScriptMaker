@@ -83,7 +83,7 @@ namespace MatrixLayout.Tests
                 var layout = new SizedToEntriesMatrixEntriesLayout(new MatrixInteriorMarginsDescription(0.10f, 0, 0), 1, 1);
                 var results = layout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 12));
 
-                Assert.AreEqual(new RectangleF(3.5f, 3.5f, 50, 35), results.GetEntryBounds(0, 0));
+                Assert.AreEqual(new RectangleF(3.5f, 0, 50, 35), results.GetEntryBounds(0, 0));
             }
         }
 
@@ -112,9 +112,9 @@ namespace MatrixLayout.Tests
                 var layout = new SizedToEntriesMatrixEntriesLayout(new MatrixInteriorMarginsDescription(0.10f, 0, 0.10f), 1, 3);
                 var results = layout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 12, 3, 14));
 
-                Assert.AreEqual(new RectangleF(3.5f, 3.5f, 50, 35), results.GetEntryBounds(0, 0));
-                Assert.AreEqual(new RectangleF(57, 3.5f, 20, 35), results.GetEntryBounds(0, 1));
-                Assert.AreEqual(new RectangleF(80.5f, 3.5f, 50, 35), results.GetEntryBounds(0, 2));
+                Assert.AreEqual(new RectangleF(3.5f, 0, 50, 35), results.GetEntryBounds(0, 0));
+                Assert.AreEqual(new RectangleF(57, 0, 20, 35), results.GetEntryBounds(0, 1));
+                Assert.AreEqual(new RectangleF(80.5f, 0, 50, 35), results.GetEntryBounds(0, 2));
             }
         }
 
@@ -143,9 +143,9 @@ namespace MatrixLayout.Tests
                 var layout = new SizedToEntriesMatrixEntriesLayout(new MatrixInteriorMarginsDescription(0.10f, 0.10f, 0), 3, 1);
                 var results = layout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 12, 3, 14));
 
-                Assert.AreEqual(new RectangleF(3.5f, 3.5f, 50, 35), results.GetEntryBounds(0, 0));
-                Assert.AreEqual(new RectangleF(3.5f, 42, 50, 33), results.GetEntryBounds(1, 0));
-                Assert.AreEqual(new RectangleF(3.5f, 78.5f, 50, 33), results.GetEntryBounds(2, 0));
+                Assert.AreEqual(new RectangleF(3.5f, 0, 50, 35), results.GetEntryBounds(0, 0));
+                Assert.AreEqual(new RectangleF(3.5f, 38.5f, 50, 33), results.GetEntryBounds(1, 0));
+                Assert.AreEqual(new RectangleF(3.5f, 75, 50, 33), results.GetEntryBounds(2, 0));
             }
         }
 
@@ -231,11 +231,11 @@ namespace MatrixLayout.Tests
                     .Setup(x => x.MeasureText("0", It.IsAny<Font>()))
                     .Returns(new SizeF(25, 35));
 
-                var layout = new SizedToEntriesMatrixEntriesLayout(new MatrixInteriorMarginsDescription(0, 0, 0), 2, 2);
+                var layout = new SizedToEntriesMatrixEntriesLayout(new MatrixInteriorMarginsDescription(1, 0, 0), 2, 2);
                 var results = layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 1, 12, 34, 5), new MatrixBracketsDescription(3, 20));
 
                 var boundingBox = results.BoundingBox;
-                Assert.AreEqual(new RectangleF(0, 0, 106, 76), boundingBox);
+                Assert.AreEqual(new RectangleF(0, 0, 176, 76), boundingBox);
             }
         }
 
