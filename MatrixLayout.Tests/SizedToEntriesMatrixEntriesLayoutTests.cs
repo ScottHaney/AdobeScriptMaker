@@ -62,7 +62,7 @@ namespace MatrixLayout.Tests
                 var results = (LayoutResultsComposite)layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 12), new MatrixBracketsDescription(5, 20), 99);
                 
                 var entriesResult = results.Items.OfType<MatrixEntriesLayoutResult>().First();
-                Assert.AreEqual(new RectangleF(104, 5, 50, 35), entriesResult.GetEntryBounds(0, 0));
+                Assert.AreEqual(new RectangleF(104, 0, 50, 35), entriesResult.GetEntryBounds(0, 0));
             }
         }
 
@@ -201,7 +201,7 @@ namespace MatrixLayout.Tests
                 var results = (LayoutResultsComposite)layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 12), new MatrixBracketsDescription(1, 20));
 
                 var entriesResult = results.Items.OfType<MatrixEntriesLayoutResult>().First();
-                Assert.AreEqual(new RectangleF(1, 1, 50, 35), entriesResult.GetEntryBounds(0, 0));
+                Assert.AreEqual(new RectangleF(1, 0, 50, 35), entriesResult.GetEntryBounds(0, 0));
             }
         }
 
@@ -235,7 +235,7 @@ namespace MatrixLayout.Tests
                 var results = layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 1, 12, 34, 5), new MatrixBracketsDescription(3, 20));
 
                 var boundingBox = results.BoundingBox;
-                Assert.AreEqual(new RectangleF(0, 0, 176, 76), boundingBox);
+                Assert.AreEqual(new RectangleF(0, 0, 176, 70), boundingBox);
             }
         }
 

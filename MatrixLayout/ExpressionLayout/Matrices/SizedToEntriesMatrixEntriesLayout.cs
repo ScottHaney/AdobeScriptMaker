@@ -68,7 +68,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var originalResult = GetLayoutResult(inputParams, startingLeft);
             var updatedEntries = originalResult.Results
                 .Select(x => new MatrixEntryLayoutResult(
-                    new RectangleF(x.Bounds.Left + bracketsSettings.Thickness, x.Bounds.Top + bracketsSettings.Thickness, x.Bounds.Width, x.Bounds.Height),
+                    new RectangleF(x.Bounds.Left + bracketsSettings.Thickness, x.Bounds.Top, x.Bounds.Width, x.Bounds.Height),
                     new TextSettings(inputs.Font),
                     x.Text))
                 .ToList();
@@ -80,7 +80,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                 originalBounds.Left - _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
                 originalBounds.Top,
                 originalBounds.Width + 2 * bracketsSettings.Thickness + 2 * _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
-                originalBounds.Height + 2 * bracketsSettings.Thickness);
+                originalBounds.Height);
 
             var bracketsResult = new MatrixBracketsLayoutResult(
                 outerBounds,
