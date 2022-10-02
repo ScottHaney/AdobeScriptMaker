@@ -29,6 +29,11 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return _results;
         }
 
+        public IEnumerable<ILayoutResults> GetComponents()
+        {
+            yield return this;
+        }
+
         public void ShiftDown(float diff)
         {
             foreach (var result in _results)

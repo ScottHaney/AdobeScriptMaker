@@ -41,6 +41,11 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
                 result.ShiftDown(diff);
         }
 
+        public IEnumerable<ILayoutResults> GetComponents()
+        {
+            yield return this;
+        }
+
         private RectangleF GetBoundingBox()
         {
             var topLeft = GetEntryBounds(0, 0);

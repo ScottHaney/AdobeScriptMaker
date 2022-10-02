@@ -87,7 +87,8 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                 bracketsSettings);
 
             return new LayoutResultsComposite(new LayoutResultsCollection(bracketsResult),
-                new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketsSettings.Thickness));
+                new MatrixEntriesLayoutResult(updatedEntries, Columns, bracketsSettings.Thickness))
+            { IsComponent = true };
         }
     }
 

@@ -35,26 +35,34 @@ namespace MatrixLayout.ExpressionLayout
 
         private void CenterComponents(ILayoutResults layoutResults)
         {
-            var flattenedResults = GetFlattenedResults(layoutResults).ToList();
-            if (flattenedResults.Count <= 1)
-                return;
+            var components = GetComponents(layoutResults);
+            var maxHeight = components.Max(x => x.BoundingBox.Height);
 
-            var maxHeight = flattenedResults.Max(x => x.BoundingBox.Height);
-
-            foreach (var result in flattenedResults)
+            foreach (var component in components)
             {
-                var diff = maxHeight - result.BoundingBox.Height;
+                var diff = maxHeight - component.BoundingBox.Height;
                 if (diff > 0)
-                    result.ShiftDown(diff / 2);
+                    component.ShiftDown(diff / 2);
             }
         }
 
-        private IEnumerable<ILayoutResults> GetFlattenedResults(ILayoutResults layoutResults)
+        private IEnumerable<ILayoutResults> GetComponents(ILayoutResults original)
         {
-            if (layoutResults is LayoutResultsComposite composite)
-                return composite.Items;
-            else
-                return new[] { layoutResults };
+            if (original is LayoutResultsComposite composite)
+            {
+                if (composite.IsComponent)
+                    yield return original;
+                else
+                {
+                    foreach (var item in composite.Items)
+                    {
+                        foreach (var component in GetComponents(item))
+                            yield return component;
+                    }    
+                }    
+            }
+
+            yield return original;
         }
 
         private ILayoutResults LayoutComponentSwitch(IExpressionComponent item, float startingLeft)
@@ -81,7 +89,7 @@ namespace MatrixLayout.ExpressionLayout
 
                 var rightLayout = LayoutComponentSwitch(equation.Rhs, equalsBox.Bounds.Right + spacing);
 
-                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout);
+                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout) { IsComponent = false };
             }
         }
 
@@ -104,7 +112,7 @@ namespace MatrixLayout.ExpressionLayout
 
                 var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
 
-                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
+                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout) { IsComponent = false };
             }
         }
 
@@ -117,7 +125,7 @@ namespace MatrixLayout.ExpressionLayout
 
             var rightLayout = LayoutComponentSwitch(multiplyComponents.Rhs, startingLeft);
 
-            return new LayoutResultsComposite(leftLayout, rightLayout);
+            return new LayoutResultsComposite(leftLayout, rightLayout) { IsComponent = false };
         }
 
         private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent, float startingLeft)
@@ -137,7 +145,7 @@ namespace MatrixLayout.ExpressionLayout
                 startingLeft += multiplierSize.Width + spacing;
                 var innerResult = LayoutComponentSwitch(multiplierComponent.Target, startingLeft);
 
-                return new LayoutResultsComposite(new LayoutResultsCollection(multiplierBox), innerResult);
+                return new LayoutResultsComposite(new LayoutResultsCollection(multiplierBox), innerResult) { IsComponent = false };
             }
         }
 

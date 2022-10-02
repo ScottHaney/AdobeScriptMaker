@@ -1,6 +1,7 @@
 ﻿using Autofac.Extras.Moq;
 using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.ExpressionLayout;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.InputDescriptions;
 using Moq;
 using NUnit.Framework;
@@ -39,6 +40,15 @@ namespace MatrixLayout.Tests.ExpressionLayout
                 var result = layout.Layout(new NumericMultiplierComponent(3, new MatrixComponent(3, 1, 1, 1, 1)));
 
                 var innerResults = result.GetResults().ToList();
+
+                var multiplierResult = innerResults.OfType<TextLayoutResult>().Single();
+                Assert.AreEqual(new RectangleF(0, 70, 20, 35), multiplierResult.Bounds);
+                Assert.AreEqual("3", multiplierResult.Text);
+
+                var composite = (LayoutResultsComposite)result;
+                var matrixResults = composite.Items.OfType<LayoutResultsComposite>().Single();
+
+                Assert.AreEqual(new RectangleF(25, 35, 33, 105), matrixResults.BoundingBox);
             } 
         }
     }

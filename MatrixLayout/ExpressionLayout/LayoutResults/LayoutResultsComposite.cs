@@ -11,6 +11,8 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public readonly ILayoutResults[] Items;
         public RectangleF BoundingBox => GetBoundingBox();
 
+        public bool IsComponent { get; set; }
+
         public LayoutResultsComposite(params ILayoutResults[] items)
         {
             Items = items ?? Array.Empty<ILayoutResults>();
@@ -26,6 +28,9 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             foreach (var item in Items)
                 item.ShiftDown(diff);
         }
+
+        public IEnumerable<ILayoutResults> GetComponents()
+            => new[] { this };
 
         private RectangleF GetBoundingBox()
         {
