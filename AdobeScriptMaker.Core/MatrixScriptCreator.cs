@@ -55,7 +55,7 @@ namespace AdobeScriptMaker.Core
             //otherwise a runtime exception will be thrown by adobe
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
             var layerVar = context.GetNextAutoVariable();
-            lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText({value});");
+            lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText('{value}');");
             lines.Add($"{layerVar}.position.setValue([{bounds.Left + bounds.Width}, {bounds.Top + bounds.Height}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
