@@ -40,4 +40,17 @@ namespace MatrixLayout
     {
         SizeF MeasureText(string text, Font font);
     }
+
+    public interface ITextMeasurerFactory
+    {
+        ITextMeasurer Create();
+    }
+
+    public class TextMeasurerFactory : ITextMeasurerFactory
+    {
+        public ITextMeasurer Create()
+        {
+            return new TextMeasurer();
+        }
+    }
 }

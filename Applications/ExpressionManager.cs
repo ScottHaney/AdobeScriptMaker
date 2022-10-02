@@ -19,7 +19,7 @@ namespace MatrixLayout
 
         public ILayoutResults Render(IExpressionComponent expression)
         {
-            var layout = new MatrixExpressionLayout(_settings.TextSettings, _settings.MatrixSettings);
+            var layout = new MatrixExpressionLayout(_settings.TextSettings, _settings.MatrixSettings, new TextMeasurerFactory());
             return layout.Layout(expression);
         }
     }

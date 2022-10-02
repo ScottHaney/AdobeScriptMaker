@@ -14,12 +14,15 @@ namespace MatrixLayout.ExpressionLayout
     {
         private readonly TextDisplayDescription _textSettings;
         private readonly MatrixLayoutDescription _matrixSettings;
+        private readonly ITextMeasurerFactory _textMeasurerFactory;
 
         public MatrixExpressionLayout(TextDisplayDescription textSettings,
-            MatrixLayoutDescription matrixSettings)
+            MatrixLayoutDescription matrixSettings,
+            ITextMeasurerFactory textMeasurerFactory)
         {
             _textSettings = textSettings;
             _matrixSettings = matrixSettings;
+            _textMeasurerFactory = textMeasurerFactory;
         }
 
         public ILayoutResults Layout(IExpressionComponent item)
@@ -52,7 +55,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             var leftLayout = LayoutComponentSwitch(equation.Lhs, startingLeft);
 
-            using (var textMeasurer = new TextMeasurer())
+            using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var equalsSize = textMeasurer.MeasureText("=", new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 15;
@@ -72,7 +75,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             var leftLayout = LayoutComponentSwitch(addComponents.Lhs, startingLeft);
 
-            using (var textMeasurer = new TextMeasurer())
+            using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var additionSize = textMeasurer.MeasureText("+", new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 15;
@@ -102,7 +105,7 @@ namespace MatrixLayout.ExpressionLayout
 
         private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent, float startingLeft)
         {
-            using (var textMeasurer = new TextMeasurer())
+            using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 var spacing = 5;
@@ -125,7 +128,7 @@ namespace MatrixLayout.ExpressionLayout
                 matrixComponent.Rows,
                 matrixComponent.Columns);
 
-            using (var textMeasurer = new TextMeasurer())
+            using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel), matrixComponent.Entries), _matrixSettings.BracketsDescription, startingLeft);
             }
