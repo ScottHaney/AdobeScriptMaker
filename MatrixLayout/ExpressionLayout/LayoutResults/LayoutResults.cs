@@ -28,5 +28,11 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         {
             return _results;
         }
+
+        public void ShiftDown(float diff)
+        {
+            foreach (var result in _results)
+                result.ShiftDown(diff);
+        }
     }
 }

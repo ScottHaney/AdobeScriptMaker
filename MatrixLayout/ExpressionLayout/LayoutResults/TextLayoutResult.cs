@@ -19,5 +19,13 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             TextSettings = textSettings;
             Text = text;
         }
+
+        public void ShiftDown(float shift)
+        {
+            Bounds = new RectangleF(Bounds.Left,
+                Bounds.Top + shift,
+                Bounds.Width,
+                Bounds.Height);
+        }
     }
 }

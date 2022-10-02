@@ -35,6 +35,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return Results;
         }
 
+        public void ShiftDown(float diff)
+        {
+            foreach (var result in _results)
+                result.ShiftDown(diff);
+        }
+
         private RectangleF GetBoundingBox()
         {
             var topLeft = GetEntryBounds(0, 0);
@@ -60,6 +66,14 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             Bounds = bounds;
             TextSettings = textSettings;
             Text = text;
+        }
+
+        public void ShiftDown(float shift)
+        {
+            Bounds = new RectangleF(Bounds.Left,
+                Bounds.Top + shift,
+                Bounds.Width,
+                Bounds.Height);
         }
     }
 

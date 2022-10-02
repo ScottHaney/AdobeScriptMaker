@@ -27,23 +27,34 @@ namespace MatrixLayout.ExpressionLayout
 
         public ILayoutResults Layout(IExpressionComponent item)
         {
-            return LayoutComponentSwitch((dynamic)item, 0);
+            var results = LayoutComponentSwitch((dynamic)item, 0);
+            CenterComponents(results);
+
+            return results;
         }
 
         private void CenterComponents(ILayoutResults layoutResults)
         {
-            var flattenedResults = GetFlattenedResults(layoutResults);
+            var flattenedResults = GetFlattenedResults(layoutResults).ToList();
+            if (flattenedResults.Count <= 1)
+                return;
+
             var maxHeight = flattenedResults.Max(x => x.BoundingBox.Height);
 
-            
+            foreach (var result in flattenedResults)
+            {
+                var diff = maxHeight - result.BoundingBox.Height;
+                if (diff > 0)
+                    result.ShiftDown(diff / 2);
+            }
         }
 
         private IEnumerable<ILayoutResults> GetFlattenedResults(ILayoutResults layoutResults)
         {
             if (layoutResults is LayoutResultsComposite composite)
-                return composite.Items.SelectMany(x => GetFlattenedResults(x));
+                return composite.Items;
             else
-                return new [] { layoutResults };
+                return new[] { layoutResults };
         }
 
         private ILayoutResults LayoutComponentSwitch(IExpressionComponent item, float startingLeft)

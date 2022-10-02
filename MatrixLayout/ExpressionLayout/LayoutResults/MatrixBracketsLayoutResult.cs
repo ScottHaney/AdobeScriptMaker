@@ -65,6 +65,14 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return pointsCreator.Results;
         }
 
+        public void ShiftDown(float shift)
+        {
+            Bounds = new RectangleF(Bounds.Left,
+                Bounds.Top + shift,
+                Bounds.Width,
+                Bounds.Height);
+        }
+
         private class PointsCreator
         {
             private readonly List<PointF> _points = new List<PointF>();

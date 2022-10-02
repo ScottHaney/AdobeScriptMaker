@@ -9,5 +9,6 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     {
         IEnumerable<ILayoutResult> GetResults();
         RectangleF BoundingBox { get; }
+        void ShiftDown(float shift);
     }
 }

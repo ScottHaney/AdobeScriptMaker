@@ -21,6 +21,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return Items.SelectMany(x => x.GetResults());
         }
 
+        public void ShiftDown(float diff)
+        {
+            foreach (var item in Items)
+                item.ShiftDown(diff);
+        }
+
         private RectangleF GetBoundingBox()
         {
             var boundingBoxes = Items.Select(x => x.BoundingBox).ToList();

@@ -8,5 +8,6 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
     public interface ILayoutResult
     {
         RectangleF Bounds { get; }
+        void ShiftDown(float diff);
     }
 }
