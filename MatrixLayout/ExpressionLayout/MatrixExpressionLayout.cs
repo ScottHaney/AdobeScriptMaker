@@ -93,6 +93,18 @@ namespace MatrixLayout.ExpressionLayout
             }
         }
 
+        private ILayoutResults LayoutComponent(Expression expression, float startingLeft)
+        {
+            var results = new List<ILayoutResults>();
+            foreach (var item in expression.Components)
+            {
+                results.Add(LayoutComponentSwitch(item, startingLeft));
+                startingLeft = results.Last().BoundingBox.Right;
+            }
+
+            return new LayoutResultsComposite(results.ToArray());
+        }
+
         private ILayoutResults LayoutComponent(AddComponents addComponents, float startingLeft)
         {
             const string PLUS_SIGN = "+";
