@@ -6,10 +6,10 @@ namespace MatrixLayout.ExpressionDecorators
 {
     public class Equation : IEquationComponent
     {
-        public readonly IEquationComponent Lhs;
-        public readonly IEquationComponent Rhs;
+        public readonly IExpressionComponent Lhs;
+        public readonly IExpressionComponent Rhs;
 
-        public Equation(IEquationComponent lhs, IEquationComponent rhs)
+        public Equation(IExpressionComponent lhs, IExpressionComponent rhs)
         {
             Lhs = lhs;
             Rhs = rhs;

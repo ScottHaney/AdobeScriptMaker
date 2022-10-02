@@ -28,9 +28,25 @@ namespace Applications.Tests
                 new MatrixComponent(new MatrixValuesDescription(3, 4, 408, 455, 194, 78, 0, 0, 50, 1, 0, 13, 0, 6)),
                 new MatrixComponent(new MatrixValuesDescription(4, 2, 3, 8, 2, 0, 6, 6, 3, 6)));
 
+            var cakeNutritionVectorCombo = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(3, new MatrixComponent(3, 1, 408, 0, 0)),
+                    new NumericMultiplierComponent(2, new MatrixComponent(3, 1, 455, 0, 13)),
+                    new NumericMultiplierComponent(6, new MatrixComponent(3, 1, 194, 50, 0)),
+                    new NumericMultiplierComponent(3, new MatrixComponent(3, 1, 78, 1, 6))),
+                new MatrixComponent(3, 1, 3532, 303, 44));
+
+            var icingNutritionVectorCombo = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(8, new MatrixComponent(3, 1, 408, 0, 0)),
+                    new NumericMultiplierComponent(0, new MatrixComponent(3, 1, 455, 0, 13)),
+                    new NumericMultiplierComponent(6, new MatrixComponent(3, 1, 194, 50, 0)),
+                    new NumericMultiplierComponent(6, new MatrixComponent(3, 1, 78, 1, 6))),
+                new MatrixComponent(3, 1, 4896, 306, 36));
+
             var scriptCreator = new MatrixScriptCreator();
 
-            var layoutResults = new List<IExpressionComponent>() { cakeNutrition, cakeIcingMixture }
+            var layoutResults = new List<IExpressionComponent>() { cakeNutrition, cakeIcingMixture, cakeNutritionVectorCombo, icingNutritionVectorCombo }
                 .Select(x => expressionManager.Render(x));
 
             var script = scriptCreator.CreateScript(layoutResults.ToArray());
