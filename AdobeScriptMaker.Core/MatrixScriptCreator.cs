@@ -29,6 +29,10 @@ namespace AdobeScriptMaker.Core
                     {
                         results.AppendLine(CreateTextLayer(context, nullLayerVar, compositionItem, entryResult.Text, entryResult.Bounds, entryResult.TextSettings));
                     }
+                    else if (result is TextLayoutResult textResult)
+                    {
+                        results.AppendLine(CreateTextLayer(context, nullLayerVar, compositionItem, textResult.Text, textResult.Bounds, textResult.TextSettings));
+                    }
                     else if (result is MatrixBracketsLayoutResult bracketsResult)
                     {
                         results.AppendLine(CreatePathLayer(context, nullLayerVar, compositionItem, bracketsResult.BracketsSettings, bracketsResult.GetLeftBracketPathPoints(), bracketsResult.GetRightBracketPathPoints()));
