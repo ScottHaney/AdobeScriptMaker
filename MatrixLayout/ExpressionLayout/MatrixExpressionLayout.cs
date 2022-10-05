@@ -30,20 +30,26 @@ namespace MatrixLayout.ExpressionLayout
             var results = LayoutComponentSwitch((dynamic)item, 0);
             CenterComponents(results);
 
+            var items = ((LayoutResultsComposite)results).Items;
+            
             return results;
         }
 
         private void CenterComponents(ILayoutResults layoutResults)
         {
-            var components = GetComponents(layoutResults);
-            var maxHeight = components.Max(x => x.BoundingBox.Height);
-
-            foreach (var component in components)
+            if (layoutResults is LayoutResultsComposite composite)
             {
-                var diff = maxHeight - component.BoundingBox.Height;
-                if (diff > 0)
-                    component.ShiftDown(diff / 2);
-            }
+                var items = composite.Items;
+
+                var maxHeight = items.Max(x => x.BoundingBox.Height);
+
+                foreach (var component in items)
+                {
+                    var diff = maxHeight - component.BoundingBox.Height;
+                    if (diff > 0)
+                        component.ShiftDown(diff / 2);
+                }
+            }            
         }
 
         private IEnumerable<ILayoutResults> GetComponents(ILayoutResults original)
@@ -89,7 +95,7 @@ namespace MatrixLayout.ExpressionLayout
 
                 var rightLayout = LayoutComponentSwitch(equation.Rhs, equalsBox.Bounds.Right + spacing);
 
-                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout) { IsComponent = false };
+                return CombineResults(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout);
             }
         }
 
@@ -102,7 +108,7 @@ namespace MatrixLayout.ExpressionLayout
                 startingLeft = results.Last().BoundingBox.Right;
             }
 
-            return new LayoutResultsComposite(results.ToArray());
+            return CombineResults(results.ToArray());
         }
 
         private ILayoutResults LayoutComponent(AddComponents addComponents, float startingLeft)
@@ -124,7 +130,7 @@ namespace MatrixLayout.ExpressionLayout
 
                 var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
 
-                return new LayoutResultsComposite(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout) { IsComponent = false };
+                return CombineResults(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
             }
         }
 
@@ -137,7 +143,7 @@ namespace MatrixLayout.ExpressionLayout
 
             var rightLayout = LayoutComponentSwitch(multiplyComponents.Rhs, startingLeft);
 
-            return new LayoutResultsComposite(leftLayout, rightLayout) { IsComponent = false };
+            return CombineResults(leftLayout, rightLayout);
         }
 
         private ILayoutResults LayoutComponent(NumericMultiplierComponent multiplierComponent, float startingLeft)
@@ -157,7 +163,7 @@ namespace MatrixLayout.ExpressionLayout
                 startingLeft += multiplierSize.Width + spacing;
                 var innerResult = LayoutComponentSwitch(multiplierComponent.Target, startingLeft);
 
-                return new LayoutResultsComposite(new LayoutResultsCollection(multiplierBox), innerResult) { IsComponent = false };
+                return CombineResults(new LayoutResultsCollection(multiplierBox), innerResult);
             }
         }
 
@@ -171,6 +177,20 @@ namespace MatrixLayout.ExpressionLayout
             {
                 return layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel), matrixComponent.Entries), _matrixSettings.BracketsDescription, startingLeft);
             }
+        }
+
+        private ILayoutResults CombineResults(params ILayoutResults[] results)
+        {
+            var expandedResults = new List<ILayoutResults>();
+            foreach (var result in results)
+            {
+                if (result is LayoutResultsComposite composite)
+                    expandedResults.AddRange(composite.Items);
+                else
+                    expandedResults.Add(result);
+            }
+
+            return new LayoutResultsComposite(expandedResults.ToArray());
         }
     }
 
