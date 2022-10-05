@@ -30,6 +30,20 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return _results[entryIndex].Bounds;
         }
 
+        public RectangleF GetRowBoundingBox(int row)
+        {
+            var rowBoxes = new List<RectangleF>();
+            for (var i = 0; i < _columns; i++)
+                rowBoxes.Add(_results[row * _columns + i].Bounds);
+
+            var left = rowBoxes.Min(x => x.Left);
+            var right = rowBoxes.Max(x => x.Right);
+            var top = rowBoxes.Min(y => y.Top);
+            var bottom = rowBoxes.Max(y => y.Bottom);
+
+            return new RectangleF(left, top, right - left, bottom - top);
+        }
+
         public IEnumerable<ILayoutResult> GetResults()
         {
             return Results;
