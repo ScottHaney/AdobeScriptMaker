@@ -167,6 +167,35 @@ namespace MatrixLayout.ExpressionLayout
             }
         }
 
+        private ILayoutResults LayoutComponent(AnnotatedMatrixComponent annotatedMatrixComponent, float startingLeft)
+        {
+            var matrixLayout = (MatrixLayoutResults)LayoutComponent(annotatedMatrixComponent.Matrix, startingLeft);
+
+            var textLayoutResults = new List<ILayoutResult>();
+            using (var textMeasurer = _textMeasurerFactory.Create())
+            {
+                for (var i = 0; i < annotatedMatrixComponent.Annotations.RowAnnotations.Count; i++)
+                {
+                    var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
+
+                    var annotation = annotatedMatrixComponent.Annotations.RowAnnotations[i];
+                    var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+
+                    var annotationBounds = new RectangleF(
+                        matrixLayout.BoundingBox.Right + annotatedMatrixComponent.Annotations.Padding,
+                        (rowEntriesBounds.Bottom - rowEntriesBounds.Top) / 2 - (annotationSize.Height / 2),
+                        annotationSize.Width,
+                        annotationSize.Height);
+
+                    textLayoutResults.Add(new TextLayoutResult(annotationBounds,
+                        annotatedMatrixComponent.Annotations.TextSettings,
+                        annotation));
+                }
+            }
+
+            return CombineResults(matrixLayout, new LayoutResultsCollection(textLayoutResults.ToArray()));
+        }
+
         private ILayoutResults LayoutComponent(MatrixComponent matrixComponent, float startingLeft)
         {
             var layout = new SizedToEntriesMatrixEntriesLayout(_matrixSettings.InteriorMarginsDescription,
