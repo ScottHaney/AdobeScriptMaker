@@ -44,6 +44,22 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return new RectangleF(left, top, right - left, bottom - top);
         }
 
+        public RectangleF GetColumnBoundingBox(int column)
+        {
+            var numRows = _results.Count / _columns;
+
+            var columnBoxes = new List<RectangleF>();
+            for (var i = column; i < _results.Count; i += numRows)
+                columnBoxes.Add(_results[i].Bounds);
+
+            var left = columnBoxes.Min(x => x.Left);
+            var right = columnBoxes.Max(x => x.Right);
+            var top = columnBoxes.Min(y => y.Top);
+            var bottom = columnBoxes.Max(y => y.Bottom);
+
+            return new RectangleF(left, top, right - left, bottom - top);
+        }
+
         public IEnumerable<ILayoutResult> GetResults()
         {
             return Results;

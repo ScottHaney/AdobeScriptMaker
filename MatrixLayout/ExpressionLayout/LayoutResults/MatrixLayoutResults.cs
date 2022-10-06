@@ -41,6 +41,11 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             return _entries.GetRowBoundingBox(row);
         }
 
+        public RectangleF GetColumnBoundingBox(int column)
+        {
+            return _entries.GetColumnBoundingBox(column);
+        }
+
         private RectangleF GetBoundingBox()
         {
             return _brackets.Bounds;

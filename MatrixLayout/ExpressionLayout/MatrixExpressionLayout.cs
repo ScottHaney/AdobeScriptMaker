@@ -195,6 +195,26 @@ namespace MatrixLayout.ExpressionLayout
                         annotatedMatrixComponent.Annotations.TextSettings,
                         annotation));
                 }
+
+                for (var i = 0; i < annotatedMatrixComponent.Annotations.ColumnAnnotations.Count; i++)
+                {
+                    var annotation = annotatedMatrixComponent.Annotations.ColumnAnnotations[i];
+                    if (string.IsNullOrEmpty(annotation))
+                        continue;
+
+                    var columnEntriesBounds = matrixLayout.GetColumnBoundingBox(i);
+                    var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+
+                    var annotationBounds = new RectangleF(
+                        (columnEntriesBounds.Right - columnEntriesBounds.Left) / 2 - annotationSize.Width / 2,
+                        columnEntriesBounds.Top - annotatedMatrixComponent.Annotations.Padding - (annotationSize.Height),
+                        annotationSize.Width,
+                        annotationSize.Height);
+
+                    textLayoutResults.Add(new TextLayoutResult(annotationBounds,
+                        annotatedMatrixComponent.Annotations.TextSettings,
+                        annotation));
+                }
             }
 
             return CombineResults(matrixLayout, new LayoutResultsCollection(textLayoutResults.ToArray()));

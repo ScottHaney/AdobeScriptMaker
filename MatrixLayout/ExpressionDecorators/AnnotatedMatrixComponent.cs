@@ -22,16 +22,19 @@ namespace MatrixLayout.ExpressionDecorators
     {
         public List<string> RowAnnotations;
         public readonly bool RowAnnotationsAreOnRight;
+        public List<string> ColumnAnnotations;
         public readonly TextSettings TextSettings;
         public readonly float Padding;
 
         public MatrixAnnotations(List<string> rowAnnotations,
             bool rowAnnotationsAreOnRight,
+            List<string> columnAnnotations,
             TextSettings textSettings,
             float padding)
         {
             RowAnnotations = rowAnnotations;
             RowAnnotationsAreOnRight = rowAnnotationsAreOnRight;
+            ColumnAnnotations = columnAnnotations;
             TextSettings = textSettings;
             Padding = padding;
         }
