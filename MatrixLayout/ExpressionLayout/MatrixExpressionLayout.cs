@@ -29,9 +29,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             var results = LayoutComponentSwitch((dynamic)item, 0);
             CenterComponents(results);
-
-            var items = ((LayoutResultsComposite)results).Items;
-            
+                        
             return results;
         }
 

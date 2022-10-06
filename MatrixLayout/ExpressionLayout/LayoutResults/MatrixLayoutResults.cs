@@ -8,7 +8,7 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 {
     public class MatrixLayoutResults : ILayoutResults
     {
-        public RectangleF BoundingBox => throw new NotImplementedException();
+        public RectangleF BoundingBox => GetBoundingBox();
 
         private readonly MatrixBracketsLayoutResult _brackets;
         private readonly MatrixEntriesLayoutResult _entries;
@@ -39,6 +39,11 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public RectangleF GetRowBoundingBox(int row)
         {
             return _entries.GetRowBoundingBox(row);
+        }
+
+        private RectangleF GetBoundingBox()
+        {
+            return _brackets.Bounds;
         }
     }
 }
