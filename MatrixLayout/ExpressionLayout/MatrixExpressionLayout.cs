@@ -174,9 +174,11 @@ namespace MatrixLayout.ExpressionLayout
             {
                 for (var i = 0; i < annotatedMatrixComponent.Annotations.RowAnnotations.Count; i++)
                 {
-                    var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
-
                     var annotation = annotatedMatrixComponent.Annotations.RowAnnotations[i];
+                    if (string.IsNullOrEmpty(annotation))
+                        continue;
+
+                    var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
                     var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
 
                     var left = annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight
