@@ -207,7 +207,7 @@ namespace MatrixLayout.ExpressionLayout
 
                     var annotationBounds = new RectangleF(
                         (columnEntriesBounds.Right - columnEntriesBounds.Left) / 2 - annotationSize.Width / 2,
-                        columnEntriesBounds.Top - annotatedMatrixComponent.Annotations.Padding - (annotationSize.Height),
+                        matrixLayout.BoundingBox.Top - annotatedMatrixComponent.Annotations.Padding - (annotationSize.Height),
                         annotationSize.Width,
                         annotationSize.Height);
 
