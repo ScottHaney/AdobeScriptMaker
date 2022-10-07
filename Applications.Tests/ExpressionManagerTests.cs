@@ -17,7 +17,8 @@ namespace Applications.Tests
             var textSettings = new TextDisplayDescription("Arial", 72);
             var matrixLayoutSettings = new MatrixLayoutDescription(
                     new MatrixBracketsDescription(2, 35),
-                    new MatrixInteriorMarginsDescription(0.25f, 0.5f, 1));
+                    new MatrixInteriorMarginsDescription(0.5f, 0.5f, 1),
+                    7, 10, 20);
 
             var expressionManager = new ExpressionManager(new ExpressionDisplaySettings(
                 textSettings,

@@ -117,16 +117,15 @@ namespace MatrixLayout.ExpressionLayout
             using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var additionSize = textMeasurer.MeasureText(PLUS_SIGN, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
-                var spacing = 15;
-
-                var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
+                
+                var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + _matrixSettings.MatrixAdditionSpacing,
                     0,
                     additionSize.Width,
                     additionSize.Height),
                     new TextSettings(new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel)),
                     PLUS_SIGN);
 
-                var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + spacing);
+                var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + _matrixSettings.MatrixAdditionSpacing);
 
                 return CombineResults(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
             }
@@ -136,8 +135,7 @@ namespace MatrixLayout.ExpressionLayout
         {
             var leftLayout = LayoutComponentSwitch(multiplyComponents.Lhs, startingLeft);
 
-            var spacing = 8;
-            startingLeft = leftLayout.BoundingBox.Right + spacing;
+            startingLeft = leftLayout.BoundingBox.Right + _matrixSettings.MatrixMultiplicationSpacing;
 
             var rightLayout = LayoutComponentSwitch(multiplyComponents.Rhs, startingLeft);
 
@@ -149,7 +147,6 @@ namespace MatrixLayout.ExpressionLayout
             using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var multiplierSize = textMeasurer.MeasureText(multiplierComponent.Mult.ToString(), new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
-                var spacing = 5;
 
                 var multiplierBox = new TextLayoutResult(new RectangleF(startingLeft,
                     0,
@@ -158,7 +155,7 @@ namespace MatrixLayout.ExpressionLayout
                     new TextSettings(new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel)),
                     multiplierComponent.Mult.ToString());
 
-                startingLeft += multiplierSize.Width + spacing;
+                startingLeft += multiplierSize.Width + _matrixSettings.MultiplierSpacing;
                 var innerResult = LayoutComponentSwitch(multiplierComponent.Target, startingLeft);
 
                 return CombineResults(new LayoutResultsCollection(multiplierBox), innerResult);
