@@ -78,9 +78,9 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var originalBounds = originalResult.BoundingBox;
             var outerBounds = new RectangleF(
                 originalBounds.Left - _marginsSettings.EntriesPaddingPercentageHorizontal * relativeSizeValue,
-                originalBounds.Top,
+                originalBounds.Top - _marginsSettings.EntriesPaddingPercentageVertical * relativeSizeValue,
                 originalBounds.Width + 2 * bracketsSettings.Thickness + 2 * _marginsSettings.EntriesPaddingPercentageHorizontal * relativeSizeValue,
-                originalBounds.Height);
+                originalBounds.Height + 2 * bracketsSettings.Thickness + 2 * _marginsSettings.EntriesPaddingPercentageVertical * relativeSizeValue);
 
             var bracketsResult = new MatrixBracketsLayoutResult(
                 outerBounds,

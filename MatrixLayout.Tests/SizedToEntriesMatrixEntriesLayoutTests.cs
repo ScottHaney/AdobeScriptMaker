@@ -235,7 +235,7 @@ namespace MatrixLayout.Tests
                 var results = layout.GetLayoutResultWithBrackets(new SizedMatrixEntriesLayoutInputParams(textMeasurer.Object, new Font("Arial", 12), 1, 12, 34, 5), new MatrixBracketsDescription(3, 20));
 
                 var boundingBox = results.BoundingBox;
-                Assert.AreEqual(new RectangleF(0, 0, 176, 70), boundingBox);
+                Assert.AreEqual(new RectangleF(0, 0, 176, 76), boundingBox);
             }
         }
 
