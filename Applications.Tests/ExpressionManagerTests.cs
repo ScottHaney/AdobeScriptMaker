@@ -18,7 +18,7 @@ namespace Applications.Tests
             var matrixLayoutSettings = new MatrixLayoutDescription(
                     new MatrixBracketsDescription(2, 35),
                     new MatrixInteriorMarginsDescription(0.5f, 0.1f, 0.5f, 1),
-                    7, 20, 20);
+                    12, 20, 35);
 
             var expressionManager = new ExpressionManager(new ExpressionDisplaySettings(
                 textSettings,
