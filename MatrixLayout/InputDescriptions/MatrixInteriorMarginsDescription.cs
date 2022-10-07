@@ -6,15 +6,18 @@ namespace MatrixLayout.InputDescriptions
 {
     public class MatrixInteriorMarginsDescription
     {
-        public readonly float EntriesPaddingPercentage;
+        public readonly float EntriesPaddingPercentageHorizontal;
+        public readonly float EntriesPaddingPercentageVertical;
         public readonly float RowGapPercentage;
         public readonly float ColumnGapPercentage;
 
-        public MatrixInteriorMarginsDescription(float entriesPaddingPercentage,
+        public MatrixInteriorMarginsDescription(float entriesPaddingPercentageHorizontal,
+            float entriesPaddingPercentageVertical,
             float rowGapPercentage,
             float columnGapPercentage)
         {
-            EntriesPaddingPercentage = entriesPaddingPercentage;
+            EntriesPaddingPercentageHorizontal = entriesPaddingPercentageHorizontal;
+            EntriesPaddingPercentageVertical = entriesPaddingPercentageVertical;
             RowGapPercentage = rowGapPercentage;
             ColumnGapPercentage = columnGapPercentage;
         }

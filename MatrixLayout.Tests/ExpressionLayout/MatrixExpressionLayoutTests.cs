@@ -34,7 +34,7 @@ namespace MatrixLayout.Tests.ExpressionLayout
                     new TextDisplayDescription("Arial", 72),
                     new MatrixLayoutDescription(
                         new MatrixBracketsDescription(3, 20),
-                        new MatrixInteriorMarginsDescription(0.10f, 0, 0)),
+                        new MatrixInteriorMarginsDescription(0.10f, 0, 0, 0)),
                     textMeasurerFactory.Object);
 
                 var result = layout.Layout(new NumericMultiplierComponent(3, new MatrixComponent(3, 1, 1, 1, 1)));
@@ -71,7 +71,7 @@ namespace MatrixLayout.Tests.ExpressionLayout
                     new TextDisplayDescription("Arial", 72),
                     new MatrixLayoutDescription(
                         new MatrixBracketsDescription(3, 20),
-                        new MatrixInteriorMarginsDescription(0.10f, 0, 0)),
+                        new MatrixInteriorMarginsDescription(0.10f, 0, 0, 0)),
                     textMeasurerFactory.Object);
 
                 var expression = new AddComponents(new MatrixComponent(3, 1, 1, 1, 1),

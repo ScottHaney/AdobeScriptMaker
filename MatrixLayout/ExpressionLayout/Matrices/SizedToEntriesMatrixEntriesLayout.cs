@@ -40,7 +40,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
             var rowGap = _marginsSettings.RowGapPercentage * relativeSizeValue;
             var columnGap = _marginsSettings.ColumnGapPercentage * relativeSizeValue;
 
-            var leftX = startingLeft + _marginsSettings.EntriesPaddingPercentage * relativeSizeValue;
+            var leftX = startingLeft + _marginsSettings.EntriesPaddingPercentageHorizontal * relativeSizeValue;
             var topY = 0;
 
             var results = new List<MatrixEntryLayoutResult>();
@@ -77,9 +77,9 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 
             var originalBounds = originalResult.BoundingBox;
             var outerBounds = new RectangleF(
-                originalBounds.Left - _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
+                originalBounds.Left - _marginsSettings.EntriesPaddingPercentageHorizontal * relativeSizeValue,
                 originalBounds.Top,
-                originalBounds.Width + 2 * bracketsSettings.Thickness + 2 * _marginsSettings.EntriesPaddingPercentage * relativeSizeValue,
+                originalBounds.Width + 2 * bracketsSettings.Thickness + 2 * _marginsSettings.EntriesPaddingPercentageHorizontal * relativeSizeValue,
                 originalBounds.Height);
 
             var bracketsResult = new MatrixBracketsLayoutResult(
