@@ -23,10 +23,8 @@ namespace MatrixLayout
         {
             //This actually returns the correct width without adding extra padding
             //This code was taken from: https://stackoverflow.com/questions/26360757/c-sharp-textrenderer-measuretext-is-a-few-pixels-too-wide
-            var stringSize = _graphics.MeasureString(text, font, _bitmapSize,
+            return _graphics.MeasureString(text, font, _bitmapSize,
                                                   StringFormat.GenericTypographic);
-            
-            return new SizeF(stringSize.Width, font.Size);
         }
 
         public void Dispose()

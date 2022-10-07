@@ -56,7 +56,7 @@ namespace AdobeScriptMaker.Core
             //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
             var layerVar = context.GetNextAutoVariable();
             lines.Add($"var {layerVar} = {adobeCompositionItem}.layers.addText('{value}');");
-            lines.Add($"{layerVar}.position.setValue([{bounds.Left + bounds.Width}, {bounds.Top + bounds.Height}]);");
+            lines.Add($"{layerVar}.position.setValue([{bounds.Left + bounds.Width}, {bounds.Top + bounds.Height - GetFontHeightCorrection(bounds.Height)}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
             //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185
@@ -70,6 +70,11 @@ var {textDocVar} = {sourceTextVar}.value;
 {layerVar}.parent = {nullLayerVar};");
 
             return string.Join(Environment.NewLine, lines.ToArray());
+        }
+
+        private float GetFontHeightCorrection(float height)
+        {
+            return height * 0.15f;
         }
 
         private string CreatePathLayer(ScriptContext context, string nullLayerVar, string adobeCompositionItem, MatrixBracketsDescription bracketsSettings, List<PointF> leftBracketPoints, List<PointF> rightBracketPoints)
