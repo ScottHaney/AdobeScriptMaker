@@ -169,48 +169,54 @@ namespace MatrixLayout.ExpressionLayout
             var textLayoutResults = new List<ILayoutResult>();
             using (var textMeasurer = _textMeasurerFactory.Create())
             {
-                for (var i = 0; i < annotatedMatrixComponent.Annotations.RowAnnotations.Count; i++)
+                if (annotatedMatrixComponent.Annotations.RowAnnotations?.Any() == true)
                 {
-                    var annotation = annotatedMatrixComponent.Annotations.RowAnnotations[i];
-                    if (string.IsNullOrEmpty(annotation))
-                        continue;
+                    for (var i = 0; i < annotatedMatrixComponent.Annotations.RowAnnotations.Count; i++)
+                    {
+                        var annotation = annotatedMatrixComponent.Annotations.RowAnnotations[i];
+                        if (string.IsNullOrEmpty(annotation))
+                            continue;
 
-                    var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
-                    var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+                        var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
+                        var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
 
-                    var left = annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight
-                        ? matrixLayout.BoundingBox.Right + annotatedMatrixComponent.Annotations.Padding
-                        : matrixLayout.BoundingBox.Left - annotatedMatrixComponent.Annotations.Padding - annotationSize.Width;
+                        var left = annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight
+                            ? matrixLayout.BoundingBox.Right + annotatedMatrixComponent.Annotations.Padding
+                            : matrixLayout.BoundingBox.Left - annotatedMatrixComponent.Annotations.Padding - annotationSize.Width;
 
-                    var annotationBounds = new RectangleF(
-                        left,
-                        (rowEntriesBounds.Bottom - rowEntriesBounds.Top) / 2 - (annotationSize.Height / 2),
-                        annotationSize.Width,
-                        annotationSize.Height);
+                        var annotationBounds = new RectangleF(
+                            left,
+                            (rowEntriesBounds.Bottom + rowEntriesBounds.Top) / 2 - (annotationSize.Height / 2),
+                            annotationSize.Width,
+                            annotationSize.Height);
 
-                    textLayoutResults.Add(new TextLayoutResult(annotationBounds,
-                        annotatedMatrixComponent.Annotations.TextSettings,
-                        annotation));
+                        textLayoutResults.Add(new TextLayoutResult(annotationBounds,
+                            annotatedMatrixComponent.Annotations.TextSettings,
+                            annotation));
+                    }
                 }
 
-                for (var i = 0; i < annotatedMatrixComponent.Annotations.ColumnAnnotations.Count; i++)
+                if (annotatedMatrixComponent.Annotations.ColumnAnnotations?.Any() == true)
                 {
-                    var annotation = annotatedMatrixComponent.Annotations.ColumnAnnotations[i];
-                    if (string.IsNullOrEmpty(annotation))
-                        continue;
+                    for (var i = 0; i < annotatedMatrixComponent.Annotations.ColumnAnnotations.Count; i++)
+                    {
+                        var annotation = annotatedMatrixComponent.Annotations.ColumnAnnotations[i];
+                        if (string.IsNullOrEmpty(annotation))
+                            continue;
 
-                    var columnEntriesBounds = matrixLayout.GetColumnBoundingBox(i);
-                    var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+                        var columnEntriesBounds = matrixLayout.GetColumnBoundingBox(i);
+                        var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
 
-                    var annotationBounds = new RectangleF(
-                        (columnEntriesBounds.Right - columnEntriesBounds.Left) / 2 - annotationSize.Width / 2,
-                        matrixLayout.BoundingBox.Top - annotatedMatrixComponent.Annotations.Padding - (annotationSize.Height),
-                        annotationSize.Width,
-                        annotationSize.Height);
+                        var annotationBounds = new RectangleF(
+                            (columnEntriesBounds.Right + columnEntriesBounds.Left) / 2 - annotationSize.Width / 2,
+                            matrixLayout.BoundingBox.Top - annotatedMatrixComponent.Annotations.Padding - (annotationSize.Height),
+                            annotationSize.Width,
+                            annotationSize.Height);
 
-                    textLayoutResults.Add(new TextLayoutResult(annotationBounds,
-                        annotatedMatrixComponent.Annotations.TextSettings,
-                        annotation));
+                        textLayoutResults.Add(new TextLayoutResult(annotationBounds,
+                            annotatedMatrixComponent.Annotations.TextSettings,
+                            annotation));
+                    }
                 }
             }
 

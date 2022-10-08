@@ -21,7 +21,14 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
             if (_results.Length == 1)
                 return _results[0].Bounds;
             else
-                throw new NotImplementedException();
+            {
+                var boxes = _results.Select(x => x.Bounds).ToList();
+                return new RectangleF(
+                    boxes.Min(x => x.Left),
+                    boxes.Min(x => x.Top),
+                    boxes.Max(x => x.Right) - boxes.Min(x => x.Left),
+                    boxes.Max(x => x.Bottom) - boxes.Min(x => x.Top));
+            }
         }
 
         public IEnumerable<ILayoutResult> GetResults()

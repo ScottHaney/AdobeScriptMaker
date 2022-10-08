@@ -46,10 +46,8 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         public RectangleF GetColumnBoundingBox(int column)
         {
-            var numRows = _results.Count / _columns;
-
             var columnBoxes = new List<RectangleF>();
-            for (var i = column; i < _results.Count; i += numRows)
+            for (var i = column; i < _results.Count; i += _columns)
                 columnBoxes.Add(_results[i].Bounds);
 
             var left = columnBoxes.Min(x => x.Left);

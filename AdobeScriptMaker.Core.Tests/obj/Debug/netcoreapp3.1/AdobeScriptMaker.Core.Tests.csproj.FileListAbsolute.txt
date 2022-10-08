@@ -96,3 +96,15 @@ C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\obj\Debug
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\obj\Debug\netcoreapp3.1\AdobeScriptMaker.Core.Tests.dll
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\obj\Debug\netcoreapp3.1\AdobeScriptMaker.Core.Tests.pdb
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\obj\Debug\netcoreapp3.1\AdobeScriptMaker.Core.Tests.genruntimeconfig.cache
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\CoverletSourceRootsMapping
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\AdobeScriptMaker.Core.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\Applications.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\MatrixLayout.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\AdobeScriptMaker.Core.pdb
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\Applications.pdb
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\MatrixLayout.pdb

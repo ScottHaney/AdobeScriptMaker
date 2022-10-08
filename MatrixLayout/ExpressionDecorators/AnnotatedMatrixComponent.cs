@@ -24,13 +24,13 @@ namespace MatrixLayout.ExpressionDecorators
         public readonly bool RowAnnotationsAreOnRight;
         public List<string> ColumnAnnotations;
         public readonly TextSettings TextSettings;
-        public readonly float Padding;
+        public readonly int Padding;
 
         public MatrixAnnotations(List<string> rowAnnotations,
             bool rowAnnotationsAreOnRight,
             List<string> columnAnnotations,
             TextSettings textSettings,
-            float padding)
+            int padding)
         {
             RowAnnotations = rowAnnotations;
             RowAnnotationsAreOnRight = rowAnnotationsAreOnRight;
