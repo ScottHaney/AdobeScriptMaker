@@ -220,7 +220,8 @@ namespace MatrixLayout.ExpressionLayout
                 }
             }
 
-            return CombineResults(matrixLayout, new LayoutResultsCollection(textLayoutResults.ToArray()));
+            matrixLayout.Annotations = textLayoutResults;
+            return matrixLayout;
         }
 
         private ILayoutResults LayoutComponent(MatrixComponent matrixComponent, float startingLeft)

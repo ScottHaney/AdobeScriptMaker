@@ -25,7 +25,7 @@ namespace AdobeScriptMaker.Core.Tests
                     new List<string>() { "Calories", "Sugar", "Protein" },
                     true,
                     new List<string>() { "Cake Recipe", "Icing Recipe" },
-                    new MatrixLayout.ExpressionLayout.LayoutResults.TextSettings(new System.Drawing.Font("Arial", 52, System.Drawing.GraphicsUnit.Pixel)),
+                    new MatrixLayout.ExpressionLayout.LayoutResults.TextSettings(new System.Drawing.Font("Arial", 72, System.Drawing.GraphicsUnit.Pixel)),
                     37));
 
             var expressionManager = CreateExpressionManager();

@@ -12,6 +12,7 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         private readonly MatrixBracketsLayoutResult _brackets;
         private readonly MatrixEntriesLayoutResult _entries;
+        public List<ILayoutResult> Annotations { get; set; }
 
         public MatrixLayoutResults(MatrixBracketsLayoutResult brackets,
             MatrixEntriesLayoutResult entries)
@@ -22,12 +23,23 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         public IEnumerable<ILayoutResults> GetComponents()
         {
-            return new ILayoutResults[] { new LayoutResultsCollection(_brackets), _entries };
+            var results = new List<ILayoutResults>();
+            results.Add(new LayoutResultsCollection(_brackets));
+            results.Add(_entries);
+
+            if (Annotations.Any())
+                results.Add(new LayoutResultsCollection(Annotations.ToArray()));
+
+            return results;
         }
 
         public IEnumerable<ILayoutResult> GetResults()
         {
-            return _entries.GetResults().Concat(new[] { _brackets });
+            var result = _entries.GetResults().Concat(new[] { _brackets });
+            if (Annotations.Any())
+                result = result.Concat(Annotations);
+
+            return result;
         }
 
         public void ShiftDown(float shift)
