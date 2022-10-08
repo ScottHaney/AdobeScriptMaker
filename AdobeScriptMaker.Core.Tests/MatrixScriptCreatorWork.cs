@@ -33,9 +33,9 @@ namespace AdobeScriptMaker.Core.Tests
                 new AnnotatedMatrixComponent(
                     new MatrixComponent(new MatrixValuesDescription(4, 2, 3, 8, 2, 0, 6, 6, 3, 6)),
                     new MatrixAnnotations(
-                        new List<string>() { "Butter", "Flour", "Sugar", "Eggs" },
+                        new List<string>() { "Servings of Butter", "Servings of Flour", "Servings of Sugar", "Eggs" },
                         true,
-                        new List<string>() { "Cake Recipe Servings", "Icing Recipe Servings"},
+                        new List<string>() { "Cake Recipe", "Icing Recipe"},
                         CreateAnnotationsTextSettings(),
                         GetAnnotationsPadding())));
 
