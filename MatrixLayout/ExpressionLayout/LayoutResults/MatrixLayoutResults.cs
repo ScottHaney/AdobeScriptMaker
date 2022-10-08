@@ -12,7 +12,7 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         private readonly MatrixBracketsLayoutResult _brackets;
         private readonly MatrixEntriesLayoutResult _entries;
-        public List<ILayoutResult> Annotations { get; set; }
+        public List<ILayoutResult> Annotations { get; set; } = new List<ILayoutResult>();
 
         public MatrixLayoutResults(MatrixBracketsLayoutResult brackets,
             MatrixEntriesLayoutResult entries)
@@ -46,6 +46,9 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         {
             _brackets.ShiftDown(shift);
             _entries.ShiftDown(shift);
+
+            foreach (var annotation in Annotations)
+                annotation.ShiftDown(shift);
         }
 
         public RectangleF GetRowBoundingBox(int row)
