@@ -1,6 +1,7 @@
 ﻿using AdobeScriptMaker.Core;
 using MatrixLayout;
 using MatrixLayout.ExpressionDecorators;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.InputDescriptions;
 using NUnit.Framework;
 using System;
@@ -12,9 +13,39 @@ namespace AdobeScriptMaker.Core.Tests
     public class MatrixScriptCreatorWork
     {
         [Test]
-        public void CreateMatrixVideoScripts()
+        public void CreateScripts()
         {
             var cakeNutritionScript = CreateCakeNutritionScript();
+            var cakeIcingMixtureScript = CreateCakeIcingMixtureScript();
+        }
+
+        private string CreateCakeIcingMixtureScript()
+        {
+            var cakeIcingMixture = new MultiplyComponents(
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(new MatrixValuesDescription(3, 4, 408, 455, 194, 78, 0, 0, 50, 1, 0, 13, 0, 6)),
+                    new MatrixAnnotations(
+                        new List<string>() { "Calories", "Sugar", "Protein" },
+                        false,
+                        new List<string>() { "Butter", "Flour", "Sugar", "Eggs" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(new MatrixValuesDescription(4, 2, 3, 8, 2, 0, 6, 6, 3, 6)),
+                    new MatrixAnnotations(
+                        new List<string>() { "Butter", "Flour", "Sugar", "Eggs" },
+                        true,
+                        new List<string>() { "Cake Recipe Servings", "Icing Recipe Servings"},
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(cakeIcingMixture);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
         }
 
         private string CreateCakeNutritionScript()
@@ -25,8 +56,8 @@ namespace AdobeScriptMaker.Core.Tests
                     new List<string>() { "Calories", "Sugar", "Protein" },
                     true,
                     new List<string>() { "Cake Recipe", "Icing Recipe" },
-                    new MatrixLayout.ExpressionLayout.LayoutResults.TextSettings(new System.Drawing.Font("Arial", 72, System.Drawing.GraphicsUnit.Pixel)),
-                    37));
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
 
             var expressionManager = CreateExpressionManager();
             var layoutResults = expressionManager.Render(cakeNutrition);
@@ -35,6 +66,16 @@ namespace AdobeScriptMaker.Core.Tests
             var script = scriptCreator.CreateScript(layoutResults);
 
             return script;
+        }
+
+        private TextSettings CreateAnnotationsTextSettings()
+        {
+            return new TextSettings(new System.Drawing.Font("Arial", 55, System.Drawing.GraphicsUnit.Pixel));
+        }
+
+        private int GetAnnotationsPadding()
+        {
+            return 37;
         }
 
         private ExpressionManager CreateExpressionManager()
