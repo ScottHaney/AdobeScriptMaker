@@ -82,16 +82,15 @@ namespace MatrixLayout.ExpressionLayout
             using (var textMeasurer = _textMeasurerFactory.Create())
             {
                 var equalsSize = textMeasurer.MeasureText(EQUALS_SIGN, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
-                var spacing = 15;
-
-                var equalsBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + spacing,
+                
+                var equalsBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + _matrixSettings.MatrixOtherOperationSpacing,
                     0,
                     equalsSize.Width,
                     equalsSize.Height),
                     new TextSettings(new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel)),
                     EQUALS_SIGN);
 
-                var rightLayout = LayoutComponentSwitch(equation.Rhs, equalsBox.Bounds.Right + spacing);
+                var rightLayout = LayoutComponentSwitch(equation.Rhs, equalsBox.Bounds.Right + _matrixSettings.MatrixOtherOperationSpacing);
 
                 return CombineResults(leftLayout, new LayoutResultsCollection(equalsBox), rightLayout);
             }
@@ -118,14 +117,14 @@ namespace MatrixLayout.ExpressionLayout
             {
                 var additionSize = textMeasurer.MeasureText(PLUS_SIGN, new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel));
                 
-                var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + _matrixSettings.MatrixAdditionSpacing,
+                var multiplierBox = new TextLayoutResult(new RectangleF(leftLayout.BoundingBox.Right + _matrixSettings.MatrixOtherOperationSpacing,
                     0,
                     additionSize.Width,
                     additionSize.Height),
                     new TextSettings(new Font(_textSettings.FontName, _textSettings.FontSizeInPixels, GraphicsUnit.Pixel)),
                     PLUS_SIGN);
 
-                var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + _matrixSettings.MatrixAdditionSpacing);
+                var rightLayout = LayoutComponentSwitch(addComponents.Rhs, multiplierBox.Bounds.Right + _matrixSettings.MatrixOtherOperationSpacing);
 
                 return CombineResults(leftLayout, new LayoutResultsCollection(multiplierBox), rightLayout);
             }

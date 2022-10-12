@@ -17,6 +17,148 @@ namespace AdobeScriptMaker.Core.Tests
         {
             var cakeNutritionScript = CreateCakeNutritionScript();
             var cakeIcingMixtureScript = CreateCakeIcingMixtureScript();
+            var icingVectorSumScript = CreateIcingVectorSumScript();
+            var cakeVectorSumScript = CreateCakeVectorSumScript();
+            var totalNutritionSumScript = CreateTotalNutritionSumScript();
+        }
+
+        private string CreateTotalNutritionSumScript()
+        {
+            var totalNutritionSum = new Equation(
+                new MultiplyComponents(
+                    new AnnotatedMatrixComponent(
+                    new MatrixComponent(new MatrixValuesDescription(3, 2, 3532, 4896, 303, 306, 44, 36)),
+                    new MatrixAnnotations(
+                        new List<string>() { "Calories", "Sugar", "Protein" },
+                        false,
+                        new List<string>() { "Cake Recipe", "Icing Recipe" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())),
+                    new MatrixComponent(new MatrixValuesDescription(2, 1, 1, 1))),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(new MatrixValuesDescription(3, 1, 8428, 609, 80)),
+                    new MatrixAnnotations(
+                        new List<string>() { "Calories", "Sugar", "Protein" },
+                        true,
+                        new List<string>() { "Entire Cake" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(totalNutritionSum);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateCakeVectorSumScript()
+        {
+            var cakeNutritionVectorCombo = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(3,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 408, 0, 0),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Butter" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(2,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 455, 0, 13),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Flour" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(6,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 194, 50, 0),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Sugar" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(3,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 78, 1, 6),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Eggs" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())))),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(3, 1, 3532, 303, 44),
+                    new MatrixAnnotations(
+                        null,
+                        false,
+                        new List<string>() { "Cake Nutrition" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(cakeNutritionVectorCombo);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateIcingVectorSumScript()
+        {
+            var icingNutritionVectorCombo = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(8,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 408, 0, 0),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Butter" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(0,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 455, 0, 13),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Flour" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(6,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 194, 50, 0),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Sugar" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(6,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 78, 1, 6),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Eggs" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())))),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(3, 1, 4896, 306, 36),
+                    new MatrixAnnotations(
+                        null,
+                        false,
+                        new List<string>() { "Icing Nutrition" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(icingNutritionVectorCombo);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
         }
 
         private string CreateCakeIcingMixtureScript()

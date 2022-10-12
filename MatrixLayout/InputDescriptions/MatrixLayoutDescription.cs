@@ -10,19 +10,19 @@ namespace MatrixLayout.InputDescriptions
         public readonly MatrixInteriorMarginsDescription InteriorMarginsDescription;
         public readonly int MultiplierSpacing;
         public readonly int MatrixMultiplicationSpacing;
-        public readonly int MatrixAdditionSpacing;
+        public readonly int MatrixOtherOperationSpacing;
 
         public MatrixLayoutDescription(MatrixBracketsDescription bracketsDescription,
             MatrixInteriorMarginsDescription interiorMarginsDescription,
             int multiplierSpacing = 8,
             int matrixMultiplicationSpacing = 5,
-            int matrixAdditionSpacing = 15)
+            int matrixOtherOperationSpacing = 15)
         {
             BracketsDescription = bracketsDescription;
             InteriorMarginsDescription = interiorMarginsDescription;
             MultiplierSpacing = multiplierSpacing;
             MatrixMultiplicationSpacing = matrixMultiplicationSpacing;
-            MatrixAdditionSpacing = matrixAdditionSpacing;
+            MatrixOtherOperationSpacing = matrixOtherOperationSpacing;
         }
     }
 }
