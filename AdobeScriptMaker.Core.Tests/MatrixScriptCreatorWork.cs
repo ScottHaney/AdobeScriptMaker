@@ -13,13 +13,60 @@ namespace AdobeScriptMaker.Core.Tests
     public class MatrixScriptCreatorWork
     {
         [Test]
-        public void CreateScripts()
+        public void CreateScripts_MatricesATastyIntroduction()
         {
             var cakeNutritionScript = CreateCakeNutritionScript();
             var cakeIcingMixtureScript = CreateCakeIcingMixtureScript();
             var icingVectorSumScript = CreateIcingVectorSumScript();
             var cakeVectorSumScript = CreateCakeVectorSumScript();
             var totalNutritionSumScript = CreateTotalNutritionSumScript();
+        }
+
+        [Test]
+        public void CreateScripts_MatricesAsComponentsShort()
+        {
+            var snackBarNutrition = CreateSnackBarScript();
+            var sandwhichNutrition = CreatePeanutButterSandwhichScript();
+        }
+
+        private string CreatePeanutButterSandwhichScript()
+        {
+            var sandwhichNutrition = new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 3, 190, 3, 7, 120, 4, 6, 60, 17, 0)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    new List<string>() { "Peanut Butter", "Bread", "Honey" },
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(sandwhichNutrition);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateSnackBarScript()
+        {
+            var snackBarNutrition = new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 1, 180, 5, 6)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    null,
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(snackBarNutrition);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
         }
 
         private string CreateTotalNutritionSumScript()
