@@ -29,6 +29,216 @@ namespace AdobeScriptMaker.Core.Tests
             var sandwhichNutrition = CreatePeanutButterSandwhichScript();
         }
 
+        public void CreateScripts_MatrixMultiplicationInRealLife()
+        {
+            var ingredients = CreateIngredientsScript();
+            var ingedientsTimeServingsScript = CreateIngredientsTimesServingsScript();
+
+            var pancakesVectorComboScript = CreatePancakesVectorComboScript();
+            var glassOfMilkVectorComboScript = CreateGlassOfMilkVectorComboScript();
+
+            var entireBreakfastScript = CreateEntireBreakfastScript();
+        }
+
+        private string CreatePancakesVectorComboScript()
+        {
+            var expression = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(3,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 70, 0, 6),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Egg" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(2,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 120, 12, 8),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Milk" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(0,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 190, 8, 14),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Pancake Mix" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())))),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(3, 1, 1140, 52, 84),
+                    new MatrixAnnotations(
+                        new List<string>() { "Calories", "Sugar", "Protein" },
+                        true,
+                        new List<string>() { "Pancakes Nutrition" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(expression);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateGlassOfMilkVectorComboScript()
+        {
+            var expression = new Equation(
+                AddComponents.Create(
+                    new NumericMultiplierComponent(3,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 70, 0, 6),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Egg" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(2,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 120, 12, 8),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Milk" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                    new NumericMultiplierComponent(0,
+                        new AnnotatedMatrixComponent(new MatrixComponent(3, 1, 190, 8, 14),
+                        new MatrixAnnotations(
+                            null,
+                            false,
+                            new List<string>() { "Pancake Mix" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())))),
+                new AnnotatedMatrixComponent(
+                    new MatrixComponent(3, 1, 240, 24, 16),
+                    new MatrixAnnotations(
+                        new List<string>() { "Calories", "Sugar", "Protein" },
+                        true,
+                        new List<string>() { "Glass of Milk Nutrition" },
+                        CreateAnnotationsTextSettings(),
+                        GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(expression);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateIngredientsScript()
+        {
+            var eggNutrition = new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 1, 70, 0, 6)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    new List<string>() { "Egg" },
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
+
+            var milkNutrition = new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 1, 120, 12, 8)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    new List<string>() { "Milk" },
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
+
+            var mixNutrition = new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 1, 190, 8, 14)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    new List<string>() { "Pancake Mix" },
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding()));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = new[] { eggNutrition, milkNutrition, mixNutrition }.Select(x => expressionManager.Render(x));
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults.ToArray());
+
+            return script;
+        }
+
+        private string CreateIngredientsTimesServingsScript()
+        {
+            var expression = new Equation(
+                new MultiplyComponents(
+                    new AnnotatedMatrixComponent(
+                        new MatrixComponent(new MatrixValuesDescription(3, 3, 70, 0, 6, 120, 12, 8, 190, 8, 14)),
+                        new MatrixAnnotations(
+                            new List<string>() { "Calories", "Sugar", "Protein" },
+                            false,
+                            new List<string>() { "Egg", "Milk", "Pancake Mix" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())),
+                    new AnnotatedMatrixComponent(
+                        new MatrixComponent(new MatrixValuesDescription(3, 2, 1, 1, 5, 0, 2, 0)),
+                        new MatrixAnnotations(
+                            new List<string>() { "Eggs Used", "Servings of Milk", "Servings of Pancake Mix" },
+                            true,
+                            new List<string>() { "Pancake Ingredients", "Glass of Milk Ingredients" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding()))),
+                new AnnotatedMatrixComponent(
+                        new MatrixComponent(new MatrixValuesDescription(3, 2, 1140, 52, 84, 240, 24, 16)),
+                        new MatrixAnnotations(
+                            new List<string>() { "Calories", "Sugar", "Protein" },
+                            true,
+                            new List<string>() { "Pancakes Nutrition", "Glass of Milk Nutrition" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(expression);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
+        private string CreateEntireBreakfastScript()
+        {
+            var expression = new Equation(
+                new MultiplyComponents(
+                    new AnnotatedMatrixComponent(
+                        new MatrixComponent(new MatrixValuesDescription(3, 2, 1140, 52, 84, 240, 24, 16)),
+                        new MatrixAnnotations(
+                            new List<string>() { "Calories", "Sugar", "Protein" },
+                            true,
+                            new List<string>() { "Pancakes", "Glass of Milk" },
+                            CreateAnnotationsTextSettings(),
+                            GetAnnotationsPadding())),
+                    new MatrixComponent(new MatrixValuesDescription(2, 1, 1, 1))),
+                new AnnotatedMatrixComponent(
+                new MatrixComponent(new MatrixValuesDescription(3, 1, 1380, 76, 100)),
+                new MatrixAnnotations(
+                    new List<string>() { "Calories", "Sugar", "Protein" },
+                    true,
+                    new List<string>() { "Entire Breakfast Nutrition" },
+                    CreateAnnotationsTextSettings(),
+                    GetAnnotationsPadding())));
+
+            var expressionManager = CreateExpressionManager();
+            var layoutResults = expressionManager.Render(expression);
+
+            var scriptCreator = new MatrixScriptCreator();
+            var script = scriptCreator.CreateScript(layoutResults);
+
+            return script;
+        }
+
         private string CreatePeanutButterSandwhichScript()
         {
             var sandwhichNutrition = new AnnotatedMatrixComponent(
