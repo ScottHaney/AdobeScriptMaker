@@ -29,6 +29,7 @@ namespace AdobeScriptMaker.Core.Tests
             var sandwhichNutrition = CreatePeanutButterSandwhichScript();
         }
 
+        [Test]
         public void CreateScripts_MatrixMultiplicationInRealLife()
         {
             var ingredients = CreateIngredientsScript();
