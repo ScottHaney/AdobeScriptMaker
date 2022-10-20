@@ -930,6 +930,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "DirectRendering": "1.0.0",
           "MatrixLayout": "1.0.0"
         },
         "compile": {
@@ -951,6 +952,16 @@
         },
         "runtime": {
           "bin/placeholder/Applications.dll": {}
+        }
+      },
+      "DirectRendering/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/DirectRendering.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DirectRendering.dll": {}
         }
       },
       "MatrixLayout/1.0.0": {
@@ -4008,6 +4019,11 @@
       "type": "project",
       "path": "../Applications/Applications.csproj",
       "msbuildProject": "../Applications/Applications.csproj"
+    },
+    "DirectRendering/1.0.0": {
+      "type": "project",
+      "path": "../DirectRendering/DirectRendering.csproj",
+      "msbuildProject": "../DirectRendering/DirectRendering.csproj"
     },
     "MatrixLayout/1.0.0": {
       "type": "project",

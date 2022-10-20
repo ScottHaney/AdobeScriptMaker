@@ -108,3 +108,5 @@ C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\AdobeScriptMaker.Core.pdb
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\Applications.pdb
 C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\MatrixLayout.pdb
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\DirectRendering.dll
+C:\Users\scott\githubCode\AdobeScriptMaker\AdobeScriptMaker.Core.Tests\bin\Debug\netcoreapp3.1\DirectRendering.pdb
