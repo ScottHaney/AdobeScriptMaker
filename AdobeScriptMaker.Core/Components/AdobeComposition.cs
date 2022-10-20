@@ -6,13 +6,13 @@ namespace AdobeScriptMaker.Core.Components
 {
     public class AdobeComposition
     {
-        public readonly AdobePathComponent Paths;
+        public readonly AdobePathComponent[] Paths;
         public string Name { get; set; }
         public bool IsDefaultComp { get; set; }
 
-        public AdobeComposition(AdobePathComponent paths)
+        public AdobeComposition(params AdobePathComponent[] paths)
         {
-            Paths = paths;
+            Paths = paths ?? Array.Empty<AdobePathComponent>();
         }
     }
 }

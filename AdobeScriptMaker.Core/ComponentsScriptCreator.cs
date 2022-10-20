@@ -17,10 +17,18 @@ namespace AdobeScriptMaker.Core
                 var compositionResult = CreateCompositionItem(composition);
                 result.AppendLine(compositionResult.CreationCode);
 
-
+                foreach (var component in composition.Paths)
+                {
+                    result.AppendLine(CreatePathItem(component, compositionResult.CompositionVariable));
+                }
             }
 
             return result.ToString();
+        }
+
+        private string CreatePathItem(AdobePathComponent component, string compositionVariable)
+        {
+            throw new NotImplementedException();
         }
 
         private CompositionItemResult CreateCompositionItem(AdobeComposition composition)
