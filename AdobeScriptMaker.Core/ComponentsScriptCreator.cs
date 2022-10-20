@@ -10,18 +10,37 @@ namespace AdobeScriptMaker.Core
         public string CreateScript(params AdobeComposition[] compositions)
         {
             var context = new ScriptContext();
-            var compositionItem = "app.project.activeItem";
 
             var result = new StringBuilder();
             foreach (var composition in compositions)
-                result.AppendLine(CreateComposition(composition));
+            {
+                var compositionResult = CreateCompositionItem(composition);
+                result.AppendLine(compositionResult.CreationCode);
+
+
+            }
 
             return result.ToString();
         }
 
-        private string CreateComposition(AdobeComposition composition)
+        private CompositionItemResult CreateCompositionItem(AdobeComposition composition)
         {
-            throw new NotImplementedException();
+            if (composition.IsDefaultComp)
+                return new CompositionItemResult("", "app.project.activeItem");
+            else
+                throw new NotImplementedException();
+        }
+
+        private class CompositionItemResult
+        {
+            public readonly string CreationCode;
+            public readonly string CompositionVariable;
+
+            public CompositionItemResult(string creationCode, string compositionVariable)
+            {
+                CreationCode = creationCode;
+                CompositionVariable = compositionVariable;
+            }
         }
     }
 }
