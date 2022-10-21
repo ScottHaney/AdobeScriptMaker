@@ -17,7 +17,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             var layers = new List<AdobeShapeLayer>();
             foreach (var item in drawingSequence.Drawings)
             {
-                var layer = new AdobeShapeLayer(CreatePath(item));
+                var layer = new AdobeShapeLayer(item.GetDrawings().Select(x => CreatePath((PathDrawing)x)).ToArray());
                 layers.Add(layer);
             }
 
