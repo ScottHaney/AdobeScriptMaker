@@ -7,11 +7,11 @@ namespace DirectRendering
 {
     public class DrawingSequence
     {
-        public readonly PathDrawing[] Drawings;
+        public readonly IDrawing[] Drawings;
 
-        public DrawingSequence(params PathDrawing[] drawings)
+        public DrawingSequence(params IDrawing[] drawings)
         {
-            Drawings = drawings ?? Array.Empty<PathDrawing>();
+            Drawings = (drawings ?? Array.Empty<IDrawing>());
         }
     }
 }

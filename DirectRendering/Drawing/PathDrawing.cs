@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace DirectRendering.Drawing
 {
-    public class PathDrawing
+    public class PathDrawing : PrimitiveDrawing
     {
         public readonly Point[] Points;
 
