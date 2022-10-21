@@ -17,7 +17,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             foreach (var item in drawingSequence.Drawings)
             {
                 var layer = new AdobeShapeLayer(
-                    new AdobePathComponent(item.Points.Select(x => new PointF(x.X, x.Y)).ToArray()));
+                    new AdobePathComponent(item.Points.Select(x => new PointF(x.X, x.Y)).ToArray()) { Thickness = item.Thickness });
 
                 layers.Add(layer);
             }

@@ -9,7 +9,7 @@ namespace DirectRendering
     {
         public readonly PathDrawing[] Drawings;
 
-        public DrawingSequence(PathDrawing[] drawings)
+        public DrawingSequence(params PathDrawing[] drawings)
         {
             Drawings = drawings ?? Array.Empty<PathDrawing>();
         }
