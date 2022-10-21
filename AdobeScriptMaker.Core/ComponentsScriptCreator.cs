@@ -1,54 +1,66 @@
 ﻿using AdobeScriptMaker.Core.Components;
+using AdobeScriptMaker.Core.Components.Layers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace AdobeScriptMaker.Core
 {
     public class ComponentsScriptCreator
     {
-        public string CreateScript(params AdobeComposition[] compositions)
+        private readonly StringBuilder _builder = new StringBuilder();
+        private readonly ScriptContext _context = new ScriptContext();
+
+        public string Visit(AdobeScript script)
         {
-            var context = new ScriptContext();
+            foreach (var composition in script.Compositions)
+                VisitComposition(composition);
 
-            var result = new StringBuilder();
-            foreach (var composition in compositions)
-            {
-                var compositionResult = CreateCompositionItem(composition);
-                result.AppendLine(compositionResult.CreationCode);
-
-                foreach (var component in composition.Paths)
-                {
-                    result.AppendLine(CreatePathItem(component, compositionResult.CompositionVariable));
-                }
-            }
-
-            return result.ToString();
+            return _builder.ToString();
         }
 
-        private string CreatePathItem(AdobePathComponent component, string compositionVariable)
+        private void VisitComposition(AdobeComposition composition)
         {
-            throw new NotImplementedException();
+            foreach (var layer in composition.Layers)
+                VisitLayer("app.project.activeItem", layer);
         }
 
-        private CompositionItemResult CreateCompositionItem(AdobeComposition composition)
+        private void VisitLayer(string compositionRef, AdobeShapeLayer layer)
         {
-            if (composition.IsDefaultComp)
-                return new CompositionItemResult("", "app.project.activeItem");
-            else
-                throw new NotImplementedException();
+            var layerVar = _context.GetNextAutoVariable();
+            _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+
+            foreach (var drawing in layer.Drawings)
+                VisitPath(layerVar, drawing);
         }
 
-        private class CompositionItemResult
+        private void VisitPath(string layerVar, AdobePathComponent path)
         {
-            public readonly string CreationCode;
-            public readonly string CompositionVariable;
+            var vectorsGroupVar = _context.GetNextAutoVariable();
+            var vectorGroupVar = _context.GetNextAutoVariable();
+            var shapeVar = _context.GetNextAutoVariable();
+            var strokeVar = _context.GetNextAutoVariable();
 
-            public CompositionItemResult(string creationCode, string compositionVariable)
-            {
-                CreationCode = creationCode;
-                CompositionVariable = compositionVariable;
-            }
+            var scriptText = $@"var {vectorsGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
+var {shapeVar} = new Shape();
+{shapeVar}.vertices = { ConvertPointsToJavascriptArg(path.Points)};
+{shapeVar}.closed = true;
+{vectorGroupVar}.property('Path').setValue({ shapeVar});
+var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
+{strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
+{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
+{layerVar}.property('Transform').property('Position').setValue([0, 0]);";
+
+            _builder.AppendLine(scriptText);
+        }
+
+        private string ConvertPointsToJavascriptArg(IEnumerable<PointF> points)
+        {
+            var pointArgs = string.Join(",", points.Select(x => $"[{x.X},{x.Y}]"));
+            return $"[{pointArgs}]";
         }
     }
 }

@@ -6,10 +6,10 @@ namespace DirectRendering.Drawing
 {
     public class AnimatedDrawing
     {
-        public readonly LineDrawing Drawing;
+        public readonly PathDrawing Drawing;
         public readonly float DrawingTime;
 
-        public AnimatedDrawing(LineDrawing drawing, float drawingTime)
+        public AnimatedDrawing(PathDrawing drawing, float drawingTime)
         {
             Drawing = drawing;
             DrawingTime = drawingTime;

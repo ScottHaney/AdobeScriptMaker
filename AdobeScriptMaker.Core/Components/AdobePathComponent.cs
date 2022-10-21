@@ -7,11 +7,12 @@ namespace AdobeScriptMaker.Core.Components
 {
     public class AdobePathComponent
     {
-        public readonly Point[] Points;
+        public readonly PointF[] Points;
+        public float Thickness { get; set; } = 2;
 
-        public AdobePathComponent(params Point[] points)
+        public AdobePathComponent(params PointF[] points)
         {
-            Points = points ?? Array.Empty<Point>();
+            Points = points ?? Array.Empty<PointF>();
         }
     }
 }

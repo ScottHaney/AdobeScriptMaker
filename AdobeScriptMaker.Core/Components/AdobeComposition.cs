@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdobeScriptMaker.Core.Components.Layers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,13 +7,11 @@ namespace AdobeScriptMaker.Core.Components
 {
     public class AdobeComposition
     {
-        public readonly AdobePathComponent[] Paths;
-        public string Name { get; set; }
-        public bool IsDefaultComp { get; set; }
+        public readonly AdobeShapeLayer[] Layers;
 
-        public AdobeComposition(params AdobePathComponent[] paths)
+        public AdobeComposition(params AdobeShapeLayer[] layers)
         {
-            Paths = paths ?? Array.Empty<AdobePathComponent>();
+            Layers = layers ?? Array.Empty<AdobeShapeLayer>();
         }
     }
 }
