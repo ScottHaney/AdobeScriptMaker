@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications.Tests", "Appli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectRendering", "DirectRendering\DirectRendering.csproj", "{ACC73070-48EB-4590-B112-D385157863E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathDescriptions", "MathDescriptions\MathDescriptions.csproj", "{96E98EDB-A885-48F8-9AFD-B9EB120589DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{ACC73070-48EB-4590-B112-D385157863E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACC73070-48EB-4590-B112-D385157863E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACC73070-48EB-4590-B112-D385157863E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
