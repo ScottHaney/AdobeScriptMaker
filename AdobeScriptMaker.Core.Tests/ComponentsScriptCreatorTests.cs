@@ -46,7 +46,7 @@ namespace AdobeScriptMaker.Core.Tests
             var plotDescription = new PlotDescription(
                 new AxisRangeDescription(0, 10),
                 new AxisRangeDescription(0, 100),
-                new PolynomialDescription(new PolynomialTermDescription(1, 2), new PolynomialTermDescription(1, 0)));
+                new FunctionDescription(x => Math.Pow(x, 2) + 1));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
             var drawingSequence = new DrawingSequence(plot);

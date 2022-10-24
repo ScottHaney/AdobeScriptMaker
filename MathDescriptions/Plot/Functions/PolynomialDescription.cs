@@ -4,34 +4,18 @@ using System.Text;
 
 namespace MathDescriptions.Plot.Functions
 {
-    public class PolynomialDescription : IPlottable
+    public class FunctionDescription : IPlottable
     {
-        public readonly PolynomialTermDescription[] Terms;
+        private readonly Func<double, double> _function;
 
-        public PolynomialDescription(params PolynomialTermDescription[] terms)
+        public FunctionDescription(Func<double, double> function)
         {
-            Terms = terms ?? Array.Empty<PolynomialTermDescription>();
+            _function = function;
         }
 
         public double GetYValue(double x)
         {
-            double total = 0;
-            foreach (var term in Terms)
-                total += term.Coefficient * Math.Pow(x, term.Power);
-
-            return total;
-        }
-    }
-
-    public class PolynomialTermDescription
-    {
-        public readonly double Coefficient;
-        public readonly int Power;
-
-        public PolynomialTermDescription(double coefficient, int power)
-        {
-            Coefficient = coefficient;
-            Power = power;
+            return _function(x);
         }
     }
 }
