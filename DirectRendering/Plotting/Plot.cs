@@ -27,6 +27,9 @@ namespace DirectRendering.Plotting
             foreach (var function in _plotDescription.Functions)
                 yield return CreateFunctionDrawing(function, _visualBounds, _plotDescription);
 
+            foreach (var decorator in _plotDescription.Decorations.OfType<AreaUnderFunctionDescription>())
+                yield return CreateAreaUnderFunctionDrawing(decorator, _visualBounds, _plotDescription);
+
             foreach (var drawing in axes.GetDrawings())
                 yield return drawing;
         }
