@@ -9,6 +9,7 @@ namespace AdobeScriptMaker.Core.Components
     {
         public readonly PointF[] Points;
         public float Thickness { get; set; } = 2;
+        public bool IsClosed { get; set; }
 
         public AdobePathComponent(params PointF[] points)
         {

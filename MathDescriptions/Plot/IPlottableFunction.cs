@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MathDescriptions.Plot
 {
-    public interface IPlottable
+    public interface IPlottableFunction
     {
         double GetYValue(double x);
     }

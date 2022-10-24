@@ -8,15 +8,17 @@ namespace MathDescriptions.Plot
     {
         public readonly AxisRangeDescription XAxis;
         public readonly AxisRangeDescription YAxis;
-        public readonly IPlottable[] Functions;
+        public readonly IPlottableFunction[] Functions;
+
+        public readonly List<IPlotDecoration> Decorations = new List<IPlotDecoration>();
 
         public PlotDescription(AxisRangeDescription xAxis,
             AxisRangeDescription yAxis,
-            params IPlottable[] functions)
+            params IPlottableFunction[] functions)
         {
             XAxis = xAxis;
             YAxis = yAxis;
-            Functions = functions ?? Array.Empty<IPlottable>();
+            Functions = functions ?? Array.Empty<IPlottableFunction>();
         }
     }
 }

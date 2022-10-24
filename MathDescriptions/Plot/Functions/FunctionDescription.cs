@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MathDescriptions.Plot.Functions
 {
-    public class FunctionDescription : IPlottable
+    public class FunctionDescription : IPlottableFunction
     {
         private readonly Func<double, double> _function;
 

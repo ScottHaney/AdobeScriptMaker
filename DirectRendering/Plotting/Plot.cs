@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using DirectRendering.Drawing;
+using MathDescriptions.Plot.Functions;
+using System.Linq;
 
 namespace DirectRendering.Plotting
 {
@@ -29,29 +31,62 @@ namespace DirectRendering.Plotting
                 yield return drawing;
         }
 
-        private PathDrawing CreateFunctionDrawing(IPlottable plottable,
+        private PathDrawing CreateAreaUnderFunctionDrawing(AreaUnderFunctionDescription areaUnderFunction,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
+            var plotPoints = CreateFunctionDrawingPoints(areaUnderFunction.FunctionDescription,
+                axisRect,
+                plotDescription,
+                areaUnderFunction.StartX,
+                areaUnderFunction.EndX);
+
             var points = new List<Point>();
-            points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, plotDescription.XAxis.MinValue));
+            points.Add(CreatePoint(axisRect, plotDescription, areaUnderFunction.StartX, plotDescription.YAxis.MinValue));
+            points.AddRange(plotPoints);
+            points.Add(CreatePoint(axisRect, plotDescription, areaUnderFunction.EndX, plotDescription.YAxis.MinValue));
+
+            return new PathDrawing(points.ToArray()) { IsClosed = true };
+        }
+
+        private PathDrawing CreateFunctionDrawing(IPlottableFunction plottable,
+            Rectangle axisRect,
+            PlotDescription plotDescription)
+        {
+            return new PathDrawing(CreateFunctionDrawingPoints(plottable, axisRect, plotDescription, plotDescription.XAxis.MinValue, plotDescription.XAxis.MaxValue).ToArray());
+        }
+
+        private IEnumerable<Point> CreateFunctionDrawingPoints(IPlottableFunction plottable,
+            Rectangle axisRect,
+            PlotDescription plotDescription,
+            double startX,
+            double endX)
+        {
+            var points = new List<Point>();
+            points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, startX));
 
             var numTotalPoints = axisRect.Width / 2;
             for (int i = 1; i < numTotalPoints - 1; i++)
-                points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, i * (plotDescription.XAxis.MaxValue - plotDescription.XAxis.MinValue) / numTotalPoints));
+                points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, i * (endX - startX) / numTotalPoints));
 
-            points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, plotDescription.XAxis.MaxValue));
+            points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, endX));
 
-            return new PathDrawing(points.ToArray());
+            return points;
         }
 
-        private Point CreateFunctionPoint(IPlottable plottable,
+        private Point CreateFunctionPoint(IPlottableFunction plottable,
             Rectangle axisRect,
             PlotDescription plotDescription,
             double xValue)
         {
-            var yValue = plottable.GetYValue(xValue);
+            return CreatePoint(axisRect, plotDescription, xValue, plottable.GetYValue(xValue));
+        }
 
+        private Point CreatePoint(Rectangle axisRect,
+            PlotDescription plotDescription,
+            double xValue,
+            double yValue)
+        {
             var xAxisPercentage = GetPercentage(xValue, plotDescription.XAxis);
             var yAxisPercentage = GetPercentage(yValue, plotDescription.YAxis);
 

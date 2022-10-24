@@ -10,6 +10,7 @@ namespace DirectRendering.Drawing
         public readonly Point[] Points;
 
         public float Thickness { get; set; } = 2;
+        public bool IsClosed { get; set; }
 
         public PathDrawing(params Point[] points)
         {

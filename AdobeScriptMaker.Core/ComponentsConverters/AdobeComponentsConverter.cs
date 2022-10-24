@@ -31,7 +31,11 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             if (path == null)
                 throw new NotSupportedException();
 
-            return new AdobePathComponent(path.Points.Select(x => new PointF(x.X, x.Y)).ToArray()) { Thickness = path.Thickness };
+            return new AdobePathComponent(path.Points.Select(x => new PointF(x.X, x.Y)).ToArray())
+            {
+                Thickness = path.Thickness,
+                IsClosed = path.IsClosed
+            };
         }
     }
 }
