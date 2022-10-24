@@ -47,6 +47,7 @@ namespace AdobeScriptMaker.Core
 var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
 var {shapeVar} = new Shape();
 {shapeVar}.vertices = { ConvertPointsToJavascriptArg(path.Points)};
+{shapeVar}.closed = false;
 {vectorGroupVar}.property('Path').setValue({ shapeVar});
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
