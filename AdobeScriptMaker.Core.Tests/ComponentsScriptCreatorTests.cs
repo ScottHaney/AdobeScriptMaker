@@ -9,6 +9,7 @@ using AdobeScriptMaker.Core.ComponentsConverters;
 using DirectRendering.Plotting;
 using MathDescriptions.Plot;
 using MathDescriptions.Plot.Functions;
+using System.Linq;
 
 namespace AdobeScriptMaker.Core.Tests
 {
@@ -70,7 +71,7 @@ namespace AdobeScriptMaker.Core.Tests
             plotDescription.Decorations.Add(new AreaUnderFunctionDescription(functionToPlot, 0, 8));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
-            var drawingSequence = new DrawingSequence(plot);
+            var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
 
             var converter = new AdobeComponentsConverter();
             var converted = converter.Convert(drawingSequence);
