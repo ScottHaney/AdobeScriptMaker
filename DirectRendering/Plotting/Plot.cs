@@ -6,6 +6,7 @@ using System.Drawing;
 using DirectRendering.Drawing;
 using MathDescriptions.Plot.Functions;
 using System.Linq;
+using MathDescriptions.Plot.Calculus;
 
 namespace DirectRendering.Plotting
 {
@@ -30,8 +31,43 @@ namespace DirectRendering.Plotting
             foreach (var decorator in _plotDescription.Decorations.OfType<AreaUnderFunctionDescription>())
                 yield return CreateAreaUnderFunctionDrawing(decorator, _visualBounds, _plotDescription);
 
+            foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumDescription>())
+            {
+                foreach (var path in CreateRiemannSum(decorator, _visualBounds, _plotDescription))
+                    yield return path;
+            }
+
             foreach (var drawing in axes.GetDrawings())
                 yield return drawing;
+        }
+
+        private IEnumerable<PathDrawing> CreateRiemannSum(RiemannSumDescription riemannSum,
+            Rectangle axisRect,
+            PlotDescription plotDescription)
+        {
+            var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
+            for (int i = 0; i < riemannSum.NumRects; i++)
+            {
+                var rightX = rectWidth * (i + 1);
+                var leftX = rightX - rectWidth;
+                var topY = riemannSum.FunctionDescription.GetYValue(rightX);
+                var bottomY = plotDescription.YAxis.MinValue;
+
+                var visualRightX = (int)GetVisualXValue(rightX, plotDescription.XAxis, axisRect);
+                var visualLeftX = (int)GetVisualXValue(leftX, plotDescription.XAxis, axisRect);
+                var visualTopY = (int)GetVisualYValue(topY, plotDescription.YAxis, axisRect);
+                var visualBottomY = (int)GetVisualYValue(bottomY, plotDescription.YAxis, axisRect);
+
+                var points = new Point[]
+                {
+                    new Point(visualLeftX, visualTopY),
+                    new Point(visualRightX, visualTopY),
+                    new Point(visualRightX, visualBottomY),
+                    new Point(visualLeftX, visualBottomY)
+                };
+
+                yield return new PathDrawing(points) { IsClosed = true };
+            }
         }
 
         private PathDrawing CreateAreaUnderFunctionDrawing(AreaUnderFunctionDescription areaUnderFunction,
@@ -90,24 +126,25 @@ namespace DirectRendering.Plotting
             double xValue,
             double yValue)
         {
-            var xAxisPercentage = GetPercentage(xValue, plotDescription.XAxis);
-            var yAxisPercentage = GetPercentage(yValue, plotDescription.YAxis);
-
-            var xVisualValue = GetVisualXValue(xAxisPercentage, axisRect);
-            var yVisualValue = GetVisualYValue(yAxisPercentage, axisRect);
+            var xVisualValue = GetVisualXValue(xValue, plotDescription.XAxis, axisRect);
+            var yVisualValue = GetVisualYValue(yValue, plotDescription.YAxis, axisRect);
 
             return new Point((int)Math.Round(xVisualValue), (int)Math.Round(yVisualValue));
         }
 
-        private double GetVisualXValue(double percentage,
+        private double GetVisualXValue(double value,
+            AxisRangeDescription axisRangeDescription,
             Rectangle axisRect)
         {
+            var percentage = GetPercentage(value, axisRangeDescription);
             return axisRect.Left + (percentage * axisRect.Width);
         }
 
-        private double GetVisualYValue(double percentage,
+        private double GetVisualYValue(double value,
+            AxisRangeDescription axisRangeDescription,
             Rectangle axisRect)
         {
+            var percentage = GetPercentage(value, axisRangeDescription);
             return axisRect.Bottom - (percentage * axisRect.Height);
         }
 

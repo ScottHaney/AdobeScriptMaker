@@ -10,6 +10,7 @@ using DirectRendering.Plotting;
 using MathDescriptions.Plot;
 using MathDescriptions.Plot.Functions;
 using System.Linq;
+using MathDescriptions.Plot.Calculus;
 
 namespace AdobeScriptMaker.Core.Tests
 {
@@ -69,6 +70,27 @@ namespace AdobeScriptMaker.Core.Tests
                 functionToPlot);
 
             plotDescription.Decorations.Add(new AreaUnderFunctionDescription(functionToPlot, 0, 8));
+
+            var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
+            var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
+
+            var converter = new AdobeComponentsConverter();
+            var converted = converter.Convert(drawingSequence);
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted);
+        }
+
+        [Test]
+        public void CreatesRiemannSum()
+        {
+            var functionToPlot = new FunctionDescription(x => Math.Pow(x, 2) + 1);
+            var plotDescription = new PlotDescription(
+                new AxisRangeDescription(0, 10),
+                new AxisRangeDescription(0, 100),
+                functionToPlot);
+
+            plotDescription.Decorations.Add(new RiemannSumDescription(functionToPlot, 4, 0, 8));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
             var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
