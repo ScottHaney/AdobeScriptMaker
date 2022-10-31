@@ -66,7 +66,7 @@ namespace DirectRendering.Plotting
                     new Point(visualLeftX, visualBottomY)
                 };
 
-                yield return new PathDrawing(points) { IsClosed = true };
+                yield return new PathDrawing(points) { IsClosed = true, HasLockedScale = false };
             }
         }
 

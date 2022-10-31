@@ -38,21 +38,30 @@ namespace AdobeScriptMaker.Core
 
         private void VisitPath(string layerVar, AdobePathComponent path)
         {
+            var baseGroupVar = _context.GetNextAutoVariable();
             var vectorsGroupVar = _context.GetNextAutoVariable();
             var vectorGroupVar = _context.GetNextAutoVariable();
             var shapeVar = _context.GetNextAutoVariable();
             var strokeVar = _context.GetNextAutoVariable();
 
-            var scriptText = $@"var {vectorsGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+            var transformGroupVar = _context.GetNextAutoVariable();
+            var scaleVar = _context.GetNextAutoVariable();
+
+            var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
+var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
 var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
 var {shapeVar} = new Shape();
 {shapeVar}.vertices = { ConvertPointsToJavascriptArg(path.Points)};
 {shapeVar}.closed = {path.IsClosed.ToString().ToLower()};
-{vectorGroupVar}.property('Path').setValue({ shapeVar});
+{vectorGroupVar}.property('Path').setValue({shapeVar});
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
 {strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
-{layerVar}.property('Transform').property('Position').setValue([0, 0]);";
+{layerVar}.property('Transform').property('Position').setValue([0, 0]);
+
+var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group');
+var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');
+";
 
             _builder.AppendLine(scriptText);
         }

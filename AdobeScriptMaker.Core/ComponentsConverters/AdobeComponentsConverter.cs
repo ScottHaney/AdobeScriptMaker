@@ -34,7 +34,8 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             return new AdobePathComponent(path.Points.Select(x => new PointF(x.X, x.Y)).ToArray())
             {
                 Thickness = path.Thickness,
-                IsClosed = path.IsClosed
+                IsClosed = path.IsClosed,
+                HasLockedScale = path.HasLockedScale
             };
         }
     }
