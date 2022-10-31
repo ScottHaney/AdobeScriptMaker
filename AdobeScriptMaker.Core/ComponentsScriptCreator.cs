@@ -23,14 +23,21 @@ namespace AdobeScriptMaker.Core
 
         private void VisitComposition(AdobeComposition composition)
         {
+            var compositionRef = "app.project.activeItem";
+
+            var nullLayerVar = _context.GetNextAutoVariable();
+            _builder.AppendLine($"var {nullLayerVar} = {compositionRef}.layers.addNull();");
+
             foreach (var layer in composition.Layers)
-                VisitLayer("app.project.activeItem", layer);
+                VisitLayer(compositionRef, layer, nullLayerVar);
         }
 
-        private void VisitLayer(string compositionRef, AdobeShapeLayer layer)
+        private void VisitLayer(string compositionRef, AdobeShapeLayer layer, string nullLayerVar)
         {
             var layerVar = _context.GetNextAutoVariable();
+
             _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+            _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
 
             foreach (var drawing in layer.Drawings)
                 VisitPath(layerVar, drawing);
@@ -60,8 +67,7 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {layerVar}.property('Transform').property('Position').setValue([0, 0]);
 
 var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group');
-var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');
-";
+var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
             _builder.AppendLine(scriptText);
         }
