@@ -2,6 +2,7 @@
 using AdobeScriptMaker.Core.Components.Layers;
 using DirectRendering;
 using DirectRendering.Drawing;
+using DirectRendering.Drawing.Animation;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             if (path == null)
                 throw new NotSupportedException();
 
-            return new AdobePathComponent(path.Points.Select(x => new PointF(x.X, x.Y)).ToArray())
+            return new AdobePathComponent(path.Points)
             {
                 Thickness = path.Thickness,
                 IsClosed = path.IsClosed,

@@ -8,6 +8,8 @@ namespace DirectRendering.Drawing.Animation
     {
         private readonly T _value;
 
+        public bool IsAnimated => false;
+
         public StaticValue(T value)
         {
             _value = value;

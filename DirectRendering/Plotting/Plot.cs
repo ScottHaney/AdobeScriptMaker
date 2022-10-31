@@ -58,12 +58,12 @@ namespace DirectRendering.Plotting
                 var visualTopY = (int)GetVisualYValue(topY, plotDescription.YAxis, axisRect);
                 var visualBottomY = (int)GetVisualYValue(bottomY, plotDescription.YAxis, axisRect);
 
-                var points = new Point[]
+                var points = new PointF[]
                 {
-                    new Point(visualLeftX, visualTopY),
-                    new Point(visualRightX, visualTopY),
-                    new Point(visualRightX, visualBottomY),
-                    new Point(visualLeftX, visualBottomY)
+                    new PointF(visualLeftX, visualTopY),
+                    new PointF(visualRightX, visualTopY),
+                    new PointF(visualRightX, visualBottomY),
+                    new PointF(visualLeftX, visualBottomY)
                 };
 
                 yield return new PathDrawing(points) { IsClosed = true, HasLockedScale = false };
@@ -80,7 +80,7 @@ namespace DirectRendering.Plotting
                 areaUnderFunction.StartX,
                 areaUnderFunction.EndX);
 
-            var points = new List<Point>();
+            var points = new List<PointF>();
             points.Add(CreatePoint(axisRect, plotDescription, areaUnderFunction.StartX, plotDescription.YAxis.MinValue));
             points.AddRange(plotPoints);
             points.Add(CreatePoint(axisRect, plotDescription, areaUnderFunction.EndX, plotDescription.YAxis.MinValue));
@@ -95,13 +95,13 @@ namespace DirectRendering.Plotting
             return new PathDrawing(CreateFunctionDrawingPoints(plottable, axisRect, plotDescription, plotDescription.XAxis.MinValue, plotDescription.XAxis.MaxValue).ToArray());
         }
 
-        private IEnumerable<Point> CreateFunctionDrawingPoints(IPlottableFunction plottable,
+        private IEnumerable<PointF> CreateFunctionDrawingPoints(IPlottableFunction plottable,
             Rectangle axisRect,
             PlotDescription plotDescription,
             double startX,
             double endX)
         {
-            var points = new List<Point>();
+            var points = new List<PointF>();
             points.Add(CreateFunctionPoint(plottable, axisRect, plotDescription, startX));
 
             var numTotalPoints = axisRect.Width / 2;

@@ -1,5 +1,6 @@
 ﻿using AdobeScriptMaker.Core.Components;
 using AdobeScriptMaker.Core.Components.Layers;
+using DirectRendering.Drawing.Animation;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -58,7 +59,7 @@ namespace AdobeScriptMaker.Core
 var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
 var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
 var {shapeVar} = new Shape();
-{shapeVar}.vertices = { ConvertPointsToJavascriptArg(path.Points)};
+{CreateSetVerticesCode(path.Points, shapeVar)}
 {shapeVar}.closed = {path.IsClosed.ToString().ToLower()};
 {vectorGroupVar}.property('Path').setValue({shapeVar});
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
@@ -70,6 +71,19 @@ var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group')
 var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
             _builder.AppendLine(scriptText);
+        }
+
+        private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,
+            string shapeVar)
+        {
+            if (!points.IsAnimated)
+                return $"{shapeVar}.vertices = { ConvertPointsToJavascriptArg(points.GetValues().Single().Value)};";
+            else
+            {
+                return String.Join(Environment.NewLine,
+                    points.GetValues()
+                        .Select(x => $"{shapeVar}.vertices.setValueAtTime({x.Time.Time.Value}, { ConvertPointsToJavascriptArg(points.GetValues().Single().Value)});"));
+            }
         }
 
         private string ConvertPointsToJavascriptArg(IEnumerable<PointF> points)

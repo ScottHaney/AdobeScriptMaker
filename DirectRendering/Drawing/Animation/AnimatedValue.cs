@@ -8,6 +8,8 @@ namespace DirectRendering.Drawing.Animation
     {
         private readonly ValueAtTime<T>[] _values;
 
+        public bool IsAnimated => true;
+
         public AnimatedValue(params ValueAtTime<T>[] values)
         {
             _values = values ?? Array.Empty<ValueAtTime<T>>();

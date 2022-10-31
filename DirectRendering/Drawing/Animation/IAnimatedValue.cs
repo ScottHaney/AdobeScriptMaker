@@ -6,6 +6,7 @@ namespace DirectRendering.Drawing.Animation
 {
     public interface IAnimatedValue<T>
     {
+        bool IsAnimated { get; }
         IEnumerable<ValueAtTime<T>> GetValues();
     }
 
@@ -30,6 +31,8 @@ namespace DirectRendering.Drawing.Animation
         private readonly double? _internalTime;
 
         public static readonly AnimationTime AllTimes = new AnimationTime();
+
+        public double? Time => _internalTime;
 
         public AnimationTime(double value)
         {
