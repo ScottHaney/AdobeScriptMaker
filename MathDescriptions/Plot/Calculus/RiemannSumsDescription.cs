@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MathDescriptions.Plot.Calculus
 {
-    public class RiemannSumsDescription
+    public class RiemannSumsDescription : IPlotDecoration
     {
         public readonly RiemannSumDescription RiemannSumStart;
         public readonly int NumTransitions;

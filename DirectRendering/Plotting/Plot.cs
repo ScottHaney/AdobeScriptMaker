@@ -35,7 +35,7 @@ namespace DirectRendering.Plotting
             foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumDescription>())
             {
                 foreach (var path in CreateRiemannSum(decorator, _visualBounds, _plotDescription))
-                    yield return path;
+                    yield return path.Drawing;
             }
 
             foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumsDescription>())
@@ -52,11 +52,38 @@ namespace DirectRendering.Plotting
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
-            foreach (var item in CreateRiemannSum(riemannSums.RiemannSumStart, axisRect, plotDescription))
-                yield return item;
+            var currentRiemannSum = CreateRiemannSum(riemannSums.RiemannSumStart, axisRect, plotDescription);
+            foreach (var item in currentRiemannSum)
+                yield return item.Drawing;
+
+            for (int i = 1; i <= riemannSums.NumTransitions; i++)
+            {
+                var nextNumRects = riemannSums.RiemannSumStart.NumRects * 2 * i;
+
+                var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
+                    nextNumRects,
+                    riemannSums.RiemannSumStart.StartX,
+                    riemannSums.RiemannSumStart.EndX);
+
+                foreach (var item in currentRiemannSum)
+                    yield return CreateSplitLine(item);
+
+                currentRiemannSum = CreateRiemannSum(nextRiemannSum, axisRect, plotDescription);
+
+                //foreach (var item in previousRiemannSum)
+                //    yield return item.Drawing;
+            }
         }
 
-        private IEnumerable<PathDrawing> CreateRiemannSum(RiemannSumDescription riemannSum,
+        private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect)
+        {
+            var midpointX = RiemannSumRect.BoundingRect.Left + RiemannSumRect.BoundingRect.Width / 2;
+
+            return new PathDrawing(new PointF(midpointX, RiemannSumRect.BoundingRect.Top),
+                new PointF(midpointX, RiemannSumRect.BoundingRect.Bottom));
+        }
+
+        private IEnumerable<RiemannSumResult> CreateRiemannSum(RiemannSumDescription riemannSum,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
@@ -105,7 +132,20 @@ namespace DirectRendering.Plotting
                 drawing.IsClosed = true;
                 drawing.HasLockedScale = false;
 
-                yield return drawing;
+                yield return new RiemannSumResult(drawing, new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY))); ;
+            }
+        }
+
+        private class RiemannSumResult
+        {
+            public readonly PathDrawing Drawing;
+            public readonly RectangleF BoundingRect;
+
+            public RiemannSumResult(PathDrawing drawing,
+                RectangleF boundingRect)
+            {
+                Drawing = drawing;
+                BoundingRect = boundingRect;
             }
         }
 
