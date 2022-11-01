@@ -49,7 +49,6 @@ namespace AdobeScriptMaker.Core
             var baseGroupVar = _context.GetNextAutoVariable();
             var vectorsGroupVar = _context.GetNextAutoVariable();
             var vectorGroupVar = _context.GetNextAutoVariable();
-            var shapeVar = _context.GetNextAutoVariable();
             var strokeVar = _context.GetNextAutoVariable();
 
             var transformGroupVar = _context.GetNextAutoVariable();
@@ -58,10 +57,7 @@ namespace AdobeScriptMaker.Core
             var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
 var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
 var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
-var {shapeVar} = new Shape();
-{CreateSetVerticesCode(path.Points, shapeVar)}
-{shapeVar}.closed = {path.IsClosed.ToString().ToLower()};
-{vectorGroupVar}.property('Path').setValue({shapeVar});
+{CreateSetVerticesCode(path.Points, vectorGroupVar, path.IsClosed)}
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
 {strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
@@ -74,16 +70,37 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
         }
 
         private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,
-            string shapeVar)
+            string vectorGroupVar,
+            bool isClosed)
         {
             if (!points.IsAnimated)
-                return $"{shapeVar}.vertices = { ConvertPointsToJavascriptArg(points.GetValues().Single().Value)};";
+                return CreateShape(points.GetValues().Single().Value, isClosed, vectorGroupVar, null);
             else
             {
                 return String.Join(Environment.NewLine,
                     points.GetValues()
-                        .Select(x => $"{shapeVar}.vertices.setValueAtTime({x.Time.Time.Value}, { ConvertPointsToJavascriptArg(points.GetValues().Single().Value)});"));
+                        .Select(x => CreateShape(x.Value, isClosed, vectorGroupVar, x.Time.Time)));
             }
+        }
+
+        private string CreateShape(IEnumerable<PointF> points,
+            bool isClosed,
+            string vectorGroupVar,
+            double? time)
+        {
+            var shapeVar = _context.GetNextAutoVariable();
+
+            var result = $@"var {shapeVar} = new Shape();
+{shapeVar}.vertices = {ConvertPointsToJavascriptArg(points)};
+{shapeVar}.closed = {isClosed.ToString().ToLower()};";
+
+            if (time == null)
+                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}.property('Path').setValue({shapeVar});");
+            else
+                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}.property('Path').setValueAtTime({time}, {shapeVar});");
+
+            return result;
+
         }
 
         private string ConvertPointsToJavascriptArg(IEnumerable<PointF> points)

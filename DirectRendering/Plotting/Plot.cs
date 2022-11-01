@@ -7,6 +7,7 @@ using DirectRendering.Drawing;
 using MathDescriptions.Plot.Functions;
 using System.Linq;
 using MathDescriptions.Plot.Calculus;
+using DirectRendering.Drawing.Animation;
 
 namespace DirectRendering.Plotting
 {
@@ -58,15 +59,39 @@ namespace DirectRendering.Plotting
                 var visualTopY = (int)GetVisualYValue(topY, plotDescription.YAxis, axisRect);
                 var visualBottomY = (int)GetVisualYValue(bottomY, plotDescription.YAxis, axisRect);
 
-                var points = new PointF[]
-                {
-                    new PointF(visualLeftX, visualTopY),
-                    new PointF(visualRightX, visualTopY),
-                    new PointF(visualRightX, visualBottomY),
-                    new PointF(visualLeftX, visualBottomY)
-                };
+                PathDrawing drawing;
 
-                yield return new PathDrawing(points) { IsClosed = true, HasLockedScale = false };
+                var points = new PointF[]
+                    {
+                        new PointF(visualLeftX, visualTopY),
+                        new PointF(visualRightX, visualTopY),
+                        new PointF(visualRightX, visualBottomY),
+                        new PointF(visualLeftX, visualBottomY)
+                    };
+
+                if (riemannSum.AnimationInfo == null)
+                {
+                    drawing = new PathDrawing(points);
+                }
+                else
+                {
+                    var startPoints = new PointF[]
+                    {
+                        new PointF(visualLeftX, visualBottomY),
+                        new PointF(visualRightX, visualBottomY),
+                        new PointF(visualRightX, visualBottomY),
+                        new PointF(visualLeftX, visualBottomY)
+                    };
+
+                    drawing = new PathDrawing(new AnimatedValue<PointF[]>(
+                        new ValueAtTime<PointF[]>(startPoints, new AnimationTime(riemannSum.AnimationInfo.AnimateStart)),
+                        new ValueAtTime<PointF[]>(points, new AnimationTime(riemannSum.AnimationInfo.AnimateEnd))));
+                }
+                
+                drawing.IsClosed = true;
+                drawing.HasLockedScale = false;
+
+                yield return drawing;
             }
         }
 

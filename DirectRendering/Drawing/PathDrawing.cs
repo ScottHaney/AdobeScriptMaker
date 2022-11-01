@@ -18,5 +18,10 @@ namespace DirectRendering.Drawing
         {
             Points = new StaticValue<PointF[]>(points ?? Array.Empty<PointF>());
         }
+
+        public PathDrawing(IAnimatedValue<PointF[]> points)
+        {
+            Points = points;
+        }
     }
 }

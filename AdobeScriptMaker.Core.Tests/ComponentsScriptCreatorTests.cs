@@ -90,7 +90,8 @@ namespace AdobeScriptMaker.Core.Tests
                 new AxisRangeDescription(0, 100),
                 functionToPlot);
 
-            plotDescription.Decorations.Add(new RiemannSumDescription(functionToPlot, 4, 0, 8));
+            plotDescription.Decorations.Add(new RiemannSumDescription(functionToPlot, 4, 0, 8,
+                new RiemannSumAnimationInfo(1, 3)));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
             var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
