@@ -38,8 +38,22 @@ namespace DirectRendering.Plotting
                     yield return path;
             }
 
+            foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumsDescription>())
+            {
+                foreach (var path in CreateRiemannSums(decorator, _visualBounds, _plotDescription))
+                    yield return path;
+            }
+
             foreach (var drawing in axes.GetDrawings())
                 yield return drawing;
+        }
+
+        private IEnumerable<PathDrawing> CreateRiemannSums(RiemannSumsDescription riemannSums,
+            Rectangle axisRect,
+            PlotDescription plotDescription)
+        {
+            foreach (var item in CreateRiemannSum(riemannSums.RiemannSumStart, axisRect, plotDescription))
+                yield return item;
         }
 
         private IEnumerable<PathDrawing> CreateRiemannSum(RiemannSumDescription riemannSum,

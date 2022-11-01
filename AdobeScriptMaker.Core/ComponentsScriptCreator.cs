@@ -38,6 +38,13 @@ namespace AdobeScriptMaker.Core
             var layerVar = _context.GetNextAutoVariable();
 
             _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+
+            if (layer.InPoint != null)
+                _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
+
+            if (layer.OutPoint != null)
+                _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
+
             _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
 
             foreach (var drawing in layer.Drawings)
