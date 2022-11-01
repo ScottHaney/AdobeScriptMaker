@@ -7,12 +7,12 @@ namespace MathDescriptions.Plot.Calculus
     public class RiemannSumsDescription : IPlotDecoration
     {
         public readonly RiemannSumDescription RiemannSumStart;
-        public readonly int NumTransitions;
+        public readonly int NumSums;
 
-        public RiemannSumsDescription(RiemannSumDescription riemannSumStart, int numTransitions)
+        public RiemannSumsDescription(RiemannSumDescription riemannSumStart, int numSums)
         {
             RiemannSumStart = riemannSumStart;
-            NumTransitions = numTransitions;
+            NumSums = numSums;
         }
     }
 }

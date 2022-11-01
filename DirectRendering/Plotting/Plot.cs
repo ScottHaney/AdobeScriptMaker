@@ -53,25 +53,21 @@ namespace DirectRendering.Plotting
             PlotDescription plotDescription)
         {
             var currentRiemannSum = CreateRiemannSum(riemannSums.RiemannSumStart, axisRect, plotDescription);
-            foreach (var item in currentRiemannSum)
-                yield return item.Drawing;
-
-            for (int i = 1; i <= riemannSums.NumTransitions; i++)
+            
+            for (int i = 1; i <= riemannSums.NumSums; i++)
             {
-                var nextNumRects = riemannSums.RiemannSumStart.NumRects * 2 * i;
-
-                var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
-                    nextNumRects,
-                    riemannSums.RiemannSumStart.StartX,
-                    riemannSums.RiemannSumStart.EndX);
+                foreach (var item in currentRiemannSum)
+                    yield return item.Drawing;
 
                 foreach (var item in currentRiemannSum)
                     yield return CreateSplitLine(item);
 
-                currentRiemannSum = CreateRiemannSum(nextRiemannSum, axisRect, plotDescription);
+                var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
+                    riemannSums.RiemannSumStart.NumRects * 2 * i,
+                    riemannSums.RiemannSumStart.StartX,
+                    riemannSums.RiemannSumStart.EndX);
 
-                //foreach (var item in previousRiemannSum)
-                //    yield return item.Drawing;
+                currentRiemannSum = CreateRiemannSum(nextRiemannSum, axisRect, plotDescription);
             }
         }
 
