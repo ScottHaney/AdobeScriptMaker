@@ -16,10 +16,21 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         public AdobeScript Convert(DrawingSequence drawingSequence)
         {
             var layers = new List<AdobeShapeLayer>();
-            foreach (var item in drawingSequence.Drawings)
+
+            double currentTime = 0;
+            foreach (var context in drawingSequence.Contexts)
             {
-                var layer = new AdobeShapeLayer(item.GetDrawings().Select(x => CreatePath((PathDrawing)x)).ToArray());
+                var startTime = context.StartTime.GetAbsoluteTime(currentTime);
+                var endTime = startTime + context.Duration.GetAbsoluteTime(startTime);
+
+                var layer = new AdobeShapeLayer(context.Drawings.Select(x => CreatePath((PathDrawing)x)).ToArray())
+                {
+                    InPoint = startTime,
+                    OutPoint = endTime
+                };
+
                 layers.Add(layer);
+                currentTime = endTime;
             }
 
             var defaultComp = new AdobeComposition(layers.ToArray());
