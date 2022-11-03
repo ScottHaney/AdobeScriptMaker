@@ -62,7 +62,7 @@ namespace DirectRendering.Plotting
                     new AbsoluteTimingContextTime(4),
                     currentRiemannSum.Select(x => x.Drawing).ToArray());
 
-                var lines = currentRiemannSum.Select(x => CreateSplitLine(x)).ToArray();
+                var lines = currentRiemannSum.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
                 yield return new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
                     new AbsoluteTimingContextTime(1),
                     lines);
@@ -77,12 +77,27 @@ namespace DirectRendering.Plotting
             }
         }
 
-        private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect)
+        private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect,
+            double animationStart,
+            double animationEnd)
         {
             var midpointX = RiemannSumRect.BoundingRect.Left + RiemannSumRect.BoundingRect.Width / 2;
 
-            return new PathDrawing(new PointF(midpointX, RiemannSumRect.BoundingRect.Top),
-                new PointF(midpointX, RiemannSumRect.BoundingRect.Bottom));
+            var startPoints = new PointF[]
+            {
+                new PointF(midpointX, RiemannSumRect.BoundingRect.Top),
+                new PointF(midpointX, RiemannSumRect.BoundingRect.Top)
+            };
+
+            var endPoints = new PointF[]
+            {
+                new PointF(midpointX, RiemannSumRect.BoundingRect.Top),
+                new PointF(midpointX, RiemannSumRect.BoundingRect.Bottom)
+            };
+
+            return new PathDrawing(new AnimatedValue<PointF[]>(
+                        new ValueAtTime<PointF[]>(startPoints, new AnimationTime(animationStart)),
+                        new ValueAtTime<PointF[]>(endPoints, new AnimationTime(animationEnd))));
         }
 
         private IEnumerable<RiemannSumResult> CreateRiemannSum(RiemannSumDescription riemannSum,
