@@ -63,13 +63,16 @@ namespace DirectRendering.Plotting
                     currentRiemannSum = CreateRiemannSum_SplitTopDown(currentSumDescription, axisRect, plotDescription, currentTime + 0.5);
 
                 yield return new TimingContext(new AbsoluteTimingContextTime(currentTime),
-                    new AbsoluteTimingContextTime(4),
+                    new AbsoluteTimingContextTime(riemannSums.NumSums == i ? 30 : 4),
                     currentRiemannSum.Select(x => x.Drawing).ToArray());
 
-                var lines = currentRiemannSum.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
-                yield return new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
-                    new AbsoluteTimingContextTime(1),
-                    lines);
+                if (riemannSums.NumSums != i)
+                {
+                    var lines = currentRiemannSum.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
+                    yield return new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
+                        new AbsoluteTimingContextTime(1),
+                        lines);
+                }
 
                 var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
                     riemannSums.RiemannSumStart.NumRects * 2 * i,
