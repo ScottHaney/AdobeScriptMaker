@@ -34,7 +34,7 @@ namespace DirectRendering.Plotting
 
             foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumDescription>())
             {
-                foreach (var path in CreateRiemannSum(decorator, _visualBounds, _plotDescription))
+                foreach (var path in CreateRiemannSum_BottomUp(decorator, _visualBounds, _plotDescription))
                     yield return path.Drawing;
             }
 
@@ -56,7 +56,11 @@ namespace DirectRendering.Plotting
             var currentTime = 0;
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
-                var currentRiemannSum = CreateRiemannSum(currentSumDescription, axisRect, plotDescription);
+                IEnumerable<RiemannSumResult> currentRiemannSum;
+                if (i == 1)
+                    currentRiemannSum = CreateRiemannSum_BottomUp(currentSumDescription, axisRect, plotDescription);
+                else
+                    currentRiemannSum = CreateRiemannSum_SplitTopDown(currentSumDescription, axisRect, plotDescription, currentTime + 0.5);
 
                 yield return new TimingContext(new AbsoluteTimingContextTime(currentTime),
                     new AbsoluteTimingContextTime(4),
@@ -100,7 +104,7 @@ namespace DirectRendering.Plotting
                         new ValueAtTime<PointF[]>(endPoints, new AnimationTime(animationEnd))));
         }
 
-        private IEnumerable<RiemannSumResult> CreateRiemannSum(RiemannSumDescription riemannSum,
+        private IEnumerable<RiemannSumResult> CreateRiemannSum_BottomUp(RiemannSumDescription riemannSum,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
@@ -150,6 +154,66 @@ namespace DirectRendering.Plotting
                 drawing.HasLockedScale = false;
 
                 yield return new RiemannSumResult(drawing, new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY))); ;
+            }
+        }
+
+        private IEnumerable<RiemannSumResult> CreateRiemannSum_SplitTopDown(RiemannSumDescription riemannSum,
+            Rectangle axisRect,
+            PlotDescription plotDescription,
+            double animationStartTime)
+        {
+            var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
+            for (int i = 0; i < riemannSum.NumRects; i++)
+            {
+                var rightX = rectWidth * (i + 1);
+                var leftX = rightX - rectWidth;
+
+                var topYStart = riemannSum.FunctionDescription.GetYValue(i % 2 == 1
+                    ? rightX
+                    : rectWidth * (i + 2));
+                var topYEnd = riemannSum.FunctionDescription.GetYValue(rightX);
+
+                var bottomY = plotDescription.YAxis.MinValue;
+
+                var visualRightX = (int)GetVisualXValue(rightX, plotDescription.XAxis, axisRect);
+                var visualLeftX = (int)GetVisualXValue(leftX, plotDescription.XAxis, axisRect);
+                var visualTopYStart = (int)GetVisualYValue(topYStart, plotDescription.YAxis, axisRect);
+                var visualTopYEnd = (int)GetVisualYValue(topYEnd, plotDescription.YAxis, axisRect);
+                var visualBottomY = (int)GetVisualYValue(bottomY, plotDescription.YAxis, axisRect);
+
+                PathDrawing drawing;
+
+                var points = new PointF[]
+                    {
+                        new PointF(visualLeftX, visualTopYEnd),
+                        new PointF(visualRightX, visualTopYEnd),
+                        new PointF(visualRightX, visualBottomY),
+                        new PointF(visualLeftX, visualBottomY)
+                    };
+
+                if (i % 2 == 1)
+                {
+                    drawing = new PathDrawing(points);
+                }
+                else
+                {
+                    var startPoints = new PointF[]
+                    {
+                        new PointF(visualLeftX, visualTopYStart),
+                        new PointF(visualRightX, visualTopYStart),
+                        new PointF(visualRightX, visualBottomY),
+                        new PointF(visualLeftX, visualBottomY)
+                    };
+
+                    drawing = new PathDrawing(new AnimatedValue<PointF[]>(
+                        new ValueAtTime<PointF[]>(startPoints, new AnimationTime(animationStartTime)),
+                        new ValueAtTime<PointF[]>(points, new AnimationTime(animationStartTime + 1))));
+                }
+
+                drawing.IsClosed = true;
+                drawing.HasLockedScale = false;
+
+                yield return new RiemannSumResult(drawing, new RectangleF(visualLeftX, visualTopYEnd, (visualRightX - visualLeftX), (visualBottomY - visualTopYEnd))); ;
             }
         }
 
