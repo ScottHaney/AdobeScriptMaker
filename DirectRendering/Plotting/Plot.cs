@@ -75,7 +75,7 @@ namespace DirectRendering.Plotting
                 }
 
                 var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
-                    riemannSums.RiemannSumStart.NumRects * 2 * i,
+                    currentSumDescription.NumRects * 2,
                     riemannSums.RiemannSumStart.StartX,
                     riemannSums.RiemannSumStart.EndX);
 

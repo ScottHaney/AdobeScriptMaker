@@ -114,7 +114,7 @@ namespace AdobeScriptMaker.Core.Tests
 
             plotDescription.Decorations.Add(new RiemannSumsDescription(
                 new RiemannSumDescription(functionToPlot, 1, 0, 8, new RiemannSumAnimationInfo(1, 3)),
-                5));
+                7));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
             var drawingSequence = new DrawingSequence(plot.GetDrawings().Where(x => !(x is TimingContext)).ToArray(),
