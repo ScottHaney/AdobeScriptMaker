@@ -117,7 +117,8 @@ namespace AdobeScriptMaker.Core.Tests
                 2));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
-            var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
+            var drawingSequence = new DrawingSequence(plot.GetDrawings().Where(x => !(x is TimingContext)).ToArray(),
+                plot.GetDrawings().OfType<TimingContext>().ToArray());
 
             var converter = new AdobeComponentsConverter();
             var converted = converter.Convert(drawingSequence);

@@ -21,9 +21,20 @@ namespace DirectRendering
         {
             Contexts = timingContexts;
         }
+
+        public DrawingSequence(IDrawing[] drawings, TimingContext[] timingContexts)
+        {
+            var items = new List<TimingContext>()
+            {
+                new TimingContext(new AbsoluteTimingContextTime(0), new AbsoluteTimingContextTime(30), drawings)
+            };
+
+            items.AddRange(timingContexts);
+            Contexts = items.ToArray();
+        }
     }
 
-    public class TimingContext
+    public class TimingContext : IDrawing
     {
         public readonly TimingContextTime StartTime;
         public readonly TimingContextTime Duration;
@@ -36,6 +47,11 @@ namespace DirectRendering
             StartTime = startTime;
             Duration = duration;
             Drawings = drawings;
+        }
+
+        public IEnumerable<IDrawing> GetDrawings()
+        {
+            return Drawings;
         }
     }
 

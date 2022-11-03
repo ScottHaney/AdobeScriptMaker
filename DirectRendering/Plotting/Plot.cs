@@ -48,26 +48,32 @@ namespace DirectRendering.Plotting
                 yield return drawing;
         }
 
-        private IEnumerable<PathDrawing> CreateRiemannSums(RiemannSumsDescription riemannSums,
+        private IEnumerable<IDrawing> CreateRiemannSums(RiemannSumsDescription riemannSums,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
-            var currentRiemannSum = CreateRiemannSum(riemannSums.RiemannSumStart, axisRect, plotDescription);
-            
+            var currentSumDescription = riemannSums.RiemannSumStart;
+            var currentTime = 0;
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
-                foreach (var item in currentRiemannSum)
-                    yield return item.Drawing;
+                var currentRiemannSum = CreateRiemannSum(currentSumDescription, axisRect, plotDescription);
 
-                foreach (var item in currentRiemannSum)
-                    yield return CreateSplitLine(item);
+                yield return new TimingContext(new AbsoluteTimingContextTime(currentTime),
+                    new AbsoluteTimingContextTime(4),
+                    currentRiemannSum.Select(x => x.Drawing).ToArray());
+
+                var lines = currentRiemannSum.Select(x => CreateSplitLine(x)).ToArray();
+                yield return new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
+                    new AbsoluteTimingContextTime(1),
+                    lines);
 
                 var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
                     riemannSums.RiemannSumStart.NumRects * 2 * i,
                     riemannSums.RiemannSumStart.StartX,
                     riemannSums.RiemannSumStart.EndX);
 
-                currentRiemannSum = CreateRiemannSum(nextRiemannSum, axisRect, plotDescription);
+                currentSumDescription = nextRiemannSum;
+                currentTime += 4;
             }
         }
 
