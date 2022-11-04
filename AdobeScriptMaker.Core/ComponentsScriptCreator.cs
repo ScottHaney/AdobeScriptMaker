@@ -52,7 +52,7 @@ namespace AdobeScriptMaker.Core
                 if (drawing is AdobePathComponent path)
                     VisitPath(layerVar, path);
                 else if (drawing is AdobeSliderControl slider)
-                    VisitSlider(layerVar, slider);
+                    VisitSlider(compositionRef, slider);
                 else
                     throw new NotSupportedException(drawing.GetType().FullName);
             }   
@@ -83,9 +83,16 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
             _builder.AppendLine(scriptText);
         }
 
-        private void VisitSlider(string layerVar, AdobeSliderControl slider)
+        private void VisitSlider(string compositionRef, AdobeSliderControl slider)
         {
+            var nullLayerVar = _context.GetNextAutoVariable();
 
+            _builder.AppendLine(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
+{nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');
+{nullLayerVar}.effect('Slider Control').property('Slider').setValue(100);");
+
+            if (!string.IsNullOrEmpty(slider.Name))
+                _builder.AppendLine($"{nullLayerVar}.name = { slider.Name};");
         }
 
         private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,
