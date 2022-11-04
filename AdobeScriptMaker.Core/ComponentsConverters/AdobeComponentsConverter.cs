@@ -23,7 +23,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 var startTime = context.StartTime.GetAbsoluteTime(currentTime);
                 var endTime = startTime + context.Duration.GetAbsoluteTime(startTime);
 
-                var layer = new AdobeShapeLayer(context.Drawings.Select(x => CreatePath((PathDrawing)x)).ToArray())
+                var layer = new AdobeShapeLayer(context.Drawings
+                    .Select(x => Create((dynamic)x))
+                    .Cast<IAdobeLayerComponent>()
+                    .ToArray())
                 {
                     InPoint = startTime,
                     OutPoint = endTime
@@ -37,17 +40,24 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             return new AdobeScript(defaultComp);
         }
 
-        private AdobePathComponent CreatePath(IDrawing drawing)
+        private AdobePathComponent Create(PathDrawing path)
         {
-            var path = drawing as PathDrawing;
-            if (path == null)
-                throw new NotSupportedException();
-
             return new AdobePathComponent(path.Points)
             {
                 Thickness = path.Thickness,
                 IsClosed = path.IsClosed,
                 HasLockedScale = path.HasLockedScale
+            };
+        }
+
+        private AdobeSliderControl Create(SliderControl slider)
+        {
+            return new AdobeSliderControl()
+            {
+                Name = slider.Name,
+                Values = slider.Values
+                    .Select(x => new AdobeSliderControlValue() { Time = x.Time, Value = x.Value })
+                    .ToArray()
             };
         }
     }

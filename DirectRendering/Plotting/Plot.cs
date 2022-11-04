@@ -54,6 +54,9 @@ namespace DirectRendering.Plotting
         {
             var currentSumDescription = riemannSums.RiemannSumStart;
             var currentTime = 0;
+
+            var sliderValues = new List<SliderValue>();
+
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
                 IEnumerable<RiemannSumResult> currentRiemannSum;
@@ -74,14 +77,18 @@ namespace DirectRendering.Plotting
                         lines);
                 }
 
-                var nextRiemannSum = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
+                sliderValues.Add(new SliderValue(currentTime, currentSumDescription.NumRects));
+
+                var nextRiemannSumDescription = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
                     currentSumDescription.NumRects * 2,
                     riemannSums.RiemannSumStart.StartX,
                     riemannSums.RiemannSumStart.EndX);
 
-                currentSumDescription = nextRiemannSum;
+                currentSumDescription = nextRiemannSumDescription;
                 currentTime += 4;
             }
+
+            yield return new SliderControl(sliderValues.ToArray());
         }
 
         private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect,

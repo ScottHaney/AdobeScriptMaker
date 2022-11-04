@@ -48,7 +48,14 @@ namespace AdobeScriptMaker.Core
             _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
 
             foreach (var drawing in layer.Drawings)
-                VisitPath(layerVar, drawing);
+            {
+                if (drawing is AdobePathComponent path)
+                    VisitPath(layerVar, path);
+                else if (drawing is AdobeSliderControl slider)
+                    VisitSlider(layerVar, slider);
+                else
+                    throw new NotSupportedException(drawing.GetType().FullName);
+            }   
         }
 
         private void VisitPath(string layerVar, AdobePathComponent path)
@@ -74,6 +81,11 @@ var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group')
 var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
             _builder.AppendLine(scriptText);
+        }
+
+        private void VisitSlider(string layerVar, AdobeSliderControl slider)
+        {
+
         }
 
         private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,

@@ -6,7 +6,7 @@ using DirectRendering.Drawing.Animation;
 
 namespace AdobeScriptMaker.Core.Components
 {
-    public class AdobePathComponent
+    public class AdobePathComponent : IAdobeLayerComponent
     {
         public readonly IAnimatedValue<PointF[]> Points;
         public float Thickness { get; set; } = 2;

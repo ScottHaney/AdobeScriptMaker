@@ -6,11 +6,11 @@ namespace AdobeScriptMaker.Core.Components.Layers
 {
     public class AdobeShapeLayer : AdobeLayer
     {
-        public readonly AdobePathComponent[] Drawings;
+        public readonly IAdobeLayerComponent[] Drawings;
 
-        public AdobeShapeLayer(params AdobePathComponent[] drawings)
+        public AdobeShapeLayer(params IAdobeLayerComponent[] drawings)
         {
-            Drawings = drawings ?? Array.Empty<AdobePathComponent>();
+            Drawings = drawings ?? Array.Empty<IAdobeLayerComponent>();
         }
     }
 }
