@@ -40,7 +40,8 @@ namespace DirectRendering.Plotting
 
             foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumsDescription>())
             {
-                foreach (var path in CreateRiemannSums(decorator, _visualBounds, _plotDescription))
+                var riemannSumsResult = CreateRiemannSums(decorator, _visualBounds, _plotDescription);
+                foreach (var path in riemannSumsResult.Drawings)
                     yield return path;
             }
 
@@ -48,7 +49,7 @@ namespace DirectRendering.Plotting
                 yield return drawing;
         }
 
-        private IEnumerable<IDrawing> CreateRiemannSums(RiemannSumsDescription riemannSums,
+        private RiemannSumsResult CreateRiemannSums(RiemannSumsDescription riemannSums,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
@@ -56,6 +57,9 @@ namespace DirectRendering.Plotting
             var currentTime = 0;
 
             var sliderValues = new List<SliderValue>();
+            var startTimes = new List<RiemannSumStartTime>();
+
+            var drawings = new List<IDrawing>();
 
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
@@ -65,19 +69,20 @@ namespace DirectRendering.Plotting
                 else
                     currentRiemannSum = CreateRiemannSum_SplitTopDown(currentSumDescription, axisRect, plotDescription, currentTime + 0.5);
 
-                yield return new TimingContext(new AbsoluteTimingContextTime(currentTime),
+                drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime),
                     new AbsoluteTimingContextTime(riemannSums.NumSums == i ? 30 : 4),
-                    currentRiemannSum.Select(x => x.Drawing).ToArray());
+                    currentRiemannSum.Select(x => x.Drawing).ToArray()));
 
                 if (riemannSums.NumSums != i)
                 {
                     var lines = currentRiemannSum.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
-                    yield return new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
+                    drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
                         new AbsoluteTimingContextTime(1),
-                        lines);
+                        lines));
                 }
 
                 sliderValues.Add(new SliderValue(currentTime, currentSumDescription.NumRects));
+                startTimes.Add(new RiemannSumStartTime(currentTime, currentSumDescription.NumRects));
 
                 var nextRiemannSumDescription = new RiemannSumDescription(riemannSums.RiemannSumStart.FunctionDescription,
                     currentSumDescription.NumRects * 2,
@@ -88,7 +93,23 @@ namespace DirectRendering.Plotting
                 currentTime += 4;
             }
 
-            yield return new SliderControl(sliderValues.ToArray());
+            drawings.Add(new SliderControl(sliderValues.ToArray()));
+
+            return new RiemannSumsResult(drawings,
+                new RiemannSumsMetadata(startTimes.ToArray()));
+        }
+
+        private class RiemannSumsResult
+        {
+            public IEnumerable<IDrawing> Drawings;
+            public RiemannSumsMetadata Metadata;
+
+            public RiemannSumsResult(IEnumerable<IDrawing> drawings,
+                RiemannSumsMetadata metadata)
+            {
+                Drawings = drawings;
+                Metadata = metadata;
+            }
         }
 
         private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect,

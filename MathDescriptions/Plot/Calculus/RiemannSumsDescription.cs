@@ -15,4 +15,27 @@ namespace MathDescriptions.Plot.Calculus
             NumSums = numSums;
         }
     }
+
+    public class RiemannSumsMetadata
+    {
+        public readonly RiemannSumStartTime[] StartTimes;
+
+        public RiemannSumsMetadata(params RiemannSumStartTime[] startTimes)
+        {
+            StartTimes = startTimes ?? Array.Empty<RiemannSumStartTime>();
+        }
+    }
+
+    public class RiemannSumStartTime
+    {
+        public readonly double Time;
+        public readonly int NumRectangles;
+
+        public RiemannSumStartTime(double time,
+            int numRectangles)
+        {
+            Time = time;
+            NumRectangles = numRectangles;
+        }
+    }
 }
