@@ -90,9 +90,11 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
             _builder.AppendLine(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');");
 
+            var adobeIndex = 1;
             foreach (var value in slider.Values)
             {
                 _builder.AppendLine($"{nullLayerVar}.effect('Slider Control').property('Slider').setValueAtTime({value.Time}, {value.Value});");
+                _builder.AppendLine($"{nullLayerVar}.effect('Slider Control').property('Slider').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
 
             if (!string.IsNullOrEmpty(slider.Name))
