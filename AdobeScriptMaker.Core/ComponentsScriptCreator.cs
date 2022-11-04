@@ -88,8 +88,12 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
             var nullLayerVar = _context.GetNextAutoVariable();
 
             _builder.AppendLine(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
-{nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');
-{nullLayerVar}.effect('Slider Control').property('Slider').setValue(100);");
+{nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');");
+
+            foreach (var value in slider.Values)
+            {
+                _builder.AppendLine($"{nullLayerVar}.effect('Slider Control').property('Slider').setValueAtTime({value.Time}, {value.Value});");
+            }
 
             if (!string.IsNullOrEmpty(slider.Name))
                 _builder.AppendLine($"{nullLayerVar}.name = { slider.Name};");
