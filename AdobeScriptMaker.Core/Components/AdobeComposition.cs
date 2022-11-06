@@ -7,11 +7,11 @@ namespace AdobeScriptMaker.Core.Components
 {
     public class AdobeComposition
     {
-        public readonly AdobeShapeLayer[] Layers;
+        public readonly AdobeLayer[] Layers;
 
-        public AdobeComposition(params AdobeShapeLayer[] layers)
+        public AdobeComposition(params AdobeLayer[] layers)
         {
-            Layers = layers ?? Array.Empty<AdobeShapeLayer>();
+            Layers = layers ?? Array.Empty<AdobeLayer>();
         }
     }
 }

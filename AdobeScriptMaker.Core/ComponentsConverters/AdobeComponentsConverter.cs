@@ -3,6 +3,7 @@ using AdobeScriptMaker.Core.Components.Layers;
 using DirectRendering;
 using DirectRendering.Drawing;
 using DirectRendering.Drawing.Animation;
+using DirectRendering.Text;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
     {
         public AdobeScript Convert(DrawingSequence drawingSequence)
         {
-            var layers = new List<AdobeShapeLayer>();
+            var layers = new List<AdobeLayer>();
 
             double currentTime = 0;
             foreach (var context in drawingSequence.Contexts)
@@ -23,7 +24,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 var startTime = context.StartTime.GetAbsoluteTime(currentTime);
                 var endTime = startTime + context.Duration.GetAbsoluteTime(startTime);
 
-                var layer = new AdobeShapeLayer(context.Drawings
+                var layer = new AdobeLayer(context.Drawings
                     .Select(x => Create((dynamic)x))
                     .Cast<IAdobeLayerComponent>()
                     .ToArray())
@@ -47,6 +48,14 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 Thickness = path.Thickness,
                 IsClosed = path.IsClosed,
                 HasLockedScale = path.HasLockedScale
+            };
+        }
+
+        private AdobeTextControl Create(SequenceDrawing path)
+        {
+            return new AdobeTextControl()
+            {
+                Values = path.Values.Select(x => new AdobeTextControlValue() { Time = x.Time, Value = x.Value.ToString() }).ToArray()
             };
         }
 

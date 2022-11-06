@@ -33,29 +33,56 @@ namespace AdobeScriptMaker.Core
                 VisitLayer(compositionRef, layer, nullLayerVar);
         }
 
-        private void VisitLayer(string compositionRef, AdobeShapeLayer layer, string nullLayerVar)
+        private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
         {
-            var layerVar = _context.GetNextAutoVariable();
+            var textDrawings = layer.Drawings.OfType<AdobeTextControl>().ToList();
+            var otherDrawings = layer.Drawings.Where(x => !(x is AdobeTextControl)).ToList();
 
-            _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
-
-            if (layer.InPoint != null)
-                _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
-
-            if (layer.OutPoint != null)
-                _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
-
-            _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
-
-            foreach (var drawing in layer.Drawings)
+            if (otherDrawings.Any())
             {
-                if (drawing is AdobePathComponent path)
-                    VisitPath(layerVar, path);
-                else if (drawing is AdobeSliderControl slider)
-                    VisitSlider(compositionRef, slider);
-                else
-                    throw new NotSupportedException(drawing.GetType().FullName);
-            }   
+                var layerVar = _context.GetNextAutoVariable();
+                _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+
+                if (layer.InPoint != null)
+                    _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
+
+                if (layer.OutPoint != null)
+                    _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
+
+                _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
+
+                foreach (var drawing in otherDrawings)
+                {
+                    if (drawing is AdobePathComponent path)
+                        VisitPath(layerVar, path);
+                    else if (drawing is AdobeSliderControl slider)
+                        VisitSlider(compositionRef, slider);
+                    else
+                        throw new NotSupportedException(drawing.GetType().FullName);
+                }
+            }
+
+            if (textDrawings.Any())
+            {
+                var layerVar = _context.GetNextAutoVariable();
+                _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addText()");
+
+                if (layer.InPoint != null)
+                    _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
+
+                if (layer.OutPoint != null)
+                    _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
+
+                _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
+
+                foreach (var drawing in textDrawings)
+                {
+                    if (drawing is AdobeTextControl text)
+                        VisitText(layerVar, text);
+                    else
+                        throw new NotSupportedException(drawing.GetType().FullName);
+                }
+            }
         }
 
         private void VisitPath(string layerVar, AdobePathComponent path)
@@ -81,6 +108,31 @@ var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group')
 var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
             _builder.AppendLine(scriptText);
+        }
+
+        private void VisitText(string layerVar, AdobeTextControl text)
+        {
+            /*var baseGroupVar = _context.GetNextAutoVariable();
+            var vectorsGroupVar = _context.GetNextAutoVariable();
+            var vectorGroupVar = _context.GetNextAutoVariable();
+            var strokeVar = _context.GetNextAutoVariable();
+
+            var transformGroupVar = _context.GetNextAutoVariable();
+            var scaleVar = _context.GetNextAutoVariable();
+
+            var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
+var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
+var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
+{CreateSetVerticesCode(text.Points, vectorGroupVar, text.IsClosed)}
+var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
+{strokeVar}.property('ADBE Vector Stroke Width').setValue('{text.Thickness}');
+{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
+{layerVar}.property('Transform').property('Position').setValue([0, 0]);
+
+var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group');
+var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
+
+            _builder.AppendLine(scriptText);*/
         }
 
         private void VisitSlider(string compositionRef, AdobeSliderControl slider)

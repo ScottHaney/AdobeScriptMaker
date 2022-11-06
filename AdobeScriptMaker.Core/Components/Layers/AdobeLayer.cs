@@ -8,5 +8,12 @@ namespace AdobeScriptMaker.Core.Components.Layers
     {
         public double? InPoint { get; set; }
         public double? OutPoint { get; set; }
+
+        public readonly IAdobeLayerComponent[] Drawings;
+
+        public AdobeLayer(params IAdobeLayerComponent[] drawings)
+        {
+            Drawings = drawings ?? Array.Empty<IAdobeLayerComponent>();
+        }
     }
 }
