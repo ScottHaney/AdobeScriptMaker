@@ -34,7 +34,7 @@ namespace DirectRendering.Plotting
 
             foreach (var decorator in _plotDescription.Decorations.OfType<RiemannSumDescription>())
             {
-                foreach (var path in CreateRiemannSum_BottomUp(decorator, _visualBounds, _plotDescription))
+                foreach (var path in CreateRiemannSum_BottomUp(decorator, _visualBounds, _plotDescription).Rects)
                     yield return path.Drawing;
             }
 
@@ -63,7 +63,7 @@ namespace DirectRendering.Plotting
 
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
-                IEnumerable<RiemannSumResult> currentRiemannSum;
+                RiemannSumResult currentRiemannSum;
                 if (i == 1)
                     currentRiemannSum = CreateRiemannSum_BottomUp(currentSumDescription, axisRect, plotDescription);
                 else
@@ -71,11 +71,11 @@ namespace DirectRendering.Plotting
 
                 drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime),
                     new AbsoluteTimingContextTime(riemannSums.NumSums == i ? 30 : 4),
-                    currentRiemannSum.Select(x => x.Drawing).ToArray()));
+                    currentRiemannSum.Rects.Select(x => x.Drawing).ToArray()));
 
                 if (riemannSums.NumSums != i)
                 {
-                    var lines = currentRiemannSum.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
+                    var lines = currentRiemannSum.Rects.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
                     drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
                         new AbsoluteTimingContextTime(1),
                         lines));
@@ -112,7 +112,7 @@ namespace DirectRendering.Plotting
             }
         }
 
-        private PathDrawing CreateSplitLine(RiemannSumResult RiemannSumRect,
+        private PathDrawing CreateSplitLine(RiemannSumRect RiemannSumRect,
             double animationStart,
             double animationEnd)
         {
@@ -135,11 +135,12 @@ namespace DirectRendering.Plotting
                         new ValueAtTime<PointF[]>(endPoints, new AnimationTime(animationEnd))));
         }
 
-        private IEnumerable<RiemannSumResult> CreateRiemannSum_BottomUp(RiemannSumDescription riemannSum,
+        private RiemannSumResult CreateRiemannSum_BottomUp(RiemannSumDescription riemannSum,
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
             var totalArea = 0d;
+            var rects = new List<RiemannSumRect>();
 
             var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
             for (int i = 0; i < riemannSum.NumRects; i++)
@@ -195,18 +196,20 @@ namespace DirectRendering.Plotting
                 drawing.IsClosed = true;
                 drawing.HasLockedScale = false;
 
-                yield return new RiemannSumResult(drawing,
-                    new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY)),
-                    totalArea);
+                rects.Add(new RiemannSumRect(drawing,
+                    new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY))));
             }
+
+            return new RiemannSumResult(rects, totalArea);
         }
 
-        private IEnumerable<RiemannSumResult> CreateRiemannSum_SplitTopDown(RiemannSumDescription riemannSum,
+        private RiemannSumResult CreateRiemannSum_SplitTopDown(RiemannSumDescription riemannSum,
             Rectangle axisRect,
             PlotDescription plotDescription,
             double animationStartTime)
         {
             double totalArea = 0;
+            var rects = new List<RiemannSumRect>();
 
             var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
             for (int i = 0; i < riemannSum.NumRects; i++)
@@ -277,24 +280,35 @@ namespace DirectRendering.Plotting
                 drawing.IsClosed = true;
                 drawing.HasLockedScale = false;
 
-                yield return new RiemannSumResult(drawing,
-                    new RectangleF(visualLeftX, visualTopYEnd, (visualRightX - visualLeftX), (visualBottomYEnd - visualTopYEnd)),
-                    totalArea);
+                rects.Add(new RiemannSumRect(drawing,
+                    new RectangleF(visualLeftX, visualTopYEnd, (visualRightX - visualLeftX), (visualBottomYEnd - visualTopYEnd))));
+            }
+
+            return new RiemannSumResult(rects, totalArea);
+        }
+
+        private class RiemannSumRect
+        {
+            public readonly PathDrawing Drawing;
+            public readonly RectangleF BoundingRect;
+
+            public RiemannSumRect(PathDrawing drawing,
+                RectangleF boundingRect)
+            {
+                Drawing = drawing;
+                BoundingRect = boundingRect;
             }
         }
 
         private class RiemannSumResult
         {
-            public readonly PathDrawing Drawing;
-            public readonly RectangleF BoundingRect;
+            public readonly List<RiemannSumRect> Rects;
             public readonly double TotalArea;
 
-            public RiemannSumResult(PathDrawing drawing,
-                RectangleF boundingRect,
+            public RiemannSumResult(List<RiemannSumRect> rects,
                 double totalArea)
             {
-                Drawing = drawing;
-                BoundingRect = boundingRect;
+                Rects = rects;
                 TotalArea = totalArea;
             }
         }
