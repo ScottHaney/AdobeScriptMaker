@@ -8,6 +8,7 @@ using MathDescriptions.Plot.Functions;
 using System.Linq;
 using MathDescriptions.Plot.Calculus;
 using DirectRendering.Drawing.Animation;
+using DirectRendering.Text;
 
 namespace DirectRendering.Plotting
 {
@@ -60,6 +61,7 @@ namespace DirectRendering.Plotting
             var startTimes = new List<RiemannSumStartTime>();
 
             var drawings = new List<IDrawing>();
+            var sequenceValues = new List<SequenceValue>();
 
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
@@ -91,9 +93,12 @@ namespace DirectRendering.Plotting
 
                 currentSumDescription = nextRiemannSumDescription;
                 currentTime += 4;
+
+                sequenceValues.Add(new SequenceValue(currentRiemannSum.TotalArea, currentTime));
             }
 
             drawings.Add(new SliderControl(sliderValues.ToArray()));
+            drawings.Add(new SequenceDrawing(sequenceValues.ToArray()));
 
             return new RiemannSumsResult(drawings,
                 new RiemannSumsMetadata(startTimes.ToArray()));
