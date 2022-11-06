@@ -112,27 +112,11 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
         private void VisitText(string layerVar, AdobeTextControl text)
         {
-            /*var baseGroupVar = _context.GetNextAutoVariable();
-            var vectorsGroupVar = _context.GetNextAutoVariable();
-            var vectorGroupVar = _context.GetNextAutoVariable();
-            var strokeVar = _context.GetNextAutoVariable();
+            var sourceTextVar = _context.GetNextAutoVariable();
 
-            var transformGroupVar = _context.GetNextAutoVariable();
-            var scaleVar = _context.GetNextAutoVariable();
+            var scriptText = $@"var {sourceTextVar} = {layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValue('Testing');";
 
-            var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
-var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
-var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
-{CreateSetVerticesCode(text.Points, vectorGroupVar, text.IsClosed)}
-var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
-{strokeVar}.property('ADBE Vector Stroke Width').setValue('{text.Thickness}');
-{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
-{layerVar}.property('Transform').property('Position').setValue([0, 0]);
-
-var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group');
-var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
-
-            _builder.AppendLine(scriptText);*/
+            _builder.AppendLine(scriptText);
         }
 
         private void VisitSlider(string compositionRef, AdobeSliderControl slider)
