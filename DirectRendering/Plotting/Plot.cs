@@ -139,13 +139,24 @@ namespace DirectRendering.Plotting
             Rectangle axisRect,
             PlotDescription plotDescription)
         {
+            var totalArea = 0d;
+
             var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
             for (int i = 0; i < riemannSum.NumRects; i++)
             {
                 var rightX = rectWidth * (i + 1);
                 var leftX = rightX - rectWidth;
                 var topY = riemannSum.FunctionDescription.GetYValue(rightX);
-                var bottomY = plotDescription.YAxis.MinValue;
+                var bottomY = 0d;
+
+                if (topY < bottomY)
+                {
+                    var temp = topY;
+                    topY = bottomY;
+                    bottomY = temp;
+                }
+
+                totalArea += topY * (rightX - leftX);
 
                 var visualRightX = (int)GetVisualXValue(rightX, plotDescription.XAxis, axisRect);
                 var visualLeftX = (int)GetVisualXValue(leftX, plotDescription.XAxis, axisRect);
@@ -184,7 +195,9 @@ namespace DirectRendering.Plotting
                 drawing.IsClosed = true;
                 drawing.HasLockedScale = false;
 
-                yield return new RiemannSumResult(drawing, new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY))); ;
+                yield return new RiemannSumResult(drawing,
+                    new RectangleF(visualLeftX, visualTopY, (visualRightX - visualLeftX), (visualBottomY - visualTopY)),
+                    totalArea);
             }
         }
 
@@ -193,6 +206,8 @@ namespace DirectRendering.Plotting
             PlotDescription plotDescription,
             double animationStartTime)
         {
+            double totalArea = 0;
+
             var rectWidth = (riemannSum.EndX - riemannSum.StartX) / riemannSum.NumRects;
             for (int i = 0; i < riemannSum.NumRects; i++)
             {
@@ -204,13 +219,31 @@ namespace DirectRendering.Plotting
                     : rectWidth * (i + 2));
                 var topYEnd = riemannSum.FunctionDescription.GetYValue(rightX);
 
-                var bottomY = plotDescription.YAxis.MinValue;
+                totalArea += topYEnd * (rightX - leftX);
+
+                double bottomYStart = 0;
+                double bottomYEnd = 0;
+
+                if (topYStart < bottomYStart)
+                {
+                    var temp = topYStart;
+                    topYStart = bottomYStart;
+                    bottomYStart = temp;
+                }
+
+                if (topYEnd < bottomYEnd)
+                {
+                    var temp = topYEnd;
+                    topYEnd = bottomYEnd;
+                    bottomYEnd = temp;
+                }
 
                 var visualRightX = (int)GetVisualXValue(rightX, plotDescription.XAxis, axisRect);
                 var visualLeftX = (int)GetVisualXValue(leftX, plotDescription.XAxis, axisRect);
                 var visualTopYStart = (int)GetVisualYValue(topYStart, plotDescription.YAxis, axisRect);
                 var visualTopYEnd = (int)GetVisualYValue(topYEnd, plotDescription.YAxis, axisRect);
-                var visualBottomY = (int)GetVisualYValue(bottomY, plotDescription.YAxis, axisRect);
+                var visualBottomYStart = (int)GetVisualYValue(bottomYStart, plotDescription.YAxis, axisRect);
+                var visualBottomYEnd = (int)GetVisualYValue(bottomYEnd, plotDescription.YAxis, axisRect);
 
                 PathDrawing drawing;
 
@@ -218,8 +251,8 @@ namespace DirectRendering.Plotting
                     {
                         new PointF(visualLeftX, visualTopYEnd),
                         new PointF(visualRightX, visualTopYEnd),
-                        new PointF(visualRightX, visualBottomY),
-                        new PointF(visualLeftX, visualBottomY)
+                        new PointF(visualRightX, visualBottomYEnd),
+                        new PointF(visualLeftX, visualBottomYEnd)
                     };
 
                 if (i % 2 == 1)
@@ -232,8 +265,8 @@ namespace DirectRendering.Plotting
                     {
                         new PointF(visualLeftX, visualTopYStart),
                         new PointF(visualRightX, visualTopYStart),
-                        new PointF(visualRightX, visualBottomY),
-                        new PointF(visualLeftX, visualBottomY)
+                        new PointF(visualRightX, visualBottomYStart),
+                        new PointF(visualLeftX, visualBottomYStart)
                     };
 
                     drawing = new PathDrawing(new AnimatedValue<PointF[]>(
@@ -244,7 +277,9 @@ namespace DirectRendering.Plotting
                 drawing.IsClosed = true;
                 drawing.HasLockedScale = false;
 
-                yield return new RiemannSumResult(drawing, new RectangleF(visualLeftX, visualTopYEnd, (visualRightX - visualLeftX), (visualBottomY - visualTopYEnd))); ;
+                yield return new RiemannSumResult(drawing,
+                    new RectangleF(visualLeftX, visualTopYEnd, (visualRightX - visualLeftX), (visualBottomYEnd - visualTopYEnd)),
+                    totalArea);
             }
         }
 
@@ -252,12 +287,15 @@ namespace DirectRendering.Plotting
         {
             public readonly PathDrawing Drawing;
             public readonly RectangleF BoundingRect;
+            public readonly double TotalArea;
 
             public RiemannSumResult(PathDrawing drawing,
-                RectangleF boundingRect)
+                RectangleF boundingRect,
+                double totalArea)
             {
                 Drawing = drawing;
                 BoundingRect = boundingRect;
+                TotalArea = totalArea;
             }
         }
 
