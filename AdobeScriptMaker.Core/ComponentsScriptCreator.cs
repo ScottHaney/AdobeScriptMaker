@@ -115,7 +115,7 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
             var adobeIndex = 1;
             foreach (var value in text.Values)
             {
-                _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValueAtTime({value.Time}, {value.Value});");
+                _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValueAtTime({value.Time}, '{value.Value}');");
                 _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
         }

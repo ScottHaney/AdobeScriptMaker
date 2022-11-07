@@ -53,9 +53,22 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
 
         private AdobeTextControl Create(SequenceDrawing path)
         {
+            var values = new List<AdobeTextControlValue>();
+            var currentText = "";
+            
+            foreach (var value in path.Values)
+            {
+                if (currentText == String.Empty)
+                    currentText += value.Value.ToString();
+                else
+                    currentText += ", " + value.Value.ToString();
+
+                values.Add(new AdobeTextControlValue() { Time = value.Time, Value = currentText });
+            }
+
             return new AdobeTextControl()
             {
-                Values = path.Values.Select(x => new AdobeTextControlValue() { Time = x.Time, Value = x.Value.ToString() }).ToArray()
+                Values = values.ToArray()
             };
         }
 
