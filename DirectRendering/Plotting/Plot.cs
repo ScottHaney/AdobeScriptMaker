@@ -103,8 +103,6 @@ namespace DirectRendering.Plotting
 
                 currentSumDescription = nextRiemannSumDescription;
                 currentTime = endTime;
-
-                sequenceValues.Add(new SequenceValue(currentRiemannSum.TotalArea, currentTime));
             }
 
             drawings.Add(new SliderControl(sliderValues.ToArray()));
