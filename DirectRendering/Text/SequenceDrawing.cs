@@ -7,9 +7,15 @@ namespace DirectRendering.Text
     public class SequenceDrawing : PrimitiveDrawing
     {
         public readonly SequenceValue[] Values;
+        public readonly string StartText;
+        public readonly double StartTime;
 
-        public SequenceDrawing(params SequenceValue[] values)
+        public SequenceDrawing(string startText,
+            double startTime,
+            params SequenceValue[] values)
         {
+            StartText = startText;
+            StartTime = startTime;
             Values = values;
         }
     }

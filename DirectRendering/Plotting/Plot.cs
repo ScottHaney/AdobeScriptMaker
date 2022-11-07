@@ -106,7 +106,7 @@ namespace DirectRendering.Plotting
             }
 
             drawings.Add(new SliderControl(sliderValues.ToArray()));
-            drawings.Add(new SequenceDrawing(sequenceValues.ToArray()));
+            drawings.Add(new SequenceDrawing("", riemannSums.RiemannSumStart.AnimationInfo.AnimateStart, sequenceValues.ToArray()));
 
             return new RiemannSumsResult(drawings,
                 new RiemannSumsMetadata(startTimes.ToArray()));

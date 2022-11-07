@@ -53,16 +53,34 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
 
         private AdobeTextControl Create(SequenceDrawing path)
         {
-            var values = new List<AdobeTextControlValue>();
-            var currentText = "";
+            var values = new List<AdobeTextControlValue>()
+            {
+                new AdobeTextControlValue()
+                {
+                    Time = path.StartTime,
+                    Value = path.StartText
+                }
+            };
+
+            var currentText = path.StartText;
             
             foreach (var value in path.Values)
             {
-                if (currentText == String.Empty)
-                    currentText += value.Value.ToString();
-                else
-                    currentText += ", " + value.Value.ToString();
+                var textValueToAdd = value.Value.ToString();
 
+                if (textValueToAdd != String.Empty)
+                {
+                    if (currentText == path.StartText)
+                    {
+                        if (path.StartText != String.Empty)
+                            currentText += " ";
+
+                        currentText += textValueToAdd;
+                    }
+                    else
+                        currentText += ", " + textValueToAdd;
+                }
+                
                 values.Add(new AdobeTextControlValue() { Time = value.Time, Value = currentText });
             }
 
