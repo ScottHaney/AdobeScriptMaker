@@ -65,11 +65,16 @@ namespace DirectRendering.Plotting
 
             for (int i = 1; i <= riemannSums.NumSums; i++)
             {
+                var animationStartTime = currentTime + 0.5;
+                var sumsInPlaceTime = currentTime + 1.5;
+                var splitLineTime = currentTime + 3;
+                var endTime = currentTime + 4;
+
                 RiemannSumResult currentRiemannSum;
                 if (i == 1)
                     currentRiemannSum = CreateRiemannSum_BottomUp(currentSumDescription, axisRect, plotDescription);
                 else
-                    currentRiemannSum = CreateRiemannSum_SplitTopDown(currentSumDescription, axisRect, plotDescription, currentTime + 0.5);
+                    currentRiemannSum = CreateRiemannSum_SplitTopDown(currentSumDescription, axisRect, plotDescription, animationStartTime, sumsInPlaceTime);
 
                 drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime),
                     new AbsoluteTimingContextTime(riemannSums.NumSums == i ? 30 : 4),
@@ -77,7 +82,7 @@ namespace DirectRendering.Plotting
 
                 if (riemannSums.NumSums != i)
                 {
-                    var lines = currentRiemannSum.Rects.Select(x => CreateSplitLine(x, currentTime + 3, currentTime + 4)).ToArray();
+                    var lines = currentRiemannSum.Rects.Select(x => CreateSplitLine(x, splitLineTime, endTime)).ToArray();
                     drawings.Add(new TimingContext(new AbsoluteTimingContextTime(currentTime + 3),
                         new AbsoluteTimingContextTime(1),
                         lines));
@@ -91,8 +96,13 @@ namespace DirectRendering.Plotting
                     riemannSums.RiemannSumStart.StartX,
                     riemannSums.RiemannSumStart.EndX);
 
+                if (i == 1)
+                    sequenceValues.Add(new SequenceValue(currentRiemannSum.TotalArea, riemannSums.RiemannSumStart.AnimationInfo.AnimateEnd));
+                else
+                    sequenceValues.Add(new SequenceValue(currentRiemannSum.TotalArea, sumsInPlaceTime));
+
                 currentSumDescription = nextRiemannSumDescription;
-                currentTime += 4;
+                currentTime = endTime;
 
                 sequenceValues.Add(new SequenceValue(currentRiemannSum.TotalArea, currentTime));
             }
@@ -211,7 +221,8 @@ namespace DirectRendering.Plotting
         private RiemannSumResult CreateRiemannSum_SplitTopDown(RiemannSumDescription riemannSum,
             Rectangle axisRect,
             PlotDescription plotDescription,
-            double animationStartTime)
+            double animationStartTime,
+            double animationEndTime)
         {
             double totalArea = 0;
             var rects = new List<RiemannSumRect>();
@@ -279,7 +290,7 @@ namespace DirectRendering.Plotting
 
                     drawing = new PathDrawing(new AnimatedValue<PointF[]>(
                         new ValueAtTime<PointF[]>(startPoints, new AnimationTime(animationStartTime)),
-                        new ValueAtTime<PointF[]>(points, new AnimationTime(animationStartTime + 1))));
+                        new ValueAtTime<PointF[]>(points, new AnimationTime(animationEndTime))));
                 }
 
                 drawing.IsClosed = true;
