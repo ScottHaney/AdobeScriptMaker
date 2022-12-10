@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DirectRendering.Drawing.Animation
+namespace AdobeComponents.Animation
 {
     public class StaticValue<T> : IAnimatedValue<T>
     {

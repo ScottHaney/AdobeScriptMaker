@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdobeScriptMaker.Core.Components
+namespace RenderingDescriptions.What
 {
-    public interface IAdobeLayerComponent
+    public interface IWhatToRender
     {
     }
 }

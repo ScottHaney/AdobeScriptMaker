@@ -5,7 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AdobeComponents\AdobeComponents.csproj" />
     <ProjectReference Include="..\DirectRendering\DirectRendering.csproj" />
+    <ProjectReference Include="..\MathDescriptions\MathDescriptions.csproj" />
+    <ProjectReference Include="..\MathRenderingDescriptions\MathRenderingDescriptions.csproj" />
     <ProjectReference Include="..\MatrixLayout\MatrixLayout.csproj" />
   </ItemGroup>
 

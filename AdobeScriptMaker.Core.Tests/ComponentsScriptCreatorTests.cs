@@ -11,6 +11,9 @@ using MathDescriptions.Plot;
 using MathDescriptions.Plot.Functions;
 using System.Linq;
 using MathDescriptions.Plot.Calculus;
+using MathRenderingDescriptions.Plot;
+using RenderingDescriptions.When;
+using RenderingDescriptions;
 
 namespace AdobeScriptMaker.Core.Tests
 {
@@ -37,6 +40,23 @@ namespace AdobeScriptMaker.Core.Tests
 
             var converter = new AdobeComponentsConverter();
             var converted = converter.Convert(drawingSequence);
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted);
+        }
+
+        [Test]
+        public void CreatesAxesUpdated()
+        {
+            var axes = new AxesRenderingDescription(new PlotLayoutDescription(
+                new PlotAxesLayoutDescription(
+                    new PlotAxisLayoutDescription(800, 0, 5),
+                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 100)));
+
+            var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
+
+            var converter = new UpdatedComponentsConverter();
+            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender }, new AbsoluteTiming(10));
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted);
@@ -106,17 +126,22 @@ namespace AdobeScriptMaker.Core.Tests
         [Test]
         public void CreatesRiemannSums()
         {
-            var functionToPlot = new FunctionDescription(x => Math.Pow(x, 2) + 1);
+            var functionToPlot = new FunctionDescription(x => x);
             var plotDescription = new PlotDescription(
-                new AxisRangeDescription(0, 10),
-                new AxisRangeDescription(0, 100),
+                new AxisRangeDescription(0, 6),
+                new AxisRangeDescription(0, 6),
                 functionToPlot);
 
-            plotDescription.Decorations.Add(new RiemannSumsDescription(
-                new RiemannSumDescription(functionToPlot, 1, 0, 8, new RiemannSumAnimationInfo(1, 3)),
-                7));
+            var plotStartX = 0;
+            var plotEndX = 5;
 
-            var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
+            plotDescription.Decorations.Add(new AreaUnderFunctionDescription(functionToPlot, plotStartX, plotEndX));
+
+            plotDescription.Decorations.Add(new RiemannSumsDescription(
+                new RiemannSumDescription(functionToPlot, 1, plotStartX, plotEndX, new RiemannSumAnimationInfo(1, 3)),
+                5));
+
+            var plot = new Plot(plotDescription, new Rectangle(0, 0, 800, 800));
             var drawingSequence = new DrawingSequence(plot.GetDrawings().Where(x => !(x is TimingContext)).ToArray(),
                 plot.GetDrawings().OfType<TimingContext>().ToArray());
 

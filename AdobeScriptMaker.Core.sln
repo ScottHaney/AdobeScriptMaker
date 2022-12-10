@@ -15,9 +15,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications", "Application
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Applications.Tests", "Applications.Tests\Applications.Tests.csproj", "{EE6D75D5-B9F6-4C53-B0F2-EC6E06D37531}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectRendering", "DirectRendering\DirectRendering.csproj", "{ACC73070-48EB-4590-B112-D385157863E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectRendering", "DirectRendering\DirectRendering.csproj", "{ACC73070-48EB-4590-B112-D385157863E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathDescriptions", "MathDescriptions\MathDescriptions.csproj", "{96E98EDB-A885-48F8-9AFD-B9EB120589DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathDescriptions", "MathDescriptions\MathDescriptions.csproj", "{96E98EDB-A885-48F8-9AFD-B9EB120589DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingDescriptions", "RenderingDescriptions\RenderingDescriptions.csproj", "{798304A8-62E6-4E7E-A570-A03F36F44F0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathRenderingDescriptions", "MathRenderingDescriptions\MathRenderingDescriptions.csproj", "{6B70A013-2B40-4495-8925-E7BF3FFF2667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeComponents", "AdobeComponents\AdobeComponents.csproj", "{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,18 @@ Global
 		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96E98EDB-A885-48F8-9AFD-B9EB120589DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{798304A8-62E6-4E7E-A570-A03F36F44F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{798304A8-62E6-4E7E-A570-A03F36F44F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{798304A8-62E6-4E7E-A570-A03F36F44F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{798304A8-62E6-4E7E-A570-A03F36F44F0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B70A013-2B40-4495-8925-E7BF3FFF2667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B70A013-2B40-4495-8925-E7BF3FFF2667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B70A013-2B40-4495-8925-E7BF3FFF2667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B70A013-2B40-4495-8925-E7BF3FFF2667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

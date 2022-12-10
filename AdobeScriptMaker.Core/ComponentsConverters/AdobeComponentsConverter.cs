@@ -1,8 +1,7 @@
-﻿using AdobeScriptMaker.Core.Components;
-using AdobeScriptMaker.Core.Components.Layers;
+﻿using AdobeComponents.Components;
+using AdobeComponents.Components.Layers;
 using DirectRendering;
 using DirectRendering.Drawing;
-using DirectRendering.Drawing.Animation;
 using DirectRendering.Text;
 using System;
 using System.Collections.Generic;

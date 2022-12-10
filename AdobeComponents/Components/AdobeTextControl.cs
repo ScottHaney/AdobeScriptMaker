@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdobeScriptMaker.Core.Components
+namespace AdobeComponents.Components
 {
     public class AdobeTextControl : IAdobeLayerComponent
     {

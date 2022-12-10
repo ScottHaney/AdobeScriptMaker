@@ -1,9 +1,9 @@
-﻿using AdobeScriptMaker.Core.Components.Layers;
+﻿using AdobeComponents.Components.Layers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdobeScriptMaker.Core.Components
+namespace AdobeComponents.Components
 {
     public class AdobeComposition
     {

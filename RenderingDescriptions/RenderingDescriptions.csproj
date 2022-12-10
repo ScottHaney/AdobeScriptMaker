@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdobeComponents\AdobeComponents.csproj" />
-    <ProjectReference Include="..\MathDescriptions\MathDescriptions.csproj" />
   </ItemGroup>
 
 </Project>

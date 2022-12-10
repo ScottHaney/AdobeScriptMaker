@@ -7,8 +7,8 @@ using DirectRendering.Drawing;
 using MathDescriptions.Plot.Functions;
 using System.Linq;
 using MathDescriptions.Plot.Calculus;
-using DirectRendering.Drawing.Animation;
 using DirectRendering.Text;
+using AdobeComponents.Animation;
 
 namespace DirectRendering.Plotting
 {

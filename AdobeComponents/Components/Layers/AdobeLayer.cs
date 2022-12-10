@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdobeScriptMaker.Core.Components.Layers
+namespace AdobeComponents.Components.Layers
 {
     public class AdobeLayer
     {

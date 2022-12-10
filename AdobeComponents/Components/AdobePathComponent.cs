@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
-using DirectRendering.Drawing.Animation;
+using AdobeComponents.Animation;
 
-namespace AdobeScriptMaker.Core.Components
+namespace AdobeComponents.Components
 {
     public class AdobePathComponent : IAdobeLayerComponent
     {
