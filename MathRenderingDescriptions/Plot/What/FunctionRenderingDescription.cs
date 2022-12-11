@@ -10,6 +10,9 @@ namespace MathRenderingDescriptions.Plot
         public readonly PlotLayoutDescription PlotLayoutDescription;
         public readonly Func<double, double> Function;
 
+        public double? StartX { get; set; }
+        public double? EndX { get; set; }
+
         public FunctionRenderingDescription(PlotLayoutDescription plotLayoutDescription,
             Func<double, double> function)
         {

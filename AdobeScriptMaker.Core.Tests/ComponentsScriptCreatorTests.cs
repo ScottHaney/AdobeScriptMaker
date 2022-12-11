@@ -46,17 +46,23 @@ namespace AdobeScriptMaker.Core.Tests
         }
 
         [Test]
-        public void CreatesAxesUpdated()
+        public void CreatesTriangleIntegralDisplay()
         {
-            var axes = new AxesRenderingDescription(new PlotLayoutDescription(
+            var plotLayoutDescription = new PlotLayoutDescription(
                 new PlotAxesLayoutDescription(
                     new PlotAxisLayoutDescription(800, 0, 5),
-                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 100)));
+                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 100));
+
+            var axes = new AxesRenderingDescription(plotLayoutDescription);
+
+            var function = new FunctionRenderingDescription(plotLayoutDescription,
+                x => x);
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
+            var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);
 
             var converter = new UpdatedComponentsConverter();
-            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender }, new AbsoluteTiming(10));
+            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender }, new AbsoluteTiming(10));
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted);

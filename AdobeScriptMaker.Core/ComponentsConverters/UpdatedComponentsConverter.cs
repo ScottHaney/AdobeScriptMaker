@@ -42,6 +42,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderAxes(axes, maxDuration));
                 }
+                else if (renderingDescription.What is FunctionRenderingDescription function)
+                {
+                    results.Add(RenderFunction(function, maxDuration));
+                }
             }
 
             return results.SelectMany(x => x.Components);
@@ -55,6 +59,17 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             {
                 EntranceAnimationEnd = new AbsoluteTiming(2)
             };
+
+            return axesRenderer.Render();
+        }
+
+        private HowToRenderResult RenderFunction(FunctionRenderingDescription function,
+            AbsoluteTiming maxDuration)
+        {
+            var axesRenderer = new FunctionRenderer(function,
+                maxDuration,
+                function.StartX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MinValue,
+                function.EndX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MaxValue);
 
             return axesRenderer.Render();
         }

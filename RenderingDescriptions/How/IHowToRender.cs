@@ -22,5 +22,11 @@ namespace RenderingDescriptions.How
             Duration = duration;
         }
 
+        public HowToRenderResult(double duration,
+            params IAdobeLayerComponent[] components)
+        {
+            Components = components;
+            Duration = duration;
+        }
     }
 }

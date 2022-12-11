@@ -20,6 +20,12 @@ namespace MathRenderingDescriptions.Plot
             TopLeft = topLeft;
         }
 
+        public Point CreateFunctionPoint(FunctionRenderingDescription function,
+            double xValue)
+        {
+            return AxesLayout.CreateFunctionPoint(function, GetBounds(), xValue);
+        }
+
         public RectangleF GetBounds()
         {
             return new RectangleF(TopLeft,
@@ -66,21 +72,60 @@ namespace MathRenderingDescriptions.Plot
             XAxis = xAxis;
             YAxis = yAxis;
         }
+
+        public Point CreateFunctionPoint(FunctionRenderingDescription function,
+            RectangleF axisRect,
+            double xValue)
+        {
+            return CreatePoint(axisRect, xValue, function.Function(xValue));
+        }
+
+        private Point CreatePoint(RectangleF axisBoundingBox,
+            double xValue,
+            double yValue)
+        {
+            var xVisualValue = GetVisualXValue(xValue, XAxis, axisBoundingBox);
+            var yVisualValue = GetVisualYValue(yValue, YAxis, axisBoundingBox);
+
+            return new Point((int)Math.Round(xVisualValue), (int)Math.Round(yVisualValue));
+        }
+
+        private double GetVisualXValue(double value,
+            PlotAxisLayoutDescription axis,
+            RectangleF axisBoundingBox)
+        {
+            var percentage = GetPercentage(value, axis);
+            return axisBoundingBox.Left + (percentage * axisBoundingBox.Width);
+        }
+
+        private double GetVisualYValue(double value,
+            PlotAxisLayoutDescription axis,
+            RectangleF axisBoundingBox)
+        {
+            var percentage = GetPercentage(value, axis);
+            return axisBoundingBox.Bottom - (percentage * axisBoundingBox.Height);
+        }
+
+        private double GetPercentage(double value,
+            PlotAxisLayoutDescription axis)
+        {
+            return (value - axis.MinValue) / (axis.MaxValue - axis.MinValue);
+        }
     }
 
     public class PlotAxisLayoutDescription
     {
         public readonly double Length;
-        public readonly double StartValue;
-        public readonly double EndValue;
+        public readonly double MinValue;
+        public readonly double MaxValue;
 
         public PlotAxisLayoutDescription(double length,
-            double startValue,
-            double endValue)
+            double minValue,
+            double maxValue)
         {
             Length = length;
-            StartValue = startValue;
-            EndValue = endValue;
+            MinValue = minValue;
+            MaxValue = maxValue;
         }
     }
 }
