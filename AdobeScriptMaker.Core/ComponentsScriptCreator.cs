@@ -1,6 +1,7 @@
 ﻿using AdobeComponents.Animation;
 using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
+using AdobeComponents.Effects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -59,6 +60,8 @@ namespace AdobeScriptMaker.Core
                         VisitMask(layerVar, mask);
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
+                    else if (drawing is AdobeScribbleEffect scribble)
+                        VisitScribbleEffect(layerVar, scribble);
                     else
                         throw new NotSupportedException(drawing.GetType().FullName);
                 }
@@ -153,6 +156,19 @@ var {maskShapePathVar} = {maskShapeVar}.value;
 {maskShapePathVar}.vertices = {ConvertPointsToJavascriptArg(mask.PathComponent.Points.GetValues().Single().Value)};
 {maskShapePathVar}.closed = {mask.PathComponent.IsClosed.ToString().ToLower()};
 {maskShapeVar}.setValue({maskShapePathVar});";
+
+            if (!string.IsNullOrEmpty(mask.MaskName))
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{maskVar}.name = '{mask.MaskName}';");
+
+            _builder.AppendLine(scriptText);
+        }
+
+        private void VisitScribbleEffect(string layerVar, AdobeScribbleEffect scribbleEffect)
+        {
+            var scribbleVar = _context.GetNextAutoVariable();
+
+            var scriptText = $@"var {scribbleVar} = {layerVar}.Effects.addProperty('ADBE Scribble Fill');
+{scribbleVar}.Mask = '{scribbleEffect.MaskName}';";
 
             _builder.AppendLine(scriptText);
         }

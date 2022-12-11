@@ -19,14 +19,17 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         {
             var layers = new List<AdobeLayer>();
 
-            //Assume that each component will go in its own layer
             foreach (var timedComponent in CreateComponents(renderingDescriptions, maxDuration))
             {
-                var layer = new AdobeLayer(new IAdobeLayerComponent[] { timedComponent.Component })
-                {
-                    InPoint = timedComponent.StartTime,
-                    OutPoint = timedComponent.EndTime
-                };
+                var components = timedComponent.Component is GroupedTogetherAdobeLayerComponents group
+                    ? group.Components
+                    : new IAdobeLayerComponent[] { timedComponent.Component };
+
+                var layer = new AdobeLayer(components)
+                    {
+                        InPoint = timedComponent.StartTime,
+                        OutPoint = timedComponent.EndTime
+                    };
 
                 layers.Add(layer);
             }
