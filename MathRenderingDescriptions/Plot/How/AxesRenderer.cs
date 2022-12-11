@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Linq;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -42,8 +43,9 @@ namespace MathRenderingDescriptions.Plot.How
             var xAxis = new AdobePathComponent(xAxisValues);
             var yAxis = new AdobePathComponent(yAxisValues);
 
-            return new HowToRenderResult(new IAdobeLayerComponent[] { xAxis, yAxis },
-                _drawingDuration.Time);
+            return new HowToRenderResult(new IAdobeLayerComponent[] { xAxis, yAxis }
+                .Select(x => new TimedAdobeLayerComponent(x, EntranceAnimationStart.Time, EntranceAnimationStart.Time + _drawingDuration.Time))
+                .ToArray());
         }
     }
 }

@@ -12,21 +12,16 @@ namespace RenderingDescriptions.How
 
     public class HowToRenderResult
     {
-        public IEnumerable<IAdobeLayerComponent> Components;
-        public double Duration;
+        public IEnumerable<TimedAdobeLayerComponent> Components;
 
-        public HowToRenderResult(IEnumerable<IAdobeLayerComponent> components,
-            double duration)
+        public HowToRenderResult(IEnumerable<TimedAdobeLayerComponent> components)
         {
             Components = components;
-            Duration = duration;
         }
 
-        public HowToRenderResult(double duration,
-            params IAdobeLayerComponent[] components)
+        public HowToRenderResult(params TimedAdobeLayerComponent[] components)
         {
             Components = components;
-            Duration = duration;
         }
     }
 }

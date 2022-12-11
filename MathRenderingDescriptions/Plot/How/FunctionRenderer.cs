@@ -29,8 +29,10 @@ namespace MathRenderingDescriptions.Plot.How
         {
             var points = _pointsRenderer.GetPoints();
 
-            return new HowToRenderResult(_drawingDuration.Time,
-                new AdobePathComponent(new StaticValue<PointF[]>(points)));
+            return new HowToRenderResult(new TimedAdobeLayerComponent(
+                new AdobePathComponent(new StaticValue<PointF[]>(points)),
+                0,
+                _drawingDuration.Time));
         }
     }
 

@@ -43,8 +43,10 @@ namespace MathRenderingDescriptions.Plot.How
 
             var areaUnderFunctionPoints = functionPoints.Concat(additionalPoints).ToArray();
 
-            return new HowToRenderResult(_drawingDuration.Time,
-                new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true });
+            return new HowToRenderResult(new TimedAdobeLayerComponent(
+                new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true },
+                0,
+                _drawingDuration.Time));
         }
     }
 }

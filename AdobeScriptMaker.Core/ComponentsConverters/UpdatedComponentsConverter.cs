@@ -19,20 +19,22 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         {
             var layers = new List<AdobeLayer>();
 
-            var layer = new AdobeLayer(CreateComponents(renderingDescriptions, maxDuration)
-                    .ToArray())
+            foreach (var timedComponent in CreateComponents(renderingDescriptions, maxDuration))
             {
-                InPoint = 0,
-                OutPoint = maxDuration.Time
-            };
+                var layer = new AdobeLayer(new IAdobeLayerComponent[] { timedComponent.Component })
+                {
+                    InPoint = timedComponent.StartTime,
+                    OutPoint = timedComponent.EndTime
+                };
 
-            layers.Add(layer);
+                layers.Add(layer);
+            }
 
             var defaultComp = new AdobeComposition(layers.ToArray());
             return new AdobeScript(defaultComp);
         }
 
-        public IEnumerable<IAdobeLayerComponent> CreateComponents(List<RenderingDescription> renderingDescriptions,
+        public IEnumerable<TimedAdobeLayerComponent> CreateComponents(List<RenderingDescription> renderingDescriptions,
             AbsoluteTiming maxDuration)
         {
             var results = new List<HowToRenderResult>();
