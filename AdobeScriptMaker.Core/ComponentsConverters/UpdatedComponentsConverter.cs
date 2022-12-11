@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using RenderingDescriptions.When;
-using MathRenderingDescriptions.Plot;
+using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.How;
 using RenderingDescriptions.How;
 using AdobeComponents.Components;
@@ -46,6 +46,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderFunction(function, maxDuration));
                 }
+                else if (renderingDescription.What is AreaUnderFunctionRenderingDescription auf)
+                {
+                    results.Add(RenderAreaUnderFunction(auf, maxDuration));
+                }
             }
 
             return results.SelectMany(x => x.Components);
@@ -67,11 +71,27 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             AbsoluteTiming maxDuration)
         {
             var axesRenderer = new FunctionRenderer(function,
-                maxDuration,
-                function.StartX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MinValue,
-                function.EndX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MaxValue);
+                CreatePointsRenderer(function),
+                maxDuration);
 
             return axesRenderer.Render();
+        }
+
+        private HowToRenderResult RenderAreaUnderFunction(AreaUnderFunctionRenderingDescription auf,
+            AbsoluteTiming maxDuration)
+        {
+            var renderer = new AreaUnderFunctionRenderer(auf,
+                CreatePointsRenderer(auf.FunctionRenderingDescription),
+                maxDuration);
+
+            return renderer.Render();
+        }
+
+        private FunctionPointsRenderer CreatePointsRenderer(FunctionRenderingDescription function)
+        {
+            return new FunctionPointsRenderer(function,
+                    function.StartX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MinValue,
+                    function.EndX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MaxValue);
         }
     }
 }

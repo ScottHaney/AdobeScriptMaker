@@ -2,6 +2,7 @@
 using RenderingDescriptions.How;
 using RenderingDescriptions.What;
 using RenderingDescriptions.When;
+using MathRenderingDescriptions.Plot.What;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

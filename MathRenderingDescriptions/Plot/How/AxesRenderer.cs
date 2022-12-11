@@ -2,6 +2,7 @@
 using AdobeComponents.Components;
 using RenderingDescriptions.How;
 using RenderingDescriptions.When;
+using MathRenderingDescriptions.Plot.What;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
