@@ -19,6 +19,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         {
             var layers = new List<AdobeLayer>();
 
+            //Assume that each component will go in its own layer
             foreach (var timedComponent in CreateComponents(renderingDescriptions, maxDuration))
             {
                 var layer = new AdobeLayer(new IAdobeLayerComponent[] { timedComponent.Component })
@@ -37,20 +38,20 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         public IEnumerable<TimedAdobeLayerComponent> CreateComponents(List<RenderingDescription> renderingDescriptions,
             AbsoluteTiming maxDuration)
         {
-            var results = new List<HowToRenderResult>();
+            var results = new List<RenderedComponents>();
             foreach (var renderingDescription in renderingDescriptions)
             {
                 if (renderingDescription.What is AxesRenderingDescription axes)
                 {
-                    results.Add(RenderAxes(axes, maxDuration));
+                    results.Add(RenderAxes(axes, maxDuration, renderingDescription.WhenToStart));
                 }
                 else if (renderingDescription.What is FunctionRenderingDescription function)
                 {
-                    results.Add(RenderFunction(function, maxDuration));
+                    results.Add(RenderFunction(function, maxDuration, renderingDescription.WhenToStart));
                 }
                 else if (renderingDescription.What is AreaUnderFunctionRenderingDescription auf)
                 {
-                    results.Add(RenderAreaUnderFunction(auf, maxDuration));
+                    results.Add(RenderAreaUnderFunction(auf, maxDuration, renderingDescription.WhenToStart));
                 }
             }
 
@@ -58,35 +59,38 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
 
         }
 
-        private HowToRenderResult RenderAxes(AxesRenderingDescription axes,
-            AbsoluteTiming maxDuration)
+        private RenderedComponents RenderAxes(AxesRenderingDescription axes,
+            AbsoluteTiming maxDuration,
+            AbsoluteTiming whenToStart)
         {
             var axesRenderer = new AxesRenderer(axes, maxDuration)
             {
                 EntranceAnimationEnd = new AbsoluteTiming(2)
             };
 
-            return axesRenderer.Render();
+            return axesRenderer.Render(whenToStart);
         }
 
-        private HowToRenderResult RenderFunction(FunctionRenderingDescription function,
-            AbsoluteTiming maxDuration)
+        private RenderedComponents RenderFunction(FunctionRenderingDescription function,
+            AbsoluteTiming maxDuration,
+            AbsoluteTiming whenToStart)
         {
             var axesRenderer = new FunctionRenderer(function,
                 CreatePointsRenderer(function),
                 maxDuration);
 
-            return axesRenderer.Render();
+            return axesRenderer.Render(whenToStart);
         }
 
-        private HowToRenderResult RenderAreaUnderFunction(AreaUnderFunctionRenderingDescription auf,
-            AbsoluteTiming maxDuration)
+        private RenderedComponents RenderAreaUnderFunction(AreaUnderFunctionRenderingDescription auf,
+            AbsoluteTiming maxDuration,
+            AbsoluteTiming whenToStart)
         {
             var renderer = new AreaUnderFunctionRenderer(auf,
                 CreatePointsRenderer(auf.FunctionRenderingDescription),
                 maxDuration);
 
-            return renderer.Render();
+            return renderer.Render(whenToStart);
         }
 
         private FunctionPointsRenderer CreatePointsRenderer(FunctionRenderingDescription function)
@@ -94,6 +98,19 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             return new FunctionPointsRenderer(function,
                     function.StartX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MinValue,
                     function.EndX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MaxValue);
+        }
+    }
+
+    public class HowToRenderResult
+    {
+        public readonly IEnumerable<TimedAdobeLayerComponent> Components;
+        public readonly IHowToRender How;
+
+        public HowToRenderResult(RenderedComponents renderedComponents,
+            IHowToRender how)
+        {
+            Components = renderedComponents.Components;
+            How = how;
         }
     }
 }

@@ -8,11 +8,11 @@ namespace RenderingDescriptions
     public class RenderingDescription
     {
         public readonly IWhatToRender What;
-        public readonly IPointInTime WhenToStart;
+        public readonly AbsoluteTiming WhenToStart;
         public readonly IHowToRender How;
 
         public RenderingDescription(IWhatToRender what,
-            IPointInTime whenToStart,
+            AbsoluteTiming whenToStart,
             IHowToRender how)
         {
             What = what;

@@ -26,7 +26,7 @@ namespace MathRenderingDescriptions.Plot.How
             _drawingDuration = drawingDuration;
         }
 
-        public HowToRenderResult Render()
+        public RenderedComponents Render(AbsoluteTiming whenToRender)
         {
             var xAxisPoints = _description.PlotLayoutDescription.GetXAxisPoints();
             var yAxisPoints = _description.PlotLayoutDescription.GetYAxisPoints();
@@ -43,8 +43,8 @@ namespace MathRenderingDescriptions.Plot.How
             var xAxis = new AdobePathComponent(xAxisValues);
             var yAxis = new AdobePathComponent(yAxisValues);
 
-            return new HowToRenderResult(new IAdobeLayerComponent[] { xAxis, yAxis }
-                .Select(x => new TimedAdobeLayerComponent(x, EntranceAnimationStart.Time, EntranceAnimationStart.Time + _drawingDuration.Time))
+            return new RenderedComponents(new IAdobeLayerComponent[] { xAxis, yAxis }
+                .Select(x => new TimedAdobeLayerComponent(x, whenToRender.Time + EntranceAnimationStart.Time, whenToRender.Time + EntranceAnimationStart.Time + _drawingDuration.Time))
                 .ToArray());
         }
     }

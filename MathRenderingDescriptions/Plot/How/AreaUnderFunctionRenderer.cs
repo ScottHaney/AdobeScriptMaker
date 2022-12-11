@@ -26,7 +26,7 @@ namespace MathRenderingDescriptions.Plot.How
             _drawingDuration = drawingDuration;
         }
 
-        public HowToRenderResult Render()
+        public RenderedComponents Render(AbsoluteTiming whenToRender)
         {
             var functionPoints = _functionRenderer.GetPoints();
 
@@ -43,9 +43,9 @@ namespace MathRenderingDescriptions.Plot.How
 
             var areaUnderFunctionPoints = functionPoints.Concat(additionalPoints).ToArray();
 
-            return new HowToRenderResult(new TimedAdobeLayerComponent(
+            return new RenderedComponents(new TimedAdobeLayerComponent(
                 new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true },
-                0,
+                whenToRender.Time,
                 _drawingDuration.Time));
         }
     }

@@ -25,13 +25,13 @@ namespace MathRenderingDescriptions.Plot.How
             _drawingDuration = drawingDuration;
         }
 
-        public HowToRenderResult Render()
+        public RenderedComponents Render(AbsoluteTiming whenToRender)
         {
             var points = _pointsRenderer.GetPoints();
 
-            return new HowToRenderResult(new TimedAdobeLayerComponent(
+            return new RenderedComponents(new TimedAdobeLayerComponent(
                 new AdobePathComponent(new StaticValue<PointF[]>(points)),
-                0,
+                whenToRender.Time,
                 _drawingDuration.Time));
         }
     }
