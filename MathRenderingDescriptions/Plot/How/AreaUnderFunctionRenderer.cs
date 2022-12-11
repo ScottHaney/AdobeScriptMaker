@@ -44,7 +44,7 @@ namespace MathRenderingDescriptions.Plot.How
             var areaUnderFunctionPoints = functionPoints.Concat(additionalPoints).ToArray();
 
             return new RenderedComponents(new TimedAdobeLayerComponent(
-                new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true, DuplicateWithMask = true },
+                new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true },
                 whenToRender.Time,
                 _drawingDuration.Time));
         }

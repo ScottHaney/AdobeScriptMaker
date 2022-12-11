@@ -13,8 +13,6 @@ namespace AdobeComponents.Components
         public bool IsClosed { get; set; }
         public bool HasLockedScale { get; set; } = true;
 
-        public bool DuplicateWithMask = false;
-
         public AdobePathComponent(IAnimatedValue<PointF[]> points)
         {
             Points = points;

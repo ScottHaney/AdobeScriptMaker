@@ -55,6 +55,8 @@ namespace AdobeScriptMaker.Core
                 {
                     if (drawing is AdobePathComponent path)
                         VisitPath(layerVar, path);
+                    else if (drawing is AdobeMaskComponent mask)
+                        VisitMask(layerVar, mask);
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
                     else
@@ -108,9 +110,6 @@ var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group')
 var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
 
             _builder.AppendLine(scriptText);
-
-            if (path.DuplicateWithMask)
-                VisitMask(layerVar, path);
         }
 
         private void VisitText(string layerVar, AdobeTextControl text)
@@ -141,18 +140,18 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
                 _builder.AppendLine($"{nullLayerVar}.name = { slider.Name};");
         }
 
-        private void VisitMask(string layerVar, AdobePathComponent path, bool isInverted = false)
+        private void VisitMask(string layerVar, AdobeMaskComponent mask)
         {
             var maskVar = _context.GetNextAutoVariable();
             var maskShapeVar = _context.GetNextAutoVariable();
             var maskShapePathVar = _context.GetNextAutoVariable();
 
             var scriptText = $@"var {maskVar} = {layerVar}.Masks.addProperty('Mask');
-{maskVar}.inverted = {isInverted.ToString().ToLower()}
+{maskVar}.inverted = {mask.IsInverted.ToString().ToLower()}
 var {maskShapeVar} = {maskVar}.property('maskShape');
 var {maskShapePathVar} = {maskShapeVar}.value;
-{maskShapePathVar}.vertices = {ConvertPointsToJavascriptArg(path.Points.GetValues().Single().Value)};
-{maskShapePathVar}.closed = {path.IsClosed.ToString().ToLower()};
+{maskShapePathVar}.vertices = {ConvertPointsToJavascriptArg(mask.PathComponent.Points.GetValues().Single().Value)};
+{maskShapePathVar}.closed = {mask.PathComponent.IsClosed.ToString().ToLower()};
 {maskShapeVar}.setValue({maskShapePathVar});";
 
             _builder.AppendLine(scriptText);
