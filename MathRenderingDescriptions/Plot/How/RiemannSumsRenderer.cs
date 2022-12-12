@@ -30,7 +30,7 @@ namespace MathRenderingDescriptions.Plot.How
 
             for (int i = 0; i < _description.NumTransitions; i++)
             {
-                var numRects = (int)Math.Pow(i + 1, 2);
+                var numRects = (int)Math.Pow(2, i);
                 if (i > 0)
                 {
                     var splitLinesDuration = timeUnit * _description.SplitMult;
@@ -113,7 +113,7 @@ namespace MathRenderingDescriptions.Plot.How
                 if (i % 2 == 0)
                 {
                     var currentRect = rects[i];
-                    var nextRect = rects[i];
+                    var nextRect = rects[i + 1];
 
                     yield return new TimedAdobeLayerComponent(
                         new AdobePathComponent(
