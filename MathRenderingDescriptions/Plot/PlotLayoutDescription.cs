@@ -27,6 +27,11 @@ namespace MathRenderingDescriptions.Plot
             return AxesLayout.CreateFunctionPoint(function, GetBounds(), xValue);
         }
 
+        public double GetVisualXValue(double xValue)
+        {
+            return AxesLayout.GetVisualXValue(xValue, GetBounds());
+        }
+
         public RectangleF GetBounds()
         {
             return new RectangleF(TopLeft,
@@ -85,25 +90,23 @@ namespace MathRenderingDescriptions.Plot
             double xValue,
             double yValue)
         {
-            var xVisualValue = GetVisualXValue(xValue, XAxis, axisBoundingBox);
-            var yVisualValue = GetVisualYValue(yValue, YAxis, axisBoundingBox);
+            var xVisualValue = GetVisualXValue(xValue, axisBoundingBox);
+            var yVisualValue = GetVisualYValue(yValue, axisBoundingBox);
 
             return new Point((int)Math.Round(xVisualValue), (int)Math.Round(yVisualValue));
         }
 
-        private double GetVisualXValue(double value,
-            PlotAxisLayoutDescription axis,
+        public double GetVisualXValue(double value,
             RectangleF axisBoundingBox)
         {
-            var percentage = GetPercentage(value, axis);
+            var percentage = GetPercentage(value, XAxis);
             return axisBoundingBox.Left + (percentage * axisBoundingBox.Width);
         }
 
         private double GetVisualYValue(double value,
-            PlotAxisLayoutDescription axis,
             RectangleF axisBoundingBox)
         {
-            var percentage = GetPercentage(value, axis);
+            var percentage = GetPercentage(value, YAxis);
             return axisBoundingBox.Bottom - (percentage * axisBoundingBox.Height);
         }
 

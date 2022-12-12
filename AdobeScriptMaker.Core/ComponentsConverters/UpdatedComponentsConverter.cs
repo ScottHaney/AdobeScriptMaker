@@ -56,6 +56,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderAreaUnderFunction(auf, maxDuration, renderingDescription.WhenToStart));
                 }
+                else if (renderingDescription.What is RiemannSumsRenderingDescription rs)
+                {
+                    results.Add(RenderRiemannSums(rs, maxDuration, renderingDescription.WhenToStart));
+                }
             }
 
             return results.SelectMany(x => x.Components);
@@ -96,11 +100,17 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             return renderer.Render(whenToStart);
         }
 
+        private RenderedComponents RenderRiemannSums(RiemannSumsRenderingDescription rs,
+            AbsoluteTiming maxDuration,
+            AbsoluteTiming whenToStart)
+        {
+            var renderer = new RiemannSumsRenderer(rs);
+            return renderer.Render(whenToStart);
+        }
+
         private FunctionPointsRenderer CreatePointsRenderer(FunctionRenderingDescription function)
         {
-            return new FunctionPointsRenderer(function,
-                    function.StartX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MinValue,
-                    function.EndX ?? function.PlotLayoutDescription.AxesLayout.XAxis.MaxValue);
+            return new FunctionPointsRenderer(function);
         }
     }
 

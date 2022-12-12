@@ -39,24 +39,18 @@ namespace MathRenderingDescriptions.Plot.How
     public class FunctionPointsRenderer
     {
         private readonly FunctionRenderingDescription _description;
-        private readonly double _startX;
-        private readonly double _endX;
 
-        public FunctionPointsRenderer(FunctionRenderingDescription description,
-            double startX,
-            double endX)
+        public FunctionPointsRenderer(FunctionRenderingDescription description)
         {
             _description = description;
-            _startX = startX;
-            _endX = endX;
         }
 
         public PointF[] GetPoints()
         {
             return new PointF[]
             {
-                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _startX),
-                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _endX)
+                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.StartX),
+                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.EndX)
             };
         }
     }

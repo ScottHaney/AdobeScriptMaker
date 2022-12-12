@@ -10,14 +10,19 @@ namespace MathRenderingDescriptions.Plot.What
         public readonly PlotLayoutDescription PlotLayoutDescription;
         public readonly Func<double, double> Function;
 
-        public double? StartX { get; set; }
-        public double? EndX { get; set; }
+        public double StartX { get; }
+        public double EndX { get; }
 
         public FunctionRenderingDescription(PlotLayoutDescription plotLayoutDescription,
-            Func<double, double> function)
+            Func<double, double> function,
+            double? startX = null,
+            double? endX = null)
         {
             PlotLayoutDescription = plotLayoutDescription;
             Function = function;
+
+            StartX = startX ?? plotLayoutDescription.AxesLayout.XAxis.MinValue;
+            EndX = endX ?? plotLayoutDescription.AxesLayout.XAxis.MaxValue;
         }
     }
 }
