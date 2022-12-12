@@ -28,6 +28,7 @@ namespace MathRenderingDescriptions.Plot.How
             var components = new List<TimedAdobeLayerComponent>();
             double currentTime = whenToRender.Time;
 
+            var previousNumRects = 0;
             for (int i = 0; i < _description.NumTransitions; i++)
             {
                 var numRects = (int)Math.Pow(2, i);
@@ -35,7 +36,7 @@ namespace MathRenderingDescriptions.Plot.How
 
                 if (i > 0)
                 {
-                    var splitLines = CreateSplitLines(numRects);
+                    var splitLines = CreateSplitLines(previousNumRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
                         currentTime,
                         splitLinesDuration));
@@ -53,6 +54,7 @@ namespace MathRenderingDescriptions.Plot.How
                     components.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
                 
                 currentTime += sumsEndTime;
+                previousNumRects = numRects;
             }
 
             return new RenderedComponents(components);
