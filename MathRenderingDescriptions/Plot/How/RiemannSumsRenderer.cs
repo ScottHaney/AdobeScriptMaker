@@ -59,7 +59,10 @@ namespace MathRenderingDescriptions.Plot.How
                 foreach(var component in riemannSumsComponents)
                 {
                     var mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
-                    var scribble = new AdobeScribbleEffect(mask.MaskName);
+                    var scribble = new AdobeScribbleEffect(mask.MaskName)
+                    {
+                        ColorValue = new AdobeColorValue("[0, 0, 0]")
+                    };
 
                     components.Add(new TimedAdobeLayerComponent(
                         new GroupedTogetherAdobeLayerComponents(component.Component, mask, scribble),

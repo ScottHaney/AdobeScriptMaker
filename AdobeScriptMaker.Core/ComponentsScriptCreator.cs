@@ -188,6 +188,11 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var scriptText = $@"var {scribbleVar} = {layerVar}.Effects.addProperty('ADBE Scribble Fill');
 {scribbleVar}.Mask = '{scribbleEffect.MaskName}';";
 
+            if (scribbleEffect.ColorValue != null)
+            {
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.Color.setValue({scribbleEffect.ColorValue.GetScriptText()});");
+            }
+
             _builder.AppendLine(scriptText);
         }
 

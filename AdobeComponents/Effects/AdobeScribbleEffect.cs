@@ -1,4 +1,5 @@
-﻿using AdobeComponents.Components;
+﻿using AdobeComponents.CommonValues;
+using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace AdobeComponents.Effects
     public class AdobeScribbleEffect : IAdobeLayerComponent
     {
         public readonly string MaskName;
+
+        public IAdobeColorValue ColorValue { get; set; }
 
         public AdobeScribbleEffect(string maskName)
         {
