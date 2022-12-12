@@ -31,10 +31,10 @@ namespace MathRenderingDescriptions.Plot.How
             for (int i = 0; i < _description.NumTransitions; i++)
             {
                 var numRects = (int)Math.Pow(2, i);
+                var splitLinesDuration = timeUnit * _description.SplitMult;
+
                 if (i > 0)
                 {
-                    var splitLinesDuration = timeUnit * _description.SplitMult;
-
                     var splitLines = CreateSplitLines(numRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
                         currentTime,
@@ -45,10 +45,11 @@ namespace MathRenderingDescriptions.Plot.How
 
                 var sums = CreateRiemannSum(numRects);
                 var sumsEndTime = currentTime + timeUnit;
+                var sumsExtraTime = (i == _description.NumTransitions - 1 ? 0 : splitLinesDuration);
                 if (i == 0)
-                    components.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime));
+                    components.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
                 else
-                    components.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime));
+                    components.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
                 
                 currentTime += sumsEndTime;
             }
