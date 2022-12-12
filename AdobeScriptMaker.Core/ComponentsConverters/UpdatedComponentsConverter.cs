@@ -63,7 +63,6 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             }
 
             return results.SelectMany(x => x.Components);
-
         }
 
         private RenderedComponents RenderAxes(AxesRenderingDescription axes,

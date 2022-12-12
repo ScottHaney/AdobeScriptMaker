@@ -1,4 +1,5 @@
 ﻿using AdobeComponents.Animation;
+using AdobeComponents.CommonValues;
 using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
 using AdobeComponents.Effects;
@@ -30,8 +31,18 @@ namespace AdobeScriptMaker.Core
             var nullLayerVar = _context.GetNextAutoVariable();
             _builder.AppendLine($"var {nullLayerVar} = {compositionRef}.layers.addNull();");
 
+            var savedLayers = new List<AdobeLayer>();
             foreach (var layer in composition.Layers)
-                VisitLayer(compositionRef, layer, nullLayerVar);
+            {
+                if (layer.Drawings.OfType<IAdobeSharedValueControl>().Any())
+                    savedLayers.Add(layer);
+                else
+                    VisitLayer(compositionRef, layer, nullLayerVar);
+            }
+
+            //Write out the shared controls last so that they appear at the top
+            foreach (var savedLayer in savedLayers)
+                VisitLayer(compositionRef, savedLayer, nullLayerVar);
         }
 
         private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
@@ -60,6 +71,8 @@ namespace AdobeScriptMaker.Core
                         VisitMask(layerVar, mask);
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
+                    else if (drawing is AdobeSharedColorControl sharedColor)
+                        VisitColorControl(compositionRef, sharedColor);
                     else if (drawing is AdobeScribbleEffect scribble)
                         VisitScribbleEffect(layerVar, scribble);
                     else
@@ -123,6 +136,15 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
                 _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValueAtTime({value.Time}, '{value.Value}');");
                 _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
+        }
+
+        private void VisitColorControl(string compositionRef, AdobeSharedColorControl colorControl)
+        {
+            var adjustmentLayerVar = _context.GetNextAutoVariable();
+
+            _builder.AppendLine(@$"var {adjustmentLayerVar} = {compositionRef}.layers.addNull();
+{adjustmentLayerVar}.adjustmentLayer = true;
+{adjustmentLayerVar}.effect.addProperty('ADBE Color Control');");
         }
 
         private void VisitSlider(string compositionRef, AdobeSliderControl slider)

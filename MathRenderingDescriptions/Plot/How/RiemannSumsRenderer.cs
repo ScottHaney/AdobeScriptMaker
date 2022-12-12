@@ -1,4 +1,5 @@
 ﻿using AdobeComponents.Animation;
+using AdobeComponents.CommonValues;
 using AdobeComponents.Components;
 using AdobeComponents.Effects;
 using MathRenderingDescriptions.Plot.What;
@@ -69,6 +70,9 @@ namespace MathRenderingDescriptions.Plot.How
                 currentTime += sumsEndTime;
                 previousNumRects = numRects;
             }
+
+            var colorControl = new AdobeSharedColorControl();
+            components.Add(new TimedAdobeLayerComponent(colorControl, whenToRender.Time, currentTime));
 
             return new RenderedComponents(components);
         }
