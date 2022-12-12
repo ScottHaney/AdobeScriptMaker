@@ -46,6 +46,7 @@ namespace MathRenderingDescriptions.Plot.How
                 var sums = CreateRiemannSum(numRects);
                 var sumsEndTime = currentTime + timeUnit;
                 var sumsExtraTime = (i == _description.NumTransitions - 1 ? 0 : splitLinesDuration);
+
                 if (i == 0)
                     components.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
                 else
@@ -116,10 +117,15 @@ namespace MathRenderingDescriptions.Plot.How
                     var currentRect = rects[i];
                     var nextRect = rects[i + 1];
 
+                    var targetRect = new RiemannSumRect(currentRect.Left,
+                        currentRect.Right,
+                        nextRect.Top,
+                        nextRect.Bottom);
+
                     yield return new TimedAdobeLayerComponent(
                         new AdobePathComponent(
                             new AnimatedValue<PointF[]>(
-                                new ValueAtTime<PointF[]>(nextRect.GetPoints(), new AnimationTime(startTime)),
+                                new ValueAtTime<PointF[]>(targetRect.GetPoints(), new AnimationTime(startTime)),
                                 new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime(startTime + duration / 2))))
                             { IsClosed = true },
                         startTime,
