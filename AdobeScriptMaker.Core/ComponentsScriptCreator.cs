@@ -147,15 +147,11 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
         {
             var maskVar = _context.GetNextAutoVariable();
             var maskShapeVar = _context.GetNextAutoVariable();
-            var maskShapePathVar = _context.GetNextAutoVariable();
 
             var scriptText = $@"var {maskVar} = {layerVar}.Masks.addProperty('Mask');
 {maskVar}.inverted = {mask.IsInverted.ToString().ToLower()}
 var {maskShapeVar} = {maskVar}.property('maskShape');
-var {maskShapePathVar} = {maskShapeVar}.value;
-{maskShapePathVar}.vertices = {ConvertPointsToJavascriptArg(mask.PathComponent.Points.GetValues().Single().Value)};
-{maskShapePathVar}.closed = {mask.PathComponent.IsClosed.ToString().ToLower()};
-{maskShapeVar}.setValue({maskShapePathVar});";
+{CreateSetVerticesCode(mask.PathComponent.Points, maskShapeVar, mask.PathComponent.IsClosed, true)}";
 
             if (!string.IsNullOrEmpty(mask.MaskName))
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{maskVar}.name = '{mask.MaskName}';");
@@ -175,22 +171,24 @@ var {maskShapePathVar} = {maskShapeVar}.value;
 
         private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,
             string vectorGroupVar,
-            bool isClosed)
+            bool isClosed,
+            bool isMask = false)
         {
             if (!points.IsAnimated)
-                return CreateShape(points.GetValues().Single().Value, isClosed, vectorGroupVar, null);
+                return CreateShape(points.GetValues().Single().Value, isClosed, vectorGroupVar, null, isMask);
             else
             {
                 return String.Join(Environment.NewLine,
                     points.GetValues()
-                        .Select(x => CreateShape(x.Value, isClosed, vectorGroupVar, x.Time.Time)));
+                        .Select(x => CreateShape(x.Value, isClosed, vectorGroupVar, x.Time.Time, isMask)));
             }
         }
 
         private string CreateShape(IEnumerable<PointF> points,
             bool isClosed,
             string vectorGroupVar,
-            double? time)
+            double? time,
+            bool isMask = false)
         {
             var shapeVar = _context.GetNextAutoVariable();
 
@@ -199,9 +197,9 @@ var {maskShapePathVar} = {maskShapeVar}.value;
 {shapeVar}.closed = {isClosed.ToString().ToLower()};";
 
             if (time == null)
-                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}.property('Path').setValue({shapeVar});");
+                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}{(isMask ? "" : ".property('Path')")}.setValue({shapeVar});");
             else
-                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}.property('Path').setValueAtTime({time}, {shapeVar});");
+                result = string.Join(Environment.NewLine, result, $"{vectorGroupVar}{(isMask ? "" : ".property('Path')")}.setValueAtTime({time}, {shapeVar});");
 
             return result;
 

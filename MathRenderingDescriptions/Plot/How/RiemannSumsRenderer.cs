@@ -1,5 +1,6 @@
 ﻿using AdobeComponents.Animation;
 using AdobeComponents.Components;
+using AdobeComponents.Effects;
 using MathRenderingDescriptions.Plot.What;
 using RenderingDescriptions.How;
 using RenderingDescriptions.When;
@@ -48,10 +49,22 @@ namespace MathRenderingDescriptions.Plot.How
                 var sumsEndTime = currentTime + timeUnit;
                 var sumsExtraTime = (i == _description.NumTransitions - 1 ? 0 : splitLinesDuration);
 
+                var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
                 if (i == 0)
-                    components.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
+                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
                 else
-                    components.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
+                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
+
+                foreach(var component in riemannSumsComponents)
+                {
+                    var mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
+                    var scribble = new AdobeScribbleEffect(mask.MaskName);
+
+                    components.Add(new TimedAdobeLayerComponent(
+                        new GroupedTogetherAdobeLayerComponents(component.Component, mask, scribble),
+                        component.StartTime,
+                        component.EndTime));
+                }
                 
                 currentTime += sumsEndTime;
                 previousNumRects = numRects;
