@@ -20,7 +20,7 @@ namespace AdobeComponents.CommonValues
 
         public string GetScriptText()
         {
-            return $".setValue('{_scriptText}')";
+            return $".setValue({_scriptText})";
         }
     }
 

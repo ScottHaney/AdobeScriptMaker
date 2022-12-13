@@ -9,6 +9,7 @@ using RenderingDescriptions.When;
 using AdobeComponents.Components;
 using AdobeComponents.Animation;
 using AdobeComponents.Effects;
+using AdobeComponents.CommonValues;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -46,7 +47,10 @@ namespace MathRenderingDescriptions.Plot.How
 
             var path = new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true };
             var mask = new AdobeMaskComponent(path) { MaskName = "AreaUnderFunctionMask" };
-            var scribble = new AdobeScribbleEffect(mask.MaskName);
+            var scribble = new AdobeScribbleEffect(mask.MaskName)
+            {
+                ColorValue = new AdobeColorValue("[0, 0, 0]")
+            };
 
             return new RenderedComponents(
                 new TimedAdobeLayerComponent(
