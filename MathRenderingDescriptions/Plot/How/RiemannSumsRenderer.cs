@@ -30,6 +30,7 @@ namespace MathRenderingDescriptions.Plot.How
             var components = new List<TimedAdobeLayerComponent>();
             double currentTime = whenToRender.Time;
 
+            var sharedColorControlName = "riemannSumsColorControl";
             var previousNumRects = 0;
             for (int i = 0; i < _description.NumTransitions; i++)
             {
@@ -61,7 +62,7 @@ namespace MathRenderingDescriptions.Plot.How
                     var mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
                     var scribble = new AdobeScribbleEffect(mask.MaskName)
                     {
-                        ColorValue = new AdobeColorValue("[0, 0, 0]")
+                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", sharedColorControlName)
                     };
 
                     components.Add(new TimedAdobeLayerComponent(
@@ -74,7 +75,7 @@ namespace MathRenderingDescriptions.Plot.How
                 previousNumRects = numRects;
             }
 
-            var colorControl = new AdobeSharedColorControl();
+            var colorControl = new AdobeSharedColorControl(sharedColorControlName);
             components.Add(new TimedAdobeLayerComponent(colorControl, whenToRender.Time, currentTime));
 
             return new RenderedComponents(components);

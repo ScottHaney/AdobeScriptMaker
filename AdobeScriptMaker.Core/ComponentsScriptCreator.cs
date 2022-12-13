@@ -50,6 +50,9 @@ namespace AdobeScriptMaker.Core
             var textDrawings = layer.Drawings.OfType<AdobeTextControl>().ToList();
             var otherDrawings = layer.Drawings.Where(x => !(x is AdobeTextControl)).ToList();
 
+            var sharedControlsLayerName = "Shared Controls Layer";
+            string sharedControlsLayerVar = null;
+
             if (otherDrawings.Any())
             {
                 var layerVar = _context.GetNextAutoVariable();
@@ -65,6 +68,17 @@ namespace AdobeScriptMaker.Core
 
                 foreach (var drawing in otherDrawings)
                 {
+                    if (drawing is IAdobeSharedValueControl)
+                    {
+                        if (sharedControlsLayerVar == null)
+                        {
+                            sharedControlsLayerVar = _context.GetNextAutoVariable();
+                            _builder.AppendLine(@$"var {sharedControlsLayerVar} = { compositionRef}.layers.addNull();
+{sharedControlsLayerVar}.adjustmentLayer = true;
+{sharedControlsLayerVar}.name = '{sharedControlsLayerName}';");
+                        }
+                    }
+
                     if (drawing is AdobePathComponent path)
                         VisitPath(layerVar, path);
                     else if (drawing is AdobeMaskComponent mask)
@@ -72,7 +86,7 @@ namespace AdobeScriptMaker.Core
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
                     else if (drawing is AdobeSharedColorControl sharedColor)
-                        VisitColorControl(compositionRef, sharedColor);
+                        VisitColorControl(sharedControlsLayerVar, sharedColor);
                     else if (drawing is AdobeScribbleEffect scribble)
                         VisitScribbleEffect(layerVar, scribble);
                     else
@@ -138,13 +152,12 @@ var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
             }
         }
 
-        private void VisitColorControl(string compositionRef, AdobeSharedColorControl colorControl)
+        private void VisitColorControl(string layerVar, AdobeSharedColorControl colorControl)
         {
-            var adjustmentLayerVar = _context.GetNextAutoVariable();
+            var colorControlVar = _context.GetNextAutoVariable();
 
-            _builder.AppendLine(@$"var {adjustmentLayerVar} = {compositionRef}.layers.addNull();
-{adjustmentLayerVar}.adjustmentLayer = true;
-{adjustmentLayerVar}.effect.addProperty('ADBE Color Control');");
+            _builder.AppendLine(@$"var {colorControlVar} = {layerVar}.effect.addProperty('ADBE Color Control');
+{colorControlVar}.name = '{colorControl.ControlName}';");
         }
 
         private void VisitSlider(string compositionRef, AdobeSliderControl slider)
@@ -190,7 +203,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
 
             if (scribbleEffect.ColorValue != null)
             {
-                scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.Color.setValue({scribbleEffect.ColorValue.GetScriptText()});");
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.Color{scribbleEffect.ColorValue.GetScriptText()};");
             }
 
             _builder.AppendLine(scriptText);

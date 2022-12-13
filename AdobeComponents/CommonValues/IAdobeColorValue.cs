@@ -20,7 +20,28 @@ namespace AdobeComponents.CommonValues
 
         public string GetScriptText()
         {
-            return _scriptText;
+            return $".setValue('{_scriptText}')";
+        }
+    }
+
+    public class AdobeColorControlRef : IAdobeColorValue
+    {
+        private readonly string _compRef;
+        private readonly string _layerName;
+        private readonly string _colorControlName;
+
+        public AdobeColorControlRef(string compRef,
+            string layerName,
+            string colorControlName)
+        {
+            _compRef = compRef;
+            _layerName = layerName;
+            _colorControlName = colorControlName;
+        }
+
+        public string GetScriptText()
+        {
+            return $".expression = \"{_compRef}.layer('{_layerName}').effect('{_colorControlName}')('Color')\"";
         }
     }
 }
