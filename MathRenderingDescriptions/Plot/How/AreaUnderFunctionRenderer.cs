@@ -49,7 +49,9 @@ namespace MathRenderingDescriptions.Plot.How
             var mask = new AdobeMaskComponent(path) { MaskName = "AreaUnderFunctionMask" };
             var scribble = new AdobeScribbleEffect(mask.MaskName)
             {
-                ColorValue = new AdobeColorValue("[0, 0, 0]")
+                ColorValue = new AdobeColorValue("[0, 0, 0]"),
+                End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(whenToRender.Time)),
+                    new ValueAtTime<double>(100, new AnimationTime(whenToRender.Time + _drawingDuration.Time / 4)))
             };
 
             return new RenderedComponents(

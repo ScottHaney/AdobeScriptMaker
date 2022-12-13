@@ -206,6 +206,20 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.Color{scribbleEffect.ColorValue.GetScriptText()};");
             }
 
+            if (scribbleEffect.End != null)
+            {
+                string additionalText;
+                if (!scribbleEffect.End.IsAnimated)
+                    additionalText = $"{scribbleVar}.property('End').setValue({scribbleEffect.End.GetValues().Single().Value});";
+                else
+                {
+                    additionalText = string.Join(Environment.NewLine, scribbleEffect.End.GetValues()
+                        .Select(x => $"{scribbleVar}.property('End').setValueAtTime({x.Time.Time}, {x.Value});"));
+                }
+
+                scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
+            }
+
             _builder.AppendLine(scriptText);
         }
 

@@ -1,4 +1,5 @@
-﻿using AdobeComponents.CommonValues;
+﻿using AdobeComponents.Animation;
+using AdobeComponents.CommonValues;
 using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
 using System;
@@ -12,6 +13,8 @@ namespace AdobeComponents.Effects
         public readonly string MaskName;
 
         public IAdobeColorValue ColorValue { get; set; }
+
+        public IAnimatedValue<double> End { get; set; }
 
         public AdobeScribbleEffect(string maskName)
         {
