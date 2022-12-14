@@ -35,20 +35,22 @@ namespace MathRenderingDescriptions.Plot.How
                 new Font("Tahoma", 50, GraphicsUnit.Pixel),
                 _description.Data.AllDataInMatrixOrder().ToArray()));
 
-            /*var textControls = new List<AdobeTextControl>();
+            var textSettings = new AdobeTextSettings("Tahoma", 50);
+
+            var textControls = new List<AdobeTextComponent>();
             for (int row = 0; row < _description.Data.NumRows; row++)
             {
                 for (int col = 0; col < _description.Data.NumColumns; col++)
                 {
                     var entryBounds = layoutResult.GetEntryBounds(row, col);
-                    textControls.Add(new AdobeTextControl()
-                    {
-                        Values = new AdobeTextControlValue[] { new AdobeTextControlValue() { Value = "5", Time = 0 } }
-                    });
+                    textControls.Add(new AdobeTextComponent(_description.Data.GetEntry(row, col).ToString(),
+                        entryBounds,
+                        textSettings));
                 }
-            }*/
+            }
 
-            throw new NotImplementedException();
+            return new RenderedComponents(
+                textControls.Select(x => new TimedAdobeLayerComponent(x, whenToRender.Time, whenToRender.Time + 30)));
         }
     }
 }
