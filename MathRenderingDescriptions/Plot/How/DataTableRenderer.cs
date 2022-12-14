@@ -30,12 +30,13 @@ namespace MathRenderingDescriptions.Plot.How
                 _description.Data.NumRows,
                 _description.Data.NumColumns);
 
+            var font = new Font("Tahoma", 50, GraphicsUnit.Pixel);
             var layoutResult = matrixLayout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(
                 new TextMeasurer(),
-                new Font("Tahoma", 50, GraphicsUnit.Pixel),
+                font,
                 _description.Data.AllDataInMatrixOrder().Select(x => FormatNumber(x)).ToArray()));
 
-            var textSettings = new AdobeTextSettings("Tahoma", 50);
+            var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
 
             var textControls = new List<AdobeTextComponent>();
             for (int row = 0; row < _description.Data.NumRows; row++)
