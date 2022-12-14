@@ -83,6 +83,8 @@ namespace AdobeScriptMaker.Core
                         VisitPath(layerVar, path);
                     else if (drawing is AdobeMaskComponent mask)
                         VisitMask(layerVar, mask);
+                    else if (drawing is AdobeTextComponent text)
+                        VisitText(compositionRef, text);
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
                     else if (drawing is AdobeSharedColorControl sharedColor)
@@ -221,6 +223,39 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             }
 
             _builder.AppendLine(scriptText);
+        }
+
+        private void VisitText(string compositionRef, AdobeTextComponent text)
+        {
+            var lines = new List<string>();
+
+            //https://ae-scripting.docsforadobe.dev/other/textdocument.html?highlight=TextDocument#textdocument
+            var textDocVar = _context.GetNextAutoVariable();
+            lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
+
+            //Make sure to add the text document to the layer before setting properties on the layer
+            //otherwise a runtime exception will be thrown by adobe
+            //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
+            var layerVar = _context.GetNextAutoVariable();
+            lines.Add($"var {layerVar} = {compositionRef}.layers.addText('{text.TextValue}');");
+            lines.Add($"{layerVar}.position.setValue([{text.Bounds.Left + text.Bounds.Width}, {text.Bounds.Top + text.Bounds.Height - GetFontHeightCorrection(text.Bounds.Height)}]);");
+
+            //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
+            //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185
+            var sourceTextVar = _context.GetNextAutoVariable();
+            lines.Add(@$"var {sourceTextVar} = {layerVar}.text.sourceText;
+var {textDocVar} = {sourceTextVar}.value;
+{textDocVar}.font = '{text.TextSettings.FontName}';
+{textDocVar}.fontSize = {text.TextSettings.FontSizeInPixels};
+{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;
+{sourceTextVar}.setValue({textDocVar});");
+
+            _builder.Append(string.Join(Environment.NewLine, lines.ToArray()));
+        }
+
+        private float GetFontHeightCorrection(float height)
+        {
+            return height * 0.15f;
         }
 
         private string CreateSetVerticesCode(IAnimatedValue<PointF[]> points,
