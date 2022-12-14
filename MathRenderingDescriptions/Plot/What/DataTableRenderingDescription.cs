@@ -10,6 +10,8 @@ namespace MathRenderingDescriptions.Plot.What
     {
         public readonly DataTableData Data;
 
+        public string NumericToStringFormat { get; set; }
+
         public DataTableRenderingDescription(DataTableData data)
         {
             Data = data;

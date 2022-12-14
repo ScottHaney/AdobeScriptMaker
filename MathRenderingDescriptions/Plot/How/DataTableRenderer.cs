@@ -33,7 +33,7 @@ namespace MathRenderingDescriptions.Plot.How
             var layoutResult = matrixLayout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(
                 new TextMeasurer(),
                 new Font("Tahoma", 50, GraphicsUnit.Pixel),
-                _description.Data.AllDataInMatrixOrder().ToArray()));
+                _description.Data.AllDataInMatrixOrder().Select(x => FormatNumber(x)).ToArray()));
 
             var textSettings = new AdobeTextSettings("Tahoma", 50);
 
@@ -43,7 +43,8 @@ namespace MathRenderingDescriptions.Plot.How
                 for (int col = 0; col < _description.Data.NumColumns; col++)
                 {
                     var entryBounds = layoutResult.GetEntryBounds(row, col);
-                    textControls.Add(new AdobeTextComponent(_description.Data.GetEntry(row, col).ToString(),
+
+                    textControls.Add(new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
                         entryBounds,
                         textSettings));
                 }
@@ -51,6 +52,14 @@ namespace MathRenderingDescriptions.Plot.How
 
             return new RenderedComponents(
                 textControls.Select(x => new TimedAdobeLayerComponent(x, whenToRender.Time, whenToRender.Time + 30)));
+        }
+
+        private string FormatNumber(double number)
+        {
+            if (_description.NumericToStringFormat == null)
+                return number.ToString();
+            else
+                return number.ToString(_description.NumericToStringFormat);
         }
     }
 }

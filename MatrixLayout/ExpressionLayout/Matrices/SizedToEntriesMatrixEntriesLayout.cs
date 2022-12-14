@@ -31,7 +31,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
 
             var relativeSizeValue = inputs.TextMeasurer.MeasureText("0", inputs.Font).Height;
 
-            var sizes = inputs.Entries.Select(x => inputs.TextMeasurer.MeasureText(x.ToString(), inputs.Font)).ToList();
+            var sizes = inputs.Entries.Select(x => inputs.TextMeasurer.MeasureText(x, inputs.Font)).ToList();
 
             var combiner = new MatrixEntriesSizeCombiner();
             var columnWidths = combiner.GetMaxForEachColumn(sizes.Select(x => x.Width), Columns);
@@ -54,7 +54,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
                     var rect = new RectangleF(left, top, columnWidths[columnIndex], rowHeights[rowIndex]);
                     results.Add(new MatrixEntryLayoutResult(rect,
                         new TextSettings(inputs.Font),
-                        inputs.Entries[rowIndex * Columns + columnIndex].ToString()));
+                        inputs.Entries[rowIndex * Columns + columnIndex]));
                 }
             }
 
@@ -95,7 +95,16 @@ namespace MatrixLayout.ExpressionLayout.Matrices
     {
         public readonly ITextMeasurer TextMeasurer;
         public readonly Font Font;
-        public readonly double[] Entries;
+        public readonly string[] Entries;
+
+        public SizedMatrixEntriesLayoutInputParams(ITextMeasurer textMeasurer,
+            Font font,
+            params string[] entries)
+        {
+            TextMeasurer = textMeasurer;
+            Font = font;
+            Entries = entries;
+        }
 
         public SizedMatrixEntriesLayoutInputParams(ITextMeasurer textMeasurer,
             Font font,
@@ -103,7 +112,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
         {
             TextMeasurer = textMeasurer;
             Font = font;
-            Entries = entries;
+            Entries = Entries.Select(x => x.ToString()).ToArray();
         }
     }
 

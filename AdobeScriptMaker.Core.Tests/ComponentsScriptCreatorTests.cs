@@ -73,7 +73,7 @@ namespace AdobeScriptMaker.Core.Tests
                 riemannSumsMetadata.SumsDetails.Select(x => x.TotalArea).ToList()
             });
 
-            var dataTable = new DataTableRenderingDescription(dataTableData);
+            var dataTable = new DataTableRenderingDescription(dataTableData) { NumericToStringFormat = "N1" };
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
             var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);
