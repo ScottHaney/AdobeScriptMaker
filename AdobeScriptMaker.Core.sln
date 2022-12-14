@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathRenderingDescriptions",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeComponents", "AdobeComponents\AdobeComponents.csproj", "{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VFXComponents", "RenderingPrimitives\VFXComponents.csproj", "{581C5775-78B5-47E2-8C0E-DF84E80642FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{581C5775-78B5-47E2-8C0E-DF84E80642FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{581C5775-78B5-47E2-8C0E-DF84E80642FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{581C5775-78B5-47E2-8C0E-DF84E80642FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{581C5775-78B5-47E2-8C0E-DF84E80642FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

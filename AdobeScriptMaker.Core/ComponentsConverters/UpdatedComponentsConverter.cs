@@ -9,6 +9,8 @@ using MathRenderingDescriptions.Plot.How;
 using RenderingDescriptions.How;
 using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
+using MathRenderingDescriptions.Plot.How.RiemannSums;
+using MathRenderingDescriptions.Plot.What.RiemannSums;
 
 namespace AdobeScriptMaker.Core.ComponentsConverters
 {

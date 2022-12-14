@@ -7,6 +7,7 @@ using MathDescriptions.Plot.Calculus;
 using MathDescriptions.Plot.Functions;
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot.What.RiemannSums;
 using NUnit.Framework;
 using RenderingDescriptions;
 using RenderingDescriptions.When;
@@ -60,7 +61,10 @@ namespace AdobeScriptMaker.Core.Tests
 
             var areaUnderFunction = new AreaUnderFunctionRenderingDescription(function);
 
-            var riemannSums = new RiemannSumsRenderingDescription(function, 5, 5);
+            var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
+            var riemannSums = new RiemannSumsRenderingDescription(function,
+                new FitToDuration(sumsProvider.NumSums, 5),
+                sumsProvider);
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
             var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);

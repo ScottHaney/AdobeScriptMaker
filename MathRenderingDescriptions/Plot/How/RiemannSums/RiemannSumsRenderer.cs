@@ -3,6 +3,7 @@ using AdobeComponents.CommonValues;
 using AdobeComponents.Components;
 using AdobeComponents.Effects;
 using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot.What.RiemannSums;
 using RenderingDescriptions.How;
 using RenderingDescriptions.When;
 using System;
@@ -10,8 +11,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using MoreLinq;
 
-namespace MathRenderingDescriptions.Plot.How
+namespace MathRenderingDescriptions.Plot.How.RiemannSums
 {
     public class RiemannSumsRenderer : IHowToRender
     {
@@ -24,40 +26,32 @@ namespace MathRenderingDescriptions.Plot.How
 
         public RenderedComponents Render(AbsoluteTiming whenToRender)
         {
-            var numTimeUnits = _description.NumTransitions + (_description.NumTransitions - 1) * _description.SplitMult;
-            var timeUnit = _description.TotalDuration / numTimeUnits;
-
             var components = new List<TimedAdobeLayerComponent>();
             double currentTime = whenToRender.Time;
 
             var sharedColorControlName = "riemannSumsColorControl";
             var previousNumRects = 0;
-            for (int i = 0; i < _description.NumTransitions; i++)
+            foreach (var (index, numRects) in _description.SumsProvider.GetSums().Index())
             {
-                var numRects = (int)Math.Pow(2, i);
-                var splitLinesDuration = timeUnit * _description.SplitMult;
+                var sums = CreateRiemannSum(numRects);
+                var sumsEndTime = currentTime + _description.TimingDescription.GetTotalTimeForSum(index, numRects);
 
-                if (i > 0)
+                var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
+                if (index == 0)
+                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime));
+                else
+                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime));
+
+                var transitionAnimationDuration = _description.TimingDescription.GetTransitionAnimationTimeForSum(index, numRects);
+                if (transitionAnimationDuration > 0)
                 {
                     var splitLines = CreateSplitLines(previousNumRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
-                        currentTime,
-                        splitLinesDuration));
-
-                    currentTime += splitLinesDuration;
+                        currentTime - transitionAnimationDuration,
+                        transitionAnimationDuration));
                 }
 
-                var sums = CreateRiemannSum(numRects);
-                var sumsEndTime = currentTime + timeUnit;
-                var sumsExtraTime = (i == _description.NumTransitions - 1 ? 0 : splitLinesDuration);
-
-                var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
-                if (i == 0)
-                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
-                else
-                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime + sumsExtraTime));
-
-                foreach(var component in riemannSumsComponents)
+                foreach (var component in riemannSumsComponents)
                 {
                     var mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
                     var scribble = new AdobeScribbleEffect(mask.MaskName)
@@ -140,10 +134,13 @@ namespace MathRenderingDescriptions.Plot.How
                     var currentRect = rects[i];
                     var nextRect = rects[i + 1];
 
+                    //Setting metadata is a little suspicious here and it will probably never
+                    //be used so just set it to null and have it blow up if it ever is used...
                     var targetRect = new RiemannSumRect(currentRect.Left,
                         currentRect.Right,
                         nextRect.Top,
-                        nextRect.Bottom);
+                        nextRect.Bottom,
+                        null);
 
                     yield return new TimedAdobeLayerComponent(
                         new AdobePathComponent(
@@ -176,9 +173,12 @@ namespace MathRenderingDescriptions.Plot.How
                 var leftX = rectWidth * i;
                 var rightX = leftX + rectWidth;
 
+                var xValueForTop = rightX;
+
                 var visualBottomY = _description.FunctionDescription.PlotLayoutDescription.GetAxesIntersectionPoint().Y;
+                var topY = _description.FunctionDescription.Function(xValueForTop);
                 var visualTopY = _description.FunctionDescription.PlotLayoutDescription.CreateFunctionPoint(
-                    _description.FunctionDescription, rightX).Y;
+                    _description.FunctionDescription, xValueForTop).Y;
 
                 var visualLeftX = (float)_description.FunctionDescription.PlotLayoutDescription.GetVisualXValue(leftX);
                 var visualRightX = (float)_description.FunctionDescription.PlotLayoutDescription.GetVisualXValue(rightX);
@@ -186,7 +186,8 @@ namespace MathRenderingDescriptions.Plot.How
                 result.Add(new RiemannSumRect(visualLeftX,
                     visualRightX,
                     visualTopY,
-                    visualBottomY));
+                    visualBottomY,
+                    new RiemannSumRectMetadata(Math.Abs((rightX - leftX) * topY))));
             }
 
             return result;
@@ -248,16 +249,19 @@ namespace MathRenderingDescriptions.Plot.How
             public readonly float Right;
             public readonly float Top;
             public readonly float Bottom;
+            public readonly RiemannSumRectMetadata Metadata;
 
             public RiemannSumRect(float left,
                 float right,
                 float top,
-                float bottom)
+                float bottom,
+                RiemannSumRectMetadata metadata)
             {
                 Left = left;
                 Right = right;
                 Top = top;
                 Bottom = bottom;
+                Metadata = metadata;
             }
 
             public PointF[] GetPoints()
@@ -269,6 +273,16 @@ namespace MathRenderingDescriptions.Plot.How
                     new PointF(Right, Top),
                     new PointF(Left, Top)
                 };
+            }
+        }
+
+        private class RiemannSumRectMetadata
+        {
+            public readonly double Area;
+
+            public RiemannSumRectMetadata(double area)
+            {
+                Area = area;
             }
         }
 

@@ -3,22 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MathRenderingDescriptions.Plot.What
+namespace MathRenderingDescriptions.Plot.What.RiemannSums
 {
     public class RiemannSumsRenderingDescription : IWhatToRender
     {
         public readonly FunctionRenderingDescription FunctionDescription;
-        public readonly int NumTransitions;
-        public readonly double TotalDuration;
-        public double SplitMult { get; set; } = 0.5;
+        public readonly ITimingDescription TimingDescription;
+        public readonly ISumsProvider SumsProvider;
 
         public RiemannSumsRenderingDescription(FunctionRenderingDescription functionDescription,
-            int numTransitions,
-            double totalDuration)
+            ITimingDescription timingDescription,
+            ISumsProvider sumsProvider)
         {
             FunctionDescription = functionDescription;
-            NumTransitions = numTransitions;
-            TotalDuration = totalDuration;
+            TimingDescription = timingDescription;
+            SumsProvider = sumsProvider;
         }
     }
 }
