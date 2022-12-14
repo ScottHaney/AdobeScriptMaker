@@ -62,6 +62,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderRiemannSums(rs, maxDuration, renderingDescription.WhenToStart));
                 }
+                else if (renderingDescription.What is DataTableRenderingDescription dt)
+                {
+                    results.Add(RenderDataTable(dt, maxDuration, renderingDescription.WhenToStart));
+                }
             }
 
             return results.SelectMany(x => x.Components);
@@ -106,6 +110,14 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             AbsoluteTiming whenToStart)
         {
             var renderer = new RiemannSumsRenderer(rs);
+            return renderer.Render(whenToStart);
+        }
+
+        private RenderedComponents RenderDataTable(DataTableRenderingDescription dt,
+            AbsoluteTiming maxDuration,
+            AbsoluteTiming whenToStart)
+        {
+            var renderer = new DataTableRenderer(dt);
             return renderer.Render(whenToStart);
         }
 

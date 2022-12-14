@@ -66,13 +66,23 @@ namespace AdobeScriptMaker.Core.Tests
                 new FitToDuration(sumsProvider.NumSums, 5),
                 sumsProvider);
 
+            var riemannSumsMetadata = riemannSums.GetMetadata();
+            var dataTableData = new DataTableData(new List<List<double>>()
+            {
+                riemannSumsMetadata.SumsDetails.Select(x => (double)x.NumSums).ToList(),
+                riemannSumsMetadata.SumsDetails.Select(x => x.TotalArea).ToList()
+            });
+
+            var dataTable = new DataTableRenderingDescription(dataTableData);
+
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
             var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);
             var aufToRender = new RenderingDescription(areaUnderFunction, new AbsoluteTiming(4), null);
             var rsToRender = new RenderingDescription(riemannSums, new AbsoluteTiming(5), null);
+            var dtToRender = new RenderingDescription(dataTable, new AbsoluteTiming(0), null);
 
             var converter = new UpdatedComponentsConverter();
-            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender }, new AbsoluteTiming(15));
+            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender }, new AbsoluteTiming(15));
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted);
