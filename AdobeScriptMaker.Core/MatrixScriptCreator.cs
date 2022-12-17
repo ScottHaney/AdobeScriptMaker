@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Text;
 using System.Linq;
 using MatrixLayout.InputDescriptions;
+using RenderingDescriptions.What;
 
 namespace AdobeScriptMaker.Core
 {

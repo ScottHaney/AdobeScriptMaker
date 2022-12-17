@@ -4,6 +4,7 @@ using MatrixLayout.ExpressionDecorators;
 using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.InputDescriptions;
 using NUnit.Framework;
+using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -500,7 +501,7 @@ namespace AdobeScriptMaker.Core.Tests
 
         private TextSettings CreateAnnotationsTextSettings()
         {
-            return new TextSettings(new System.Drawing.Font("Arial", 55, System.Drawing.GraphicsUnit.Pixel));
+            return new TextSettings("Arial", 55, TextSettingsFontSizeUnit.Pixels);
         }
 
         private int GetAnnotationsPadding()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RenderingDescriptions.What;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -107,18 +108,6 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
                 Bounds.Top + shift,
                 Bounds.Width,
                 Bounds.Height);
-        }
-    }
-
-    public class TextSettings
-    {
-        public readonly string FontName;
-        public readonly float FontSizeInPixels;
-
-        public TextSettings(Font font)
-        {
-            FontName = font.Name;
-            FontSizeInPixels = (font.SizeInPoints * 4) / 3;
         }
     }
 }

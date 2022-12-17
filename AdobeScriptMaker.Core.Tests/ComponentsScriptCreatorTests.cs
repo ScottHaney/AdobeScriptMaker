@@ -8,8 +8,10 @@ using MathDescriptions.Plot.Functions;
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 using NUnit.Framework;
 using RenderingDescriptions;
+using RenderingDescriptions.What;
 using RenderingDescriptions.When;
 using System;
 using System.Collections.Generic;
@@ -37,7 +39,7 @@ namespace AdobeScriptMaker.Core.Tests
         public void CreatesAxes()
         {
             var axes = new PlotAxes(new Rectangle(0, 0, 100, 100));
-            var drawingSequence = new DrawingSequence(axes);
+            var drawingSequence = new DrawingSequence(axes.GetDrawings().ToArray());
 
             var converter = new AdobeComponentsConverter();
             var converted = converter.Convert(drawingSequence);
@@ -73,7 +75,11 @@ namespace AdobeScriptMaker.Core.Tests
                 riemannSumsMetadata.SumsDetails.Select(x => x.TotalArea).ToList()
             });
 
-            var dataTable = new DataTableRenderingDescription(dataTableData) { NumericToStringFormat = "N1" };
+            var dataTable = new DataTableRenderingDescription(dataTableData)
+            {
+                NumericToStringFormat = "N1",
+                TextSettings = new TextSettings("Graphie", 50, TextSettingsFontSizeUnit.Pixels)
+            };
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
             var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);
@@ -97,7 +103,7 @@ namespace AdobeScriptMaker.Core.Tests
                 new FunctionDescription(x => Math.Pow(x, 2) + 1));
 
             var plot = new Plot(plotDescription, new Rectangle(0, 0, 500, 500));
-            var drawingSequence = new DrawingSequence(plot);
+            var drawingSequence = new DrawingSequence(plot.GetDrawings().ToArray());
 
             var converter = new AdobeComponentsConverter();
             var converted = converter.Convert(drawingSequence);

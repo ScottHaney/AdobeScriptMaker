@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Drawing;
 
 namespace MathRenderingDescriptions.Plot.What
 {
@@ -11,6 +12,8 @@ namespace MathRenderingDescriptions.Plot.What
         public readonly DataTableData Data;
 
         public string NumericToStringFormat { get; set; }
+
+        public TextSettings TextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
 
         public DataTableRenderingDescription(DataTableData data)
         {

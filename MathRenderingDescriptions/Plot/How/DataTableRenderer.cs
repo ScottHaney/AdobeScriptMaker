@@ -30,7 +30,7 @@ namespace MathRenderingDescriptions.Plot.How
                 _description.Data.NumRows,
                 _description.Data.NumColumns);
 
-            var font = new Font("Tahoma", 50, GraphicsUnit.Pixel);
+            var font = _description.TextSettings.ToFont();
             var layoutResult = matrixLayout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(
                 new TextMeasurer(),
                 font,

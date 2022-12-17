@@ -2,6 +2,7 @@
 using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.ExpressionLayout.Matrices;
 using MatrixLayout.InputDescriptions;
+using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -177,7 +178,7 @@ namespace MatrixLayout.ExpressionLayout
                             continue;
 
                         var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
-                        var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+                        var annotationSize = textMeasurer.MeasureText(annotation, annotatedMatrixComponent.Annotations.TextSettings.ToFont());
 
                         var left = annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight
                             ? matrixLayout.BoundingBox.Right + annotatedMatrixComponent.Annotations.Padding
@@ -204,7 +205,7 @@ namespace MatrixLayout.ExpressionLayout
                             continue;
 
                         var columnEntriesBounds = matrixLayout.GetColumnBoundingBox(i);
-                        var annotationSize = textMeasurer.MeasureText(annotation, new Font(annotatedMatrixComponent.Annotations.TextSettings.FontName, annotatedMatrixComponent.Annotations.TextSettings.FontSizeInPixels, GraphicsUnit.Pixel));
+                        var annotationSize = textMeasurer.MeasureText(annotation, annotatedMatrixComponent.Annotations.TextSettings.ToFont());
 
                         var annotationBounds = new RectangleF(
                             (columnEntriesBounds.Right + columnEntriesBounds.Left) / 2 - annotationSize.Width / 2,

@@ -1,5 +1,6 @@
 ﻿using MatrixLayout.ExpressionLayout.LayoutResults;
 using MatrixLayout.InputDescriptions;
+using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -112,7 +113,7 @@ namespace MatrixLayout.ExpressionLayout.Matrices
         {
             TextMeasurer = textMeasurer;
             Font = font;
-            Entries = Entries.Select(x => x.ToString()).ToArray();
+            Entries = entries.Select(x => x.ToString()).ToArray();
         }
     }
 
