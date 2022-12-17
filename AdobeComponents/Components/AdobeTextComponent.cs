@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace AdobeComponents.Components
@@ -37,8 +38,11 @@ namespace AdobeComponents.Components
         {
             //Sometimes there is a difference in the name used by the font
             //for the operating system and for adobe after effects so account for that here
-            if (fontName == "Graphie Light")
-                return "Graphie-Light";
+            if (fontName.StartsWith("Graphie"))
+            {
+                var words = fontName.Split(' ');
+                return $"{words[0]}-{string.Join("", words.Skip(1))}";
+            }
             else
                 return fontName;
         }
