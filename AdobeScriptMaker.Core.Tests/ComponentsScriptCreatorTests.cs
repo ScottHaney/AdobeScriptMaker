@@ -78,7 +78,7 @@ namespace AdobeScriptMaker.Core.Tests
             var dataTable = new DataTableRenderingDescription(dataTableData)
             {
                 NumericToStringFormat = "N1",
-                TextSettings = new TextSettings("Graphie", 50, TextSettingsFontSizeUnit.Pixels)
+                TextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels)
             };
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
