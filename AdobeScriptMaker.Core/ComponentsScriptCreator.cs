@@ -29,7 +29,8 @@ namespace AdobeScriptMaker.Core
             var compositionRef = "app.project.activeItem";
 
             var nullLayerVar = _context.GetNextAutoVariable();
-            _builder.AppendLine($"var {nullLayerVar} = {compositionRef}.layers.addNull();");
+            _builder.AppendLine($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
+{nullLayerVar}.position.setValue([0,0]);");
 
             var savedLayers = new List<AdobeLayer>();
             foreach (var layer in composition.Layers)
@@ -126,9 +127,6 @@ namespace AdobeScriptMaker.Core
             var vectorGroupVar = _context.GetNextAutoVariable();
             var strokeVar = _context.GetNextAutoVariable();
 
-            var transformGroupVar = _context.GetNextAutoVariable();
-            var scaleVar = _context.GetNextAutoVariable();
-
             var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
 var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
 var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group')
@@ -136,10 +134,7 @@ var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group'
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
 {strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
-{layerVar}.property('Transform').property('Position').setValue([0, 0]);
-
-var {transformGroupVar} = {baseGroupVar}.property('ADBE Vector Transform Group');
-var {scaleVar} = {transformGroupVar}.property('ADBE Vector Scale');";
+{layerVar}.property('Transform').property('Position').setValue([0, 0]);";
 
             _builder.AppendLine(scriptText);
         }
