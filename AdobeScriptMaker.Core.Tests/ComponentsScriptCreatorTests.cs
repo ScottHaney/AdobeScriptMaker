@@ -54,7 +54,7 @@ namespace AdobeScriptMaker.Core.Tests
             var plotLayoutDescription = new PlotLayoutDescription(
                 new PlotAxesLayoutDescription(
                     new PlotAxisLayoutDescription(800, 0, 5),
-                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(0, 0));
+                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 300));
 
             var axes = new AxesRenderingDescription(plotLayoutDescription);
 
@@ -75,10 +75,12 @@ namespace AdobeScriptMaker.Core.Tests
                 riemannSumsMetadata.SumsDetails.Select(x => x.TotalArea).ToList()
             });
 
+            var plotBounds = plotLayoutDescription.GetBounds();
             var dataTable = new DataTableRenderingDescription(dataTableData)
             {
                 NumericToStringFormat = "N1",
-                TextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels)
+                TextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels),
+                TopLeft = new PointF(plotBounds.X, plotBounds.Y + plotBounds.Height + 200)
             };
 
             var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);

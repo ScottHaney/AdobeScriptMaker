@@ -15,6 +15,8 @@ namespace MathRenderingDescriptions.Plot.What
 
         public TextSettings TextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
 
+        public PointF TopLeft { get; set; } = new PointF(0, 0);
+
         public DataTableRenderingDescription(DataTableData data)
         {
             Data = data;

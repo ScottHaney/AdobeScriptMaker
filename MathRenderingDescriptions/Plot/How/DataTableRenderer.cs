@@ -44,6 +44,10 @@ namespace MathRenderingDescriptions.Plot.How
                 for (int col = 0; col < _description.Data.NumColumns; col++)
                 {
                     var entryBounds = layoutResult.GetEntryBounds(row, col);
+                    entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
+                        entryBounds.Y + _description.TopLeft.Y,
+                        entryBounds.Width,
+                        entryBounds.Height);
 
                     textControls.Add(new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
                         entryBounds,
