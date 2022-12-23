@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using RenderingDescriptions.Timing;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -14,25 +15,22 @@ namespace MathRenderingDescriptions.Plot.How
     {
         private readonly FunctionRenderingDescription _description;
         private readonly FunctionPointsRenderer _pointsRenderer;
-        private readonly AbsoluteTiming _drawingDuration;
 
         public FunctionRenderer(FunctionRenderingDescription description,
-            FunctionPointsRenderer pointsRenderer,
-            AbsoluteTiming drawingDuration)
+            FunctionPointsRenderer pointsRenderer)
         {
             _description = description;
             _pointsRenderer = pointsRenderer;
-            _drawingDuration = drawingDuration;
         }
 
-        public RenderedComponents Render(AbsoluteTiming whenToRender)
+        public RenderedComponents Render(ITimingForRender timing)
         {
             var points = _pointsRenderer.GetPoints();
 
             return new RenderedComponents(new TimedAdobeLayerComponent(
                 new AdobePathComponent(new StaticValue<PointF[]>(points)),
-                whenToRender.Time,
-                _drawingDuration.Time));
+                timing.WhenToStart.Time,
+                timing.WhenToStart.Time + timing.RenderDuration.Time));
         }
     }
 

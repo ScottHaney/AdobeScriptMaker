@@ -1,4 +1,5 @@
 ﻿using AdobeComponents.Components;
+using RenderingDescriptions.Timing;
 using RenderingDescriptions.When;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace RenderingDescriptions.How
 {
     public interface IHowToRender
     {
-        RenderedComponents Render(AbsoluteTiming whenToRender);
+        RenderedComponents Render(ITimingForRender timing);
     }
 
     public class RenderedComponents

@@ -8,43 +8,43 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Linq;
+using RenderingDescriptions.Timing;
 
 namespace MathRenderingDescriptions.Plot.How
 {
     public class AxesRenderer : IHowToRender
     {
         private readonly AxesRenderingDescription _description;
-        private readonly AbsoluteTiming _drawingDuration;
 
-        public AbsoluteTiming EntranceAnimationStart { get; set; } = new AbsoluteTiming(0);
-        public AbsoluteTiming EntranceAnimationEnd { get; set; } = new AbsoluteTiming(0);
+        public double EntranceAnimationDurationPercentage { get; set; } = 0.10;
 
-        public AxesRenderer(AxesRenderingDescription description,
-            AbsoluteTiming drawingDuration)
+        public AxesRenderer(AxesRenderingDescription description)
         {
             _description = description;
-            _drawingDuration = drawingDuration;
         }
 
-        public RenderedComponents Render(AbsoluteTiming whenToRender)
+        public RenderedComponents Render(ITimingForRender timing)
         {
             var xAxisPoints = _description.PlotLayoutDescription.GetXAxisPoints();
             var yAxisPoints = _description.PlotLayoutDescription.GetYAxisPoints();
             var originPoint = _description.PlotLayoutDescription.GetAxesIntersectionPoint();
 
+            var animationStartTime = new AnimationTime(timing.WhenToStart.Time);
+            var animationEndTime = new AnimationTime(timing.WhenToStart.Time + EntranceAnimationDurationPercentage * timing.RenderDuration.Time);
+
             var xAxisValues = new AnimatedValue<PointF[]>(
-                new ValueAtTime<PointF[]>(new PointF[] { originPoint, originPoint }, new AnimationTime(EntranceAnimationStart.Time)),
-                new ValueAtTime<PointF[]>(xAxisPoints, new AnimationTime(EntranceAnimationEnd.Time)));
+                new ValueAtTime<PointF[]>(new PointF[] { originPoint, originPoint }, animationStartTime),
+                new ValueAtTime<PointF[]>(xAxisPoints, animationEndTime));
 
             var yAxisValues = new AnimatedValue<PointF[]>(
-                new ValueAtTime<PointF[]>(new PointF[] { originPoint, originPoint }, new AnimationTime(EntranceAnimationStart.Time)),
-                new ValueAtTime<PointF[]>(yAxisPoints, new AnimationTime(EntranceAnimationEnd.Time)));
+                new ValueAtTime<PointF[]>(new PointF[] { originPoint, originPoint }, animationStartTime),
+                new ValueAtTime<PointF[]>(yAxisPoints, animationEndTime));
 
             var xAxis = new AdobePathComponent(xAxisValues);
             var yAxis = new AdobePathComponent(yAxisValues);
 
             return new RenderedComponents(new IAdobeLayerComponent[] { xAxis, yAxis }
-                .Select(x => new TimedAdobeLayerComponent(x, whenToRender.Time + EntranceAnimationStart.Time, whenToRender.Time + EntranceAnimationStart.Time + _drawingDuration.Time))
+                .Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time))
                 .ToArray());
         }
     }

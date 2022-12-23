@@ -11,6 +11,7 @@ using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MatrixLayout.ExpressionLayout.LayoutResults;
 using NUnit.Framework;
 using RenderingDescriptions;
+using RenderingDescriptions.Timing;
 using RenderingDescriptions.What;
 using RenderingDescriptions.When;
 using System;
@@ -83,14 +84,14 @@ namespace AdobeScriptMaker.Core.Tests
                 TopLeft = new PointF(plotBounds.X, plotBounds.Y + plotBounds.Height + 200)
             };
 
-            var axesToRender = new RenderingDescription(axes, new AbsoluteTiming(0), null);
-            var functionToRender = new RenderingDescription(function, new AbsoluteTiming(2.1), null);
-            var aufToRender = new RenderingDescription(areaUnderFunction, new AbsoluteTiming(4), null);
-            var rsToRender = new RenderingDescription(riemannSums, new AbsoluteTiming(5), null);
-            var dtToRender = new RenderingDescription(dataTable, new AbsoluteTiming(0), null);
+            var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), new AbsoluteTiming(2)), null);
+            var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), new AbsoluteTiming(2.5)), null);
+            var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(5)), null);
+            var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(15)), null);
+            var dtToRender = new RenderingDescription(dataTable, new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(15)), null);
 
             var converter = new UpdatedComponentsConverter();
-            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender }, new AbsoluteTiming(15));
+            var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender });
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted);

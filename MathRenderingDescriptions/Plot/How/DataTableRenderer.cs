@@ -11,6 +11,7 @@ using MatrixLayout;
 using System.Drawing;
 using AdobeComponents.Components;
 using AdobeComponents.Animation;
+using RenderingDescriptions.Timing;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -23,7 +24,7 @@ namespace MathRenderingDescriptions.Plot.How
             _description = description;
         }
 
-        public RenderedComponents Render(AbsoluteTiming whenToRender)
+        public RenderedComponents Render(ITimingForRender timing)
         {
             var matrixLayout = new SizedToEntriesMatrixEntriesLayout(
                 new MatrixInteriorMarginsDescription(0.1f, 0.1f, 0.1f, 0.1f),
@@ -56,7 +57,7 @@ namespace MathRenderingDescriptions.Plot.How
             }
 
             return new RenderedComponents(
-                textControls.Select(x => new TimedAdobeLayerComponent(x, whenToRender.Time, whenToRender.Time + 30)));
+                textControls.Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + 30)));
         }
 
         private string FormatNumber(double number)

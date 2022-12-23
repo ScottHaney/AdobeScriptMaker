@@ -10,6 +10,7 @@ using AdobeComponents.Components;
 using AdobeComponents.Animation;
 using AdobeComponents.Effects;
 using AdobeComponents.CommonValues;
+using RenderingDescriptions.Timing;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -17,18 +18,17 @@ namespace MathRenderingDescriptions.Plot.How
     {
         private readonly AreaUnderFunctionRenderingDescription _description;
         private readonly FunctionPointsRenderer _functionRenderer;
-        private readonly AbsoluteTiming _drawingDuration;
+
+        public double EntranceAnimationTimingPercentage { get; } = 0.25;
 
         public AreaUnderFunctionRenderer(AreaUnderFunctionRenderingDescription description,
-            FunctionPointsRenderer functionRenderer,
-            AbsoluteTiming drawingDuration)
+            FunctionPointsRenderer functionRenderer)
         {
             _description = description;
             _functionRenderer = functionRenderer;
-            _drawingDuration = drawingDuration;
         }
 
-        public RenderedComponents Render(AbsoluteTiming whenToRender)
+        public RenderedComponents Render(ITimingForRender timing)
         {
             var functionPoints = _functionRenderer.GetPoints();
 
@@ -50,16 +50,16 @@ namespace MathRenderingDescriptions.Plot.How
             var scribble = new AdobeScribbleEffect(mask.MaskName)
             {
                 ColorValue = new AdobeColorValue("[0, 0, 0]"),
-                End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(whenToRender.Time)),
-                    new ValueAtTime<double>(100, new AnimationTime(whenToRender.Time + _drawingDuration.Time / 4)))
+                End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time / 4)))
             };
 
             return new RenderedComponents(
                 new TimedAdobeLayerComponent(
                     new GroupedTogetherAdobeLayerComponents(
                         path, mask, scribble),
-                        whenToRender.Time,
-                        _drawingDuration.Time));
+                        timing.WhenToStart.Time,
+                        timing.WhenToStart.Time + timing.RenderDuration.Time));
         }
     }
 }

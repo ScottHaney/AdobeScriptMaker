@@ -2,21 +2,22 @@
 using RenderingDescriptions.What;
 using RenderingDescriptions.When;
 using RenderingDescriptions.How;
+using RenderingDescriptions.Timing;
 
 namespace RenderingDescriptions
 {
     public class RenderingDescription
     {
         public readonly IWhatToRender What;
-        public readonly AbsoluteTiming WhenToStart;
+        public readonly ITimingForRender Timing;
         public readonly IHowToRender How;
 
         public RenderingDescription(IWhatToRender what,
-            AbsoluteTiming whenToStart,
+            ITimingForRender timing,
             IHowToRender how)
         {
             What = what;
-            WhenToStart = whenToStart;
+            Timing = timing;
             How = how;
         }
     }

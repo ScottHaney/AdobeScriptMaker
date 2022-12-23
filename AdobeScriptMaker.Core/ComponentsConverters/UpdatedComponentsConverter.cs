@@ -11,17 +11,17 @@ using AdobeComponents.Components;
 using AdobeComponents.Components.Layers;
 using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
+using RenderingDescriptions.Timing;
 
 namespace AdobeScriptMaker.Core.ComponentsConverters
 {
     public class UpdatedComponentsConverter
     {
-        public AdobeScript Convert(List<RenderingDescription> renderingDescriptions,
-            AbsoluteTiming maxDuration)
+        public AdobeScript Convert(List<RenderingDescription> renderingDescriptions)
         {
             var layers = new List<AdobeLayer>();
 
-            foreach (var timedComponent in CreateComponents(renderingDescriptions, maxDuration))
+            foreach (var timedComponent in CreateComponents(renderingDescriptions))
             {
                 var components = timedComponent.Component is GroupedTogetherAdobeLayerComponents group
                     ? group.Components
@@ -40,31 +40,30 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             return new AdobeScript(defaultComp);
         }
 
-        public IEnumerable<TimedAdobeLayerComponent> CreateComponents(List<RenderingDescription> renderingDescriptions,
-            AbsoluteTiming maxDuration)
+        public IEnumerable<TimedAdobeLayerComponent> CreateComponents(List<RenderingDescription> renderingDescriptions)
         {
             var results = new List<RenderedComponents>();
             foreach (var renderingDescription in renderingDescriptions)
             {
                 if (renderingDescription.What is AxesRenderingDescription axes)
                 {
-                    results.Add(RenderAxes(axes, maxDuration, renderingDescription.WhenToStart));
+                    results.Add(RenderAxes(axes, renderingDescription.Timing));
                 }
                 else if (renderingDescription.What is FunctionRenderingDescription function)
                 {
-                    results.Add(RenderFunction(function, maxDuration, renderingDescription.WhenToStart));
+                    results.Add(RenderFunction(function, renderingDescription.Timing));
                 }
                 else if (renderingDescription.What is AreaUnderFunctionRenderingDescription auf)
                 {
-                    results.Add(RenderAreaUnderFunction(auf, maxDuration, renderingDescription.WhenToStart));
+                    results.Add(RenderAreaUnderFunction(auf, renderingDescription.Timing));
                 }
                 else if (renderingDescription.What is RiemannSumsRenderingDescription rs)
                 {
-                    results.Add(RenderRiemannSums(rs, maxDuration, renderingDescription.WhenToStart));
+                    results.Add(RenderRiemannSums(rs, renderingDescription.Timing));
                 }
                 else if (renderingDescription.What is DataTableRenderingDescription dt)
                 {
-                    results.Add(RenderDataTable(dt, maxDuration, renderingDescription.WhenToStart));
+                    results.Add(RenderDataTable(dt, renderingDescription.Timing));
                 }
             }
 
@@ -72,53 +71,42 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         }
 
         private RenderedComponents RenderAxes(AxesRenderingDescription axes,
-            AbsoluteTiming maxDuration,
-            AbsoluteTiming whenToStart)
+            ITimingForRender timing)
         {
-            var axesRenderer = new AxesRenderer(axes, maxDuration)
-            {
-                EntranceAnimationEnd = new AbsoluteTiming(2)
-            };
-
-            return axesRenderer.Render(whenToStart);
+            var axesRenderer = new AxesRenderer(axes);
+            return axesRenderer.Render(timing);
         }
 
         private RenderedComponents RenderFunction(FunctionRenderingDescription function,
-            AbsoluteTiming maxDuration,
-            AbsoluteTiming whenToStart)
+            ITimingForRender timing)
         {
             var axesRenderer = new FunctionRenderer(function,
-                CreatePointsRenderer(function),
-                maxDuration);
+                CreatePointsRenderer(function));
 
-            return axesRenderer.Render(whenToStart);
+            return axesRenderer.Render(timing);
         }
 
         private RenderedComponents RenderAreaUnderFunction(AreaUnderFunctionRenderingDescription auf,
-            AbsoluteTiming maxDuration,
-            AbsoluteTiming whenToStart)
+            ITimingForRender timing)
         {
             var renderer = new AreaUnderFunctionRenderer(auf,
-                CreatePointsRenderer(auf.FunctionRenderingDescription),
-                maxDuration);
+                CreatePointsRenderer(auf.FunctionRenderingDescription));
 
-            return renderer.Render(whenToStart);
+            return renderer.Render(timing);
         }
 
         private RenderedComponents RenderRiemannSums(RiemannSumsRenderingDescription rs,
-            AbsoluteTiming maxDuration,
-            AbsoluteTiming whenToStart)
+            ITimingForRender timing)
         {
             var renderer = new RiemannSumsRenderer(rs);
-            return renderer.Render(whenToStart);
+            return renderer.Render(timing);
         }
 
         private RenderedComponents RenderDataTable(DataTableRenderingDescription dt,
-            AbsoluteTiming maxDuration,
-            AbsoluteTiming whenToStart)
+            ITimingForRender timing)
         {
             var renderer = new DataTableRenderer(dt);
-            return renderer.Render(whenToStart);
+            return renderer.Render(timing);
         }
 
         private FunctionPointsRenderer CreatePointsRenderer(FunctionRenderingDescription function)

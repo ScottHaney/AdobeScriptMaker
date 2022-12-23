@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using MoreLinq;
+using RenderingDescriptions.Timing;
 
 namespace MathRenderingDescriptions.Plot.How.RiemannSums
 {
@@ -24,10 +25,10 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
             _description = description;
         }
 
-        public RenderedComponents Render(AbsoluteTiming whenToRender)
+        public RenderedComponents Render(ITimingForRender timing)
         {
             var components = new List<TimedAdobeLayerComponent>();
-            double currentTime = whenToRender.Time;
+            double currentTime = timing.WhenToStart.Time;
 
             var sharedColorControlName = "riemannSumsColorControl";
             var previousNumRects = 0;
@@ -70,7 +71,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
             }
 
             var colorControl = new AdobeSharedColorControl(sharedColorControlName);
-            components.Add(new TimedAdobeLayerComponent(colorControl, whenToRender.Time, currentTime));
+            components.Add(new TimedAdobeLayerComponent(colorControl, timing.WhenToStart.Time, currentTime));
 
             return new RenderedComponents(components);
         }
