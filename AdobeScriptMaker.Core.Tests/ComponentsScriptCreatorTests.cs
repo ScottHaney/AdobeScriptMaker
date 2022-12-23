@@ -53,8 +53,8 @@ namespace AdobeScriptMaker.Core.Tests
         {
             var plotLayoutDescription = new PlotLayoutDescription(
                 new PlotAxesLayoutDescription(
-                    new PlotAxisLayoutDescription(800, 0, 5),
-                    new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 300));
+                    new PlotAxisLayoutDescription(690, 0, 5),
+                    new PlotAxisLayoutDescription(690, 0, 5)), new PointF(100, 300));
 
             var axes = new AxesRenderingDescription(plotLayoutDescription);
 
