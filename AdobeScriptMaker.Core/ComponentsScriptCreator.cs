@@ -32,27 +32,27 @@ namespace AdobeScriptMaker.Core
             _builder.AppendLine($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.position.setValue([0,0]);");
 
+            var sharedControlsLayerName = "Shared Controls Layer";
+            string sharedControlsLayerVar = null;
+
             var savedLayers = new List<AdobeLayer>();
             foreach (var layer in composition.Layers)
             {
                 if (layer.Drawings.OfType<IAdobeSharedValueControl>().Any())
                     savedLayers.Add(layer);
                 else
-                    VisitLayer(compositionRef, layer, nullLayerVar);
+                    VisitLayer(compositionRef, layer, nullLayerVar, sharedControlsLayerName, ref sharedControlsLayerVar);
             }
 
             //Write out the shared controls last so that they appear at the top
             foreach (var savedLayer in savedLayers)
-                VisitLayer(compositionRef, savedLayer, nullLayerVar);
+                VisitLayer(compositionRef, savedLayer, nullLayerVar, sharedControlsLayerName, ref sharedControlsLayerVar);
         }
 
-        private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
+        private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar, string sharedControlsLayerName, ref string sharedControlsLayerVar)
         {
             var textDrawings = layer.Drawings.OfType<AdobeTextControl>().ToList();
             var otherDrawings = layer.Drawings.Where(x => !(x is AdobeTextControl)).ToList();
-
-            var sharedControlsLayerName = "Shared Controls Layer";
-            string sharedControlsLayerVar = null;
 
             if (otherDrawings.Any())
             {
