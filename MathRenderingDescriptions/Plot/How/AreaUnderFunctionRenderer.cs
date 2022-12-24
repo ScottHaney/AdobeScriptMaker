@@ -19,8 +19,6 @@ namespace MathRenderingDescriptions.Plot.How
         private readonly AreaUnderFunctionRenderingDescription _description;
         private readonly FunctionPointsRenderer _functionRenderer;
 
-        public double EntranceAnimationTimingPercentage { get; } = 0.25;
-
         public AreaUnderFunctionRenderer(AreaUnderFunctionRenderingDescription description,
             FunctionPointsRenderer functionRenderer)
         {
@@ -51,7 +49,7 @@ namespace MathRenderingDescriptions.Plot.How
             {
                 ColorValue = new AdobeColorValue("[0, 0, 0]"),
                 End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
-                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time / 4)))
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time)))
             };
 
             return new RenderedComponents(

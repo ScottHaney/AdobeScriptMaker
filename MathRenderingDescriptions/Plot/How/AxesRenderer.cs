@@ -16,8 +16,6 @@ namespace MathRenderingDescriptions.Plot.How
     {
         private readonly AxesRenderingDescription _description;
 
-        public double EntranceAnimationDurationPercentage { get; set; } = 0.10;
-
         public AxesRenderer(AxesRenderingDescription description)
         {
             _description = description;
@@ -30,7 +28,7 @@ namespace MathRenderingDescriptions.Plot.How
             var originPoint = _description.PlotLayoutDescription.GetAxesIntersectionPoint();
 
             var animationStartTime = new AnimationTime(timing.WhenToStart.Time);
-            var animationEndTime = new AnimationTime(timing.WhenToStart.Time + EntranceAnimationDurationPercentage * timing.RenderDuration.Time);
+            var animationEndTime = new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time);
 
             var xAxisValues = new AnimatedValue<PointF[]>(
                 new ValueAtTime<PointF[]>(new PointF[] { originPoint, originPoint }, animationStartTime),

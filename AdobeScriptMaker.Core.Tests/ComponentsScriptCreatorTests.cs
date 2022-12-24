@@ -84,11 +84,13 @@ namespace AdobeScriptMaker.Core.Tests
                 TopLeft = new PointF(plotBounds.X, plotBounds.Y + plotBounds.Height + 200)
             };
 
-            var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), new AbsoluteTiming(2)), null);
-            var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), new AbsoluteTiming(2.5)), null);
+            var compositionDuration = new AbsoluteTiming(30);
+
+            var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(5)), null);
-            var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(15)), null);
-            var dtToRender = new RenderingDescription(dataTable, new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(15)), null);
+            var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15)), null);
+            var dtToRender = new RenderingDescription(dataTable, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15)), null);
 
             var converter = new UpdatedComponentsConverter();
             var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender });
