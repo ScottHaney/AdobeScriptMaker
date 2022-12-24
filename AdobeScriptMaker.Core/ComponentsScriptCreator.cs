@@ -57,7 +57,16 @@ namespace AdobeScriptMaker.Core
             if (otherDrawings.Any())
             {
                 var layerVar = _context.GetNextAutoVariable();
-                _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+
+                if (otherDrawings.Count == 1 && otherDrawings.First() is AdobeTextComponent textComponent)
+                {
+                    //Make sure to add the text document to the layer before setting properties on the layer
+                    //otherwise a runtime exception will be thrown by adobe
+                    //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
+                    _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addText('{textComponent.TextValue}')");
+                }
+                else
+                    _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
 
                 if (layer.InPoint != null)
                     _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
@@ -85,7 +94,7 @@ namespace AdobeScriptMaker.Core
                     else if (drawing is AdobeMaskComponent mask)
                         VisitMask(layerVar, mask);
                     else if (drawing is AdobeTextComponent text)
-                        VisitText(compositionRef, text);
+                        VisitText(layerVar, text);
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
                     else if (drawing is AdobeSharedColorControl sharedColor)
@@ -272,7 +281,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             _builder.AppendLine(scriptText);
         }
 
-        private void VisitText(string compositionRef, AdobeTextComponent text)
+        private void VisitText(string layerVar, AdobeTextComponent text)
         {
             var lines = new List<string>();
 
@@ -280,11 +289,6 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var textDocVar = _context.GetNextAutoVariable();
             lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
 
-            //Make sure to add the text document to the layer before setting properties on the layer
-            //otherwise a runtime exception will be thrown by adobe
-            //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
-            var layerVar = _context.GetNextAutoVariable();
-            lines.Add($"var {layerVar} = {compositionRef}.layers.addText('{text.TextValue}');");
             lines.Add($"{layerVar}.position.setValue([{text.Bounds.Left + text.Bounds.Width}, {text.Bounds.Top + text.Bounds.Height - GetFontHeightCorrection(text.Bounds.Height)}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:

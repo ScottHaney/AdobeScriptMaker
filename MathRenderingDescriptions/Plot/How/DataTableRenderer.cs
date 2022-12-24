@@ -57,7 +57,7 @@ namespace MathRenderingDescriptions.Plot.How
             }
 
             return new RenderedComponents(
-                textControls.Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + 30)));
+                textControls.Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time)));
         }
 
         private string FormatNumber(double number)
