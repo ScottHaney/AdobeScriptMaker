@@ -88,7 +88,7 @@ namespace AdobeScriptMaker.Core.Tests
 
             var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
-            var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(5)), null);
+            var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(2)) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15)), null);
             var dtToRender = new RenderingDescription(dataTable, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15)), null);
 
