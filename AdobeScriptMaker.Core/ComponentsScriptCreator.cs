@@ -140,6 +140,40 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             else
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0])");
 
+            if (path.TrimPaths != null)
+            {
+                var trimPathsVar = _context.GetNextAutoVariable();
+                scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {vectorsGroupVar}.addProperty('Adobe Vector Filter - Trim'));");
+
+                if (path.TrimPaths.Start != null)
+                {
+                    string additionalText;
+                    if (!path.TrimPaths.Start.IsAnimated)
+                        additionalText = $"{trimPathsVar}.property('Start').setValue({path.TrimPaths.Start.GetValues().Single().Value});";
+                    else
+                    {
+                        additionalText = string.Join(Environment.NewLine, path.TrimPaths.Start.GetValues()
+                            .Select(x => $"{trimPathsVar}.property('Start').setValueAtTime({x.Time.Time}, {x.Value});"));
+                    }
+
+                    scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
+                }
+
+                if (path.TrimPaths.End != null)
+                {
+                    string additionalText;
+                    if (!path.TrimPaths.End.IsAnimated)
+                        additionalText = $"{trimPathsVar}.property('End').setValue({path.TrimPaths.End.GetValues().Single().Value});";
+                    else
+                    {
+                        additionalText = string.Join(Environment.NewLine, path.TrimPaths.End.GetValues()
+                            .Select(x => $"{trimPathsVar}.property('End').setValueAtTime({x.Time.Time}, {x.Value});"));
+                    }
+
+                    scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
+                }
+            }
+
             _builder.AppendLine(scriptText);
         }
 

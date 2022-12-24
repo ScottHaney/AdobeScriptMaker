@@ -4,6 +4,7 @@ using System.Text;
 using System.Drawing;
 using AdobeComponents.Animation;
 using AdobeComponents.CommonValues;
+using AdobeComponents.Effects;
 
 namespace AdobeComponents.Components
 {
@@ -13,6 +14,8 @@ namespace AdobeComponents.Components
         public float Thickness { get; set; } = 2;
         public bool IsClosed { get; set; }
         public bool HasLockedScale { get; set; } = true;
+
+        public AdobeTrimPathsEffect TrimPaths { get; set; }
 
         public IAdobeColorValue ColorValue { get; set; }
 
