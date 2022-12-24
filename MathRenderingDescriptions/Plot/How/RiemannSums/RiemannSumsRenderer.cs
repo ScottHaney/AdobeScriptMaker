@@ -66,7 +66,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                         component.EndTime));
                 }
                 
-                currentTime += sumsEndTime;
+                currentTime = sumsEndTime;
                 previousNumRects = numRects;
             }
 
@@ -100,7 +100,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
         private IEnumerable<TimedAdobeLayerComponent> CreateBottomUpAnimation(List<RiemannSumRect> rects,
             double startTime,
-            double duration)
+            double endTime)
         {
             foreach (var rect in rects)
             {
@@ -117,16 +117,16 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                     new AdobePathComponent(
                         new AnimatedValue<PointF[]>(
                             new ValueAtTime<PointF[]>(startPoints, new AnimationTime(startTime)),
-                            new ValueAtTime<PointF[]>(endPoints, new AnimationTime(startTime + duration / 2))))
+                            new ValueAtTime<PointF[]>(endPoints, new AnimationTime((startTime + endTime) / 2))))
                         { IsClosed = true },
                     startTime,
-                    startTime + duration);
+                    endTime);
             }
         }
 
         private IEnumerable<TimedAdobeLayerComponent> CreateSplitSumsAnimation(List<RiemannSumRect> rects,
             double startTime,
-            double duration)
+            double endTime)
         {
             for (int i = 0; i < rects.Count; i++)
             {
@@ -147,10 +147,10 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                         new AdobePathComponent(
                             new AnimatedValue<PointF[]>(
                                 new ValueAtTime<PointF[]>(targetRect.GetPoints(), new AnimationTime(startTime)),
-                                new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime(startTime + duration / 2))))
+                                new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime((startTime + endTime) / 2))))
                             { IsClosed = true },
                         startTime,
-                        startTime + duration);
+                        endTime);
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                             new StaticValue<PointF[]>(rects[i].GetPoints()))
                             { IsClosed = true },
                         startTime,
-                        startTime + duration);
+                        endTime);
                 }
             }
         }
