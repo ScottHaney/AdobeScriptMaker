@@ -49,9 +49,9 @@ namespace MathRenderingDescriptions.Plot.How
             {
                 ColorValue = new AdobeColorValue("[0, 0, 0]"),
                 End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
-                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time)),
-                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time - timing.ExitAnimationDuration.Time)),
-                    new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time)))
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time))),
+                Start = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time - timing.ExitAnimationDuration.Time)),
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time)))
             };
 
             return new RenderedComponents(

@@ -14,6 +14,8 @@ namespace AdobeComponents.Effects
 
         public IAdobeColorValue ColorValue { get; set; }
 
+        public IAnimatedValue<double> Start { get; set; }
+
         public IAnimatedValue<double> End { get; set; }
 
         public AdobeScribbleEffect(string maskName)
