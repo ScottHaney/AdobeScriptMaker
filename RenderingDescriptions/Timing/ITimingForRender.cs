@@ -10,6 +10,7 @@ namespace RenderingDescriptions.Timing
         AbsoluteTiming WhenToStart { get; }
         AbsoluteTiming RenderDuration { get; }
         AbsoluteTiming EntranceAnimationDuration { get; }
+        AbsoluteTiming ExitAnimationDuration { get; }
     }
 
     public class TimingForRender : ITimingForRender
@@ -19,6 +20,8 @@ namespace RenderingDescriptions.Timing
         public AbsoluteTiming RenderDuration { get; }
 
         public AbsoluteTiming EntranceAnimationDuration { get; set; } = new AbsoluteTiming(0);
+
+        public AbsoluteTiming ExitAnimationDuration { get; set; } = new AbsoluteTiming(0);
 
         public TimingForRender(AbsoluteTiming whenToStart,
             AbsoluteTiming renderDuration)
