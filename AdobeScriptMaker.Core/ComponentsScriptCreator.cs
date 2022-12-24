@@ -133,8 +133,12 @@ var {vectorGroupVar} = {vectorsGroupVar}.addProperty('ADBE Vector Shape - Group'
 {CreateSetVerticesCode(path.Points, vectorGroupVar, path.IsClosed)}
 var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {strokeVar}.property('ADBE Vector Stroke Width').setValue('{path.Thickness}');
-{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);
 {layerVar}.property('Transform').property('Position').setValue([0, 0]);";
+
+            if (path.ColorValue != null)
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color'){path.ColorValue.GetScriptText()};");
+            else
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0])");
 
             _builder.AppendLine(scriptText);
         }
