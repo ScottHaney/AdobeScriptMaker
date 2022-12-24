@@ -143,7 +143,7 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             if (path.TrimPaths != null)
             {
                 var trimPathsVar = _context.GetNextAutoVariable();
-                scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {vectorsGroupVar}.addProperty('Adobe Vector Filter - Trim'));");
+                scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');");
 
                 if (path.TrimPaths.Start != null)
                 {

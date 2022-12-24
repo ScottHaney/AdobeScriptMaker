@@ -28,7 +28,16 @@ namespace MathRenderingDescriptions.Plot.How
             var points = _pointsRenderer.GetPoints();
 
             return new RenderedComponents(new TimedAdobeLayerComponent(
-                new AdobePathComponent(new StaticValue<PointF[]>(points)),
+                new AdobePathComponent(new StaticValue<PointF[]>(points))
+                {
+                    TrimPaths = new AdobeComponents.Effects.AdobeTrimPathsEffect()
+                    {
+                        Start = new StaticValue<double>(0),
+                        End = new AnimatedValue<double>(
+                            new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
+                            new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time)))
+                    }
+                },
                 timing.WhenToStart.Time,
                 timing.WhenToStart.Time + timing.RenderDuration.Time));
         }
