@@ -154,33 +154,8 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
                 var trimPathsVar = _context.GetNextAutoVariable();
                 scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');");
 
-                if (path.TrimPaths.Start != null)
-                {
-                    string additionalText;
-                    if (!path.TrimPaths.Start.IsAnimated)
-                        additionalText = $"{trimPathsVar}.property('Start').setValue({path.TrimPaths.Start.GetValues().Single().Value});";
-                    else
-                    {
-                        additionalText = string.Join(Environment.NewLine, path.TrimPaths.Start.GetValues()
-                            .Select(x => $"{trimPathsVar}.property('Start').setValueAtTime({x.Time.Time}, {x.Value});"));
-                    }
-
-                    scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
-                }
-
-                if (path.TrimPaths.End != null)
-                {
-                    string additionalText;
-                    if (!path.TrimPaths.End.IsAnimated)
-                        additionalText = $"{trimPathsVar}.property('End').setValue({path.TrimPaths.End.GetValues().Single().Value});";
-                    else
-                    {
-                        additionalText = string.Join(Environment.NewLine, path.TrimPaths.End.GetValues()
-                            .Select(x => $"{trimPathsVar}.property('End').setValueAtTime({x.Time.Time}, {x.Value});"));
-                    }
-
-                    scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
-                }
+                scriptText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", scriptText, path.TrimPaths.Start);
+                scriptText = AddSetPropertyScript($"{trimPathsVar}.property('End')", scriptText, path.TrimPaths.End);
             }
 
             _builder.AppendLine(scriptText);
@@ -241,7 +216,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
         private void VisitScribbleEffect(string layerVar, AdobeScribbleEffect scribbleEffect)
         {
             var scribbleVar = _context.GetNextAutoVariable();
-
+            
             var scriptText = $@"var {scribbleVar} = {layerVar}.Effects.addProperty('ADBE Scribble Fill');
 {scribbleVar}.Mask = '{scribbleEffect.MaskName}';";
 
@@ -250,33 +225,8 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.Color{scribbleEffect.ColorValue.GetScriptText()};");
             }
 
-            if (scribbleEffect.Start != null)
-            {
-                string additionalText;
-                if (!scribbleEffect.Start.IsAnimated)
-                    additionalText = $"{scribbleVar}.property('Start').setValue({scribbleEffect.Start.GetValues().Single().Value});";
-                else
-                {
-                    additionalText = string.Join(Environment.NewLine, scribbleEffect.Start.GetValues()
-                        .Select(x => $"{scribbleVar}.property('Start').setValueAtTime({x.Time.Time}, {x.Value});"));
-                }
-
-                scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
-            }
-
-            if (scribbleEffect.End != null)
-            {
-                string additionalText;
-                if (!scribbleEffect.End.IsAnimated)
-                    additionalText = $"{scribbleVar}.property('End').setValue({scribbleEffect.End.GetValues().Single().Value});";
-                else
-                {
-                    additionalText = string.Join(Environment.NewLine, scribbleEffect.End.GetValues()
-                        .Select(x => $"{scribbleVar}.property('End').setValueAtTime({x.Time.Time}, {x.Value});"));
-                }
-
-                scriptText = String.Join(Environment.NewLine, scriptText, additionalText);
-            }
+            scriptText = AddSetPropertyScript($"{scribbleVar}.property('Start')", scriptText, scribbleEffect.Start);
+            scriptText = AddSetPropertyScript($"{scribbleVar}.property('End')", scriptText, scribbleEffect.End);
 
             _builder.AppendLine(scriptText);
         }
@@ -349,6 +299,25 @@ var {textDocVar} = {sourceTextVar}.value;
         {
             var pointArgs = string.Join(",", points.Select(x => $"[{x.X},{x.Y}]"));
             return $"[{pointArgs}]";
+        }
+
+        private string AddSetPropertyScript<T>(string propertyExpression, string scriptText, IAnimatedValue<T> value)
+        {
+            if (value != null)
+            {
+                string additionalText;
+                if (!value.IsAnimated)
+                    additionalText = $"{propertyExpression}.setValue({value.GetValues().Single().Value});";
+                else
+                {
+                    additionalText = string.Join(Environment.NewLine, value.GetValues()
+                        .Select(x => $"{propertyExpression}.setValueAtTime({x.Time.Time}, {x.Value});"));
+                }
+
+                return String.Join(Environment.NewLine, scriptText, additionalText);
+            }
+            else
+                return scriptText;
         }
     }
 }
