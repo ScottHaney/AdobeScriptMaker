@@ -13,23 +13,21 @@ namespace AdobeScriptMaker.Core
 {
     public class ComponentsScriptCreator
     {
-        private readonly StringBuilder _builder = new StringBuilder();
-        private readonly ScriptContext _context = new ScriptContext();
-
+        private readonly ScriptBuilder _scriptBuilder;
         public string Visit(AdobeScript script)
         {
             foreach (var composition in script.Compositions)
                 VisitComposition(composition);
 
-            return _builder.ToString();
+            return _scriptBuilder.GetScriptText();
         }
 
         private void VisitComposition(AdobeComposition composition)
         {
             var compositionRef = "app.project.activeItem";
 
-            var nullLayerVar = _context.GetNextAutoVariable();
-            _builder.AppendLine($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
+            var nullLayerVar = _scriptBuilder.GetNextAutoVariable();
+            _scriptBuilder.AddText($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.position.setValue([0,0]);");
 
             var sharedControlsLayerName = "Shared Controls Layer";
@@ -56,25 +54,25 @@ namespace AdobeScriptMaker.Core
 
             if (otherDrawings.Any())
             {
-                var layerVar = _context.GetNextAutoVariable();
+                var layerVar = _scriptBuilder.GetNextAutoVariable();
 
                 if (otherDrawings.Count == 1 && otherDrawings.First() is AdobeTextComponent textComponent)
                 {
                     //Make sure to add the text document to the layer before setting properties on the layer
                     //otherwise a runtime exception will be thrown by adobe
                     //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
-                    _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addText('{textComponent.TextValue}')");
+                    _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addText('{textComponent.TextValue}')");
                 }
                 else
-                    _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addShape()");
+                    _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addShape()");
 
                 if (layer.InPoint != null)
-                    _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
+                    _scriptBuilder.AddText($"{layerVar}.inPoint = {layer.InPoint};");
 
                 if (layer.OutPoint != null)
-                    _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
+                    _scriptBuilder.AddText($"{layerVar}.outPoint = {layer.OutPoint};");
 
-                _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
+                _scriptBuilder.AddText($"{layerVar}.parent = {nullLayerVar};");
 
                 foreach (var drawing in otherDrawings)
                 {
@@ -82,8 +80,8 @@ namespace AdobeScriptMaker.Core
                     {
                         if (sharedControlsLayerVar == null)
                         {
-                            sharedControlsLayerVar = _context.GetNextAutoVariable();
-                            _builder.AppendLine(@$"var {sharedControlsLayerVar} = { compositionRef}.layers.addNull();
+                            sharedControlsLayerVar = _scriptBuilder.GetNextAutoVariable();
+                            _scriptBuilder.AddText(@$"var {sharedControlsLayerVar} = { compositionRef}.layers.addNull();
 {sharedControlsLayerVar}.adjustmentLayer = true;
 {sharedControlsLayerVar}.name = '{sharedControlsLayerName}';");
                         }
@@ -108,16 +106,16 @@ namespace AdobeScriptMaker.Core
 
             if (textDrawings.Any())
             {
-                var layerVar = _context.GetNextAutoVariable();
-                _builder.AppendLine($"var {layerVar} = {compositionRef}.layers.addText()");
+                var layerVar = _scriptBuilder.GetNextAutoVariable();
+                _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addText()");
 
                 if (layer.InPoint != null)
-                    _builder.AppendLine($"{layerVar}.inPoint = {layer.InPoint};");
+                    _scriptBuilder.AddText($"{layerVar}.inPoint = {layer.InPoint};");
 
                 if (layer.OutPoint != null)
-                    _builder.AppendLine($"{layerVar}.outPoint = {layer.OutPoint};");
+                    _scriptBuilder.AddText($"{layerVar}.outPoint = {layer.OutPoint};");
 
-                _builder.AppendLine($"{layerVar}.parent = {nullLayerVar};");
+                _scriptBuilder.AddText($"{layerVar}.parent = {nullLayerVar};");
 
                 foreach (var drawing in textDrawings)
                 {
@@ -131,10 +129,10 @@ namespace AdobeScriptMaker.Core
 
         private void VisitPath(string layerVar, AdobePathComponent path)
         {
-            var baseGroupVar = _context.GetNextAutoVariable();
-            var vectorsGroupVar = _context.GetNextAutoVariable();
-            var vectorGroupVar = _context.GetNextAutoVariable();
-            var strokeVar = _context.GetNextAutoVariable();
+            var baseGroupVar = _scriptBuilder.GetNextAutoVariable();
+            var vectorsGroupVar = _scriptBuilder.GetNextAutoVariable();
+            var vectorGroupVar = _scriptBuilder.GetNextAutoVariable();
+            var strokeVar = _scriptBuilder.GetNextAutoVariable();
 
             var scriptText = $@"var {baseGroupVar} = {layerVar}.property('Contents').addProperty('ADBE Vector Group');
 var {vectorsGroupVar} = {baseGroupVar}.addProperty('ADBE Vectors Group');
@@ -151,14 +149,14 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 
             if (path.TrimPaths != null)
             {
-                var trimPathsVar = _context.GetNextAutoVariable();
+                var trimPathsVar = _scriptBuilder.GetNextAutoVariable();
                 scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');");
 
                 scriptText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", scriptText, path.TrimPaths.Start);
                 scriptText = AddSetPropertyScript($"{trimPathsVar}.property('End')", scriptText, path.TrimPaths.End);
             }
 
-            _builder.AppendLine(scriptText);
+            _scriptBuilder.AddText(scriptText);
         }
 
         private void VisitText(string layerVar, AdobeTextControl text)
@@ -166,41 +164,41 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             var adobeIndex = 1;
             foreach (var value in text.Values)
             {
-                _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValueAtTime({value.Time}, '{value.Value}');");
-                _builder.AppendLine($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
+                _scriptBuilder.AddText($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setValueAtTime({value.Time}, '{value.Value}');");
+                _scriptBuilder.AddText($"{layerVar}.property('ADBE Text Properties').property('ADBE Text Document').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
         }
 
         private void VisitColorControl(string layerVar, AdobeSharedColorControl colorControl)
         {
-            var colorControlVar = _context.GetNextAutoVariable();
+            var colorControlVar = _scriptBuilder.GetNextAutoVariable();
 
-            _builder.AppendLine(@$"var {colorControlVar} = {layerVar}.effect.addProperty('ADBE Color Control');
+            _scriptBuilder.AddText(@$"var {colorControlVar} = {layerVar}.effect.addProperty('ADBE Color Control');
 {colorControlVar}.name = '{colorControl.ControlName}';");
         }
 
         private void VisitSlider(string compositionRef, AdobeSliderControl slider)
         {
-            var nullLayerVar = _context.GetNextAutoVariable();
+            var nullLayerVar = _scriptBuilder.GetNextAutoVariable();
 
-            _builder.AppendLine(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
+            _scriptBuilder.AddText(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');");
 
             var adobeIndex = 1;
             foreach (var value in slider.Values)
             {
-                _builder.AppendLine($"{nullLayerVar}.effect('Slider Control').property('Slider').setValueAtTime({value.Time}, {value.Value});");
-                _builder.AppendLine($"{nullLayerVar}.effect('Slider Control').property('Slider').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
+                _scriptBuilder.AddText($"{nullLayerVar}.effect('Slider Control').property('Slider').setValueAtTime({value.Time}, {value.Value});");
+                _scriptBuilder.AddText($"{nullLayerVar}.effect('Slider Control').property('Slider').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
 
             if (!string.IsNullOrEmpty(slider.Name))
-                _builder.AppendLine($"{nullLayerVar}.name = { slider.Name};");
+                _scriptBuilder.AddText($"{nullLayerVar}.name = { slider.Name};");
         }
 
         private void VisitMask(string layerVar, AdobeMaskComponent mask)
         {
-            var maskVar = _context.GetNextAutoVariable();
-            var maskShapeVar = _context.GetNextAutoVariable();
+            var maskVar = _scriptBuilder.GetNextAutoVariable();
+            var maskShapeVar = _scriptBuilder.GetNextAutoVariable();
 
             var scriptText = $@"var {maskVar} = {layerVar}.Masks.addProperty('Mask');
 {maskVar}.inverted = {mask.IsInverted.ToString().ToLower()}
@@ -210,12 +208,12 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             if (!string.IsNullOrEmpty(mask.MaskName))
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{maskVar}.name = '{mask.MaskName}';");
 
-            _builder.AppendLine(scriptText);
+            _scriptBuilder.AddText(scriptText);
         }
 
         private void VisitScribbleEffect(string layerVar, AdobeScribbleEffect scribbleEffect)
         {
-            var scribbleVar = _context.GetNextAutoVariable();
+            var scribbleVar = _scriptBuilder.GetNextAutoVariable();
             
             var scriptText = $@"var {scribbleVar} = {layerVar}.Effects.addProperty('ADBE Scribble Fill');
 {scribbleVar}.Mask = '{scribbleEffect.MaskName}';";
@@ -228,7 +226,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             scriptText = AddSetPropertyScript($"{scribbleVar}.property('Start')", scriptText, scribbleEffect.Start);
             scriptText = AddSetPropertyScript($"{scribbleVar}.property('End')", scriptText, scribbleEffect.End);
 
-            _builder.AppendLine(scriptText);
+            _scriptBuilder.AddText(scriptText);
         }
 
         private void VisitText(string layerVar, AdobeTextComponent text)
@@ -236,14 +234,14 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var lines = new List<string>();
 
             //https://ae-scripting.docsforadobe.dev/other/textdocument.html?highlight=TextDocument#textdocument
-            var textDocVar = _context.GetNextAutoVariable();
+            var textDocVar = _scriptBuilder.GetNextAutoVariable();
             lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
 
             lines.Add($"{layerVar}.position.setValue([{text.Bounds.Left + text.Bounds.Width}, {text.Bounds.Top + text.Bounds.Height - GetFontHeightCorrection(text.Bounds.Height)}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
             //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185
-            var sourceTextVar = _context.GetNextAutoVariable();
+            var sourceTextVar = _scriptBuilder.GetNextAutoVariable();
             lines.Add(@$"var {sourceTextVar} = {layerVar}.text.sourceText;
 var {textDocVar} = {sourceTextVar}.value;
 {textDocVar}.font = '{text.TextSettings.FontName}';
@@ -251,7 +249,7 @@ var {textDocVar} = {sourceTextVar}.value;
 {textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;
 {sourceTextVar}.setValue({textDocVar});");
 
-            _builder.Append(string.Join(Environment.NewLine, lines.ToArray()));
+            _scriptBuilder.AddText(string.Join(Environment.NewLine, lines.ToArray()));
         }
 
         private float GetFontHeightCorrection(float height)
@@ -280,7 +278,7 @@ var {textDocVar} = {sourceTextVar}.value;
             double? time,
             bool isMask = false)
         {
-            var shapeVar = _context.GetNextAutoVariable();
+            var shapeVar = _scriptBuilder.GetNextAutoVariable();
 
             var result = $@"var {shapeVar} = new Shape();
 {shapeVar}.vertices = {ConvertPointsToJavascriptArg(points)};
@@ -318,6 +316,27 @@ var {textDocVar} = {sourceTextVar}.value;
             }
             else
                 return scriptText;
+        }
+    }
+
+    public class ScriptBuilder
+    {
+        private readonly StringBuilder _builder = new StringBuilder();
+        private readonly ScriptContext _context = new ScriptContext();
+
+        public string GetNextAutoVariable()
+        {
+            return _context.GetNextAutoVariable();
+        }
+
+        public void AddText(string text)
+        {
+            _builder.AppendLine(text);
+        }
+
+        public string GetScriptText()
+        {
+            return _builder.ToString();
         }
     }
 }
