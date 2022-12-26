@@ -8,7 +8,7 @@ using AdobeComponents.Effects;
 
 namespace AdobeComponents.Components
 {
-    public class AdobePathComponent : IAdobeLayerComponent, IAdobeSupportsMaskComponent
+    public class AdobePathComponent : IAdobeSupportsMaskComponent
     {
         public readonly IAnimatedValue<PointF[]> Points;
         public float Thickness { get; set; } = 2;

@@ -41,7 +41,7 @@ namespace MathRenderingDescriptions.Plot.How
             var xAxis = new AdobePathComponent(xAxisValues);
             var yAxis = new AdobePathComponent(yAxisValues);
 
-            return new RenderedComponents(new IAdobeLayerComponent[] { xAxis, yAxis }
+            return new RenderedComponents(new IAdobeLayerComponent[] { new AdobePathGroupComponent(xAxis), new AdobePathGroupComponent(yAxis) }
                 .Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time))
                 .ToArray());
         }

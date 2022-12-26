@@ -57,10 +57,13 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                 foreach (var component in riemannSumsComponents)
                 {
-                    var maskableComponent = (IAdobeSupportsMaskComponent)component.Component;
+                    var maskName = "ScribbleMask";
 
-                    maskableComponent.Mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
-                    var scribble = new AdobeScribbleEffect(maskableComponent.Mask.MaskName)
+                    var pathGroup = (AdobePathGroupComponent)component.Component;
+                    foreach (var pathComponent in pathGroup.Paths)
+                        pathComponent.Mask = new AdobeMaskComponent(pathComponent) { MaskName = maskName };
+
+                    var scribble = new AdobeScribbleEffect(maskName)
                     {
                         ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", scribbleColorControlName)
                     };
@@ -98,13 +101,13 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 };
 
                 yield return new TimedAdobeLayerComponent(
-                    new AdobePathComponent(
+                    new AdobePathGroupComponent(new AdobePathComponent(
                         new AnimatedValue<PointF[]>(
                             new ValueAtTime<PointF[]>(topOnlyPoints, new AnimationTime(startTime)),
                             new ValueAtTime<PointF[]>(splitLine.GetPoints(), new AnimationTime(startTime + duration / 2))))
                     {
                         ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
-                    },
+                    }),
                     startTime,
                     startTime + duration);
             }
@@ -127,14 +130,14 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 };
 
                 yield return new TimedAdobeLayerComponent(
-                    new AdobePathComponent(
+                    new AdobePathGroupComponent(new AdobePathComponent(
                         new AnimatedValue<PointF[]>(
                             new ValueAtTime<PointF[]>(startPoints, new AnimationTime(startTime)),
                             new ValueAtTime<PointF[]>(endPoints, new AnimationTime((startTime + endTime) / 2))))
                         {
                             IsClosed = true,
                             ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
-                    },
+                    }),
                     startTime,
                     endTime);
             }
@@ -161,26 +164,26 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                         null);
 
                     yield return new TimedAdobeLayerComponent(
-                        new AdobePathComponent(
+                        new AdobePathGroupComponent(new AdobePathComponent(
                             new AnimatedValue<PointF[]>(
                                 new ValueAtTime<PointF[]>(targetRect.GetPoints(), new AnimationTime(startTime)),
                                 new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime((startTime + endTime) / 2))))
                             {
                                 IsClosed = true,
                                 ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
-                        },
+                        }),
                         startTime,
                         endTime);
                 }
                 else
                 {
                     yield return new TimedAdobeLayerComponent(
-                        new AdobePathComponent(
+                        new AdobePathGroupComponent(new AdobePathComponent(
                             new StaticValue<PointF[]>(rects[i].GetPoints()))
                             {
                                 IsClosed = true,
                                 ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
-                            },
+                            }),
                         startTime,
                         endTime);
                 }

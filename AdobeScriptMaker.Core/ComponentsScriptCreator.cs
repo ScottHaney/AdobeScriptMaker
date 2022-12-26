@@ -63,8 +63,8 @@ namespace AdobeScriptMaker.Core
 
                 foreach (var drawing in otherDrawings)
                 {
-                    if (drawing is AdobePathComponent path)
-                        VisitPath(layerVar, path);
+                    if (drawing is AdobePathGroupComponent pathGroup)
+                        VisitPathGroup(layerVar, pathGroup);
                     else if (drawing is AdobeTextComponent text)
                         VisitText(layerVar, text);
                     else if (drawing is AdobeSliderControl slider)
@@ -102,6 +102,12 @@ namespace AdobeScriptMaker.Core
                         throw new NotSupportedException(drawing.GetType().FullName);
                 }
             }
+        }
+
+        private void VisitPathGroup(string layerVar, AdobePathGroupComponent pathGroup)
+        {
+            foreach (var path in pathGroup.Paths)
+                VisitPath(layerVar, path);
         }
 
         private void VisitPath(string layerVar, AdobePathComponent path)

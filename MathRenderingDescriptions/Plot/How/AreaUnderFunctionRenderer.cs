@@ -44,9 +44,10 @@ namespace MathRenderingDescriptions.Plot.How
             var areaUnderFunctionPoints = functionPoints.Concat(additionalPoints).ToArray();
 
             var path = new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true };
-            path.Mask = new AdobeMaskComponent(path) { MaskName = "AreaUnderFunctionMask" };
+            var mask = new AdobeMaskComponent(path) { MaskName = "AreaUnderFunctionMask" };
+            path.Mask = mask;
 
-            var scribble = new AdobeScribbleEffect(path.Mask.MaskName)
+            var scribble = new AdobeScribbleEffect(mask.MaskName)
             {
                 ColorValue = new AdobeColorValue("[0, 0, 0]"),
                 End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
@@ -58,7 +59,7 @@ namespace MathRenderingDescriptions.Plot.How
             return new RenderedComponents(
                 new TimedAdobeLayerComponent(
                     new GroupedTogetherAdobeLayerComponents(
-                        path, scribble),
+                        new AdobePathGroupComponent(path), scribble),
                         timing.WhenToStart.Time,
                         timing.WhenToStart.Time + timing.RenderDuration.Time));
         }
