@@ -13,7 +13,7 @@ namespace AdobeScriptMaker.Core
 {
     public class ComponentsScriptCreator
     {
-        private readonly ScriptBuilder _scriptBuilder;
+        private readonly ScriptBuilder _scriptBuilder = new ScriptBuilder();
         public string Visit(AdobeScript script)
         {
             foreach (var composition in script.Compositions)
@@ -30,24 +30,21 @@ namespace AdobeScriptMaker.Core
             _scriptBuilder.AddText($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.position.setValue([0,0]);");
 
-            var sharedControlsLayerName = "Shared Controls Layer";
-            string sharedControlsLayerVar = null;
-
             var savedLayers = new List<AdobeLayer>();
             foreach (var layer in composition.Layers)
             {
                 if (layer.Drawings.OfType<IAdobeSharedValueControl>().Any())
                     savedLayers.Add(layer);
                 else
-                    VisitLayer(compositionRef, layer, nullLayerVar, sharedControlsLayerName, ref sharedControlsLayerVar);
+                    VisitLayer(compositionRef, layer, nullLayerVar);
             }
 
             //Write out the shared controls last so that they appear at the top
             foreach (var savedLayer in savedLayers)
-                VisitLayer(compositionRef, savedLayer, nullLayerVar, sharedControlsLayerName, ref sharedControlsLayerVar);
+                VisitLayer(compositionRef, savedLayer, nullLayerVar);
         }
 
-        private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar, string sharedControlsLayerName, ref string sharedControlsLayerVar)
+        private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
         {
             var textDrawings = layer.Drawings.OfType<AdobeTextControl>().ToList();
             var otherDrawings = layer.Drawings.Where(x => !(x is AdobeTextControl)).ToList();
@@ -76,17 +73,6 @@ namespace AdobeScriptMaker.Core
 
                 foreach (var drawing in otherDrawings)
                 {
-                    if (drawing is IAdobeSharedValueControl)
-                    {
-                        if (sharedControlsLayerVar == null)
-                        {
-                            sharedControlsLayerVar = _scriptBuilder.GetNextAutoVariable();
-                            _scriptBuilder.AddText(@$"var {sharedControlsLayerVar} = { compositionRef}.layers.addNull();
-{sharedControlsLayerVar}.adjustmentLayer = true;
-{sharedControlsLayerVar}.name = '{sharedControlsLayerName}';");
-                        }
-                    }
-
                     if (drawing is AdobePathComponent path)
                         VisitPath(layerVar, path);
                     else if (drawing is AdobeMaskComponent mask)
@@ -96,7 +82,7 @@ namespace AdobeScriptMaker.Core
                     else if (drawing is AdobeSliderControl slider)
                         VisitSlider(compositionRef, slider);
                     else if (drawing is AdobeSharedColorControl sharedColor)
-                        VisitColorControl(sharedControlsLayerVar, sharedColor);
+                        VisitColorControl(sharedColor);
                     else if (drawing is AdobeScribbleEffect scribble)
                         VisitScribbleEffect(layerVar, scribble);
                     else
@@ -169,11 +155,12 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             }
         }
 
-        private void VisitColorControl(string layerVar, AdobeSharedColorControl colorControl)
+        private void VisitColorControl(AdobeSharedColorControl colorControl)
         {
             var colorControlVar = _scriptBuilder.GetNextAutoVariable();
 
-            _scriptBuilder.AddText(@$"var {colorControlVar} = {layerVar}.effect.addProperty('ADBE Color Control');
+            var sharedLayersVar = _scriptBuilder.GetSharedControlsLayerVar();
+            _scriptBuilder.AddText(@$"var {colorControlVar} = {sharedLayersVar}.effect.addProperty('ADBE Color Control');
 {colorControlVar}.name = '{colorControl.ControlName}';");
         }
 
@@ -324,6 +311,11 @@ var {textDocVar} = {sourceTextVar}.value;
         private readonly StringBuilder _builder = new StringBuilder();
         private readonly ScriptContext _context = new ScriptContext();
 
+        private const string SHARED_CONTROLS_LAYER_NAME = "Shared Controls Layer";
+        private string _sharedControlsLayerVar = null;
+
+        private string _compositionRef = "app.project.activeItem";
+
         public string GetNextAutoVariable()
         {
             return _context.GetNextAutoVariable();
@@ -336,7 +328,25 @@ var {textDocVar} = {sourceTextVar}.value;
 
         public string GetScriptText()
         {
-            return _builder.ToString();
+            var scriptText = _builder.ToString();
+            if (_sharedControlsLayerVar != null)
+            {
+                var sharedControlsLayerScriptText = @$"var {_sharedControlsLayerVar} = {_compositionRef}.layers.addNull();
+{_sharedControlsLayerVar}.adjustmentLayer = true;
+{_sharedControlsLayerVar}.name = '{SHARED_CONTROLS_LAYER_NAME}';";
+
+                scriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, scriptText);
+            }
+
+            return scriptText;
+        }
+
+        public string GetSharedControlsLayerVar()
+        {
+            if (_sharedControlsLayerVar == null)
+                _sharedControlsLayerVar = _context.GetNextAutoVariable();
+
+            return _sharedControlsLayerVar;
         }
     }
 }
