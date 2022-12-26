@@ -30,18 +30,8 @@ namespace AdobeScriptMaker.Core
             _scriptBuilder.AddText($@"var {nullLayerVar} = {compositionRef}.layers.addNull();
 {nullLayerVar}.position.setValue([0,0]);");
 
-            var savedLayers = new List<AdobeLayer>();
             foreach (var layer in composition.Layers)
-            {
-                if (layer.Drawings.OfType<IAdobeSharedValueControl>().Any())
-                    savedLayers.Add(layer);
-                else
-                    VisitLayer(compositionRef, layer, nullLayerVar);
-            }
-
-            //Write out the shared controls last so that they appear at the top
-            foreach (var savedLayer in savedLayers)
-                VisitLayer(compositionRef, savedLayer, nullLayerVar);
+                VisitLayer(compositionRef, layer, nullLayerVar);
         }
 
         private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
