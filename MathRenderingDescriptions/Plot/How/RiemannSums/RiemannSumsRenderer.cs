@@ -57,14 +57,16 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                 foreach (var component in riemannSumsComponents)
                 {
-                    var mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
-                    var scribble = new AdobeScribbleEffect(mask.MaskName)
+                    var maskableComponent = (IAdobeSupportsMaskComponent)component.Component;
+
+                    maskableComponent.Mask = new AdobeMaskComponent((AdobePathComponent)component.Component) { MaskName = "ScribbleMask" };
+                    var scribble = new AdobeScribbleEffect(maskableComponent.Mask.MaskName)
                     {
                         ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", scribbleColorControlName)
                     };
 
                     components.Add(new TimedAdobeLayerComponent(
-                        new GroupedTogetherAdobeLayerComponents(component.Component, mask, scribble),
+                        new GroupedTogetherAdobeLayerComponents(component.Component, scribble),
                         component.StartTime,
                         component.EndTime));
                 }

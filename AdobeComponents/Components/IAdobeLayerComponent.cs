@@ -8,4 +8,9 @@ namespace AdobeComponents.Components
     {
         public bool AddInNewLayer { get; set; } = true;
     }
+
+    public interface IAdobeSupportsMaskComponent
+    {
+        public AdobeMaskComponent Mask { get; set; }
+    }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdobeComponents.Components
 {
-    public class AdobeMaskComponent : IAdobeLayerComponent
+    public class AdobeMaskComponent
     {
         public readonly AdobePathComponent PathComponent;
 

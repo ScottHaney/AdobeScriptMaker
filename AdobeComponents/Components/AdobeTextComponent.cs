@@ -6,11 +6,13 @@ using System.Text;
 
 namespace AdobeComponents.Components
 {
-    public class AdobeTextComponent : IAdobeLayerComponent
+    public class AdobeTextComponent : IAdobeLayerComponent, IAdobeSupportsMaskComponent
     {
         public readonly string TextValue;
         public readonly RectangleF Bounds;
         public readonly AdobeTextSettings TextSettings;
+
+        public AdobeMaskComponent Mask { get; set; }
 
         public AdobeTextComponent(string textValue,
             RectangleF bounds,

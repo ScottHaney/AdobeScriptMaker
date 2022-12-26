@@ -65,8 +65,6 @@ namespace AdobeScriptMaker.Core
                 {
                     if (drawing is AdobePathComponent path)
                         VisitPath(layerVar, path);
-                    else if (drawing is AdobeMaskComponent mask)
-                        VisitMask(layerVar, mask);
                     else if (drawing is AdobeTextComponent text)
                         VisitText(layerVar, text);
                     else if (drawing is AdobeSliderControl slider)
@@ -77,6 +75,9 @@ namespace AdobeScriptMaker.Core
                         VisitScribbleEffect(layerVar, scribble);
                     else
                         throw new NotSupportedException(drawing.GetType().FullName);
+
+                    if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
+                        VisitMask(layerVar, maskComponent.Mask);
                 }
             }
 
