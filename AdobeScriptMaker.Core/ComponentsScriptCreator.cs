@@ -36,20 +36,19 @@ namespace AdobeScriptMaker.Core
 
         private void VisitLayer(string compositionRef, AdobeLayer layer, string nullLayerVar)
         {
-            var textDrawings = layer.Drawings.OfType<AdobeTextControl>().ToList();
-            var otherDrawings = layer.Drawings.Where(x => !(x is AdobeTextControl)).ToList();
-
-            if (otherDrawings.Any())
+            foreach (var drawing in layer.Drawings)
             {
                 var layerVar = _scriptBuilder.GetNextAutoVariable();
 
-                if (otherDrawings.Count == 1 && otherDrawings.First() is AdobeTextComponent textComponent)
+                if (drawing is AdobeTextComponent textComponent)
                 {
                     //Make sure to add the text document to the layer before setting properties on the layer
                     //otherwise a runtime exception will be thrown by adobe
                     //https://ae-scripting.docsforadobe.dev/layers/layercollection.html#layercollection-addtext
                     _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addText('{textComponent.TextValue}')");
                 }
+                else if (drawing is AdobeTextControl textControl)
+                    _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addText()");
                 else
                     _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addShape()");
 
@@ -61,46 +60,21 @@ namespace AdobeScriptMaker.Core
 
                 _scriptBuilder.AddText($"{layerVar}.parent = {nullLayerVar};");
 
-                foreach (var drawing in otherDrawings)
-                {
-                    if (drawing is AdobePathGroupComponent pathGroup)
-                        VisitPathGroup(layerVar, pathGroup);
-                    else if (drawing is AdobeTextComponent text)
-                        VisitText(layerVar, text);
-                    else if (drawing is AdobeSliderControl slider)
-                        VisitSlider(compositionRef, slider);
-                    else if (drawing is AdobeSharedColorControl sharedColor)
-                        VisitColorControl(sharedColor);
-                    else if (drawing is AdobeScribbleEffect scribble)
-                        VisitScribbleEffect(layerVar, scribble);
-                    else
-                        throw new NotSupportedException(drawing.GetType().FullName);
+                if (drawing is AdobePathGroupComponent pathGroup)
+                    VisitPathGroup(layerVar, pathGroup);
+                else if (drawing is AdobeTextComponent text)
+                    VisitText(layerVar, text);
+                else if (drawing is AdobeSliderControl slider)
+                    VisitSlider(compositionRef, slider);
+                else if (drawing is AdobeSharedColorControl sharedColor)
+                    VisitColorControl(sharedColor);
+                else if (drawing is AdobeScribbleEffect scribble)
+                    VisitScribbleEffect(layerVar, scribble);
+                else
+                    throw new NotSupportedException(drawing.GetType().FullName);
 
-                    if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
-                        VisitMask(layerVar, maskComponent.Mask);
-                }
-            }
-
-            if (textDrawings.Any())
-            {
-                var layerVar = _scriptBuilder.GetNextAutoVariable();
-                _scriptBuilder.AddText($"var {layerVar} = {compositionRef}.layers.addText()");
-
-                if (layer.InPoint != null)
-                    _scriptBuilder.AddText($"{layerVar}.inPoint = {layer.InPoint};");
-
-                if (layer.OutPoint != null)
-                    _scriptBuilder.AddText($"{layerVar}.outPoint = {layer.OutPoint};");
-
-                _scriptBuilder.AddText($"{layerVar}.parent = {nullLayerVar};");
-
-                foreach (var drawing in textDrawings)
-                {
-                    if (drawing is AdobeTextControl text)
-                        VisitText(layerVar, text);
-                    else
-                        throw new NotSupportedException(drawing.GetType().FullName);
-                }
+                if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
+                    VisitMask(layerVar, maskComponent.Mask);
             }
         }
 
