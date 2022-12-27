@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AdobeComponents.Effects
 {
-    public class AdobeScribbleEffect : IAdobeLayerComponent
+    public class AdobeScribbleEffect
     {
         public readonly string MaskName;
 

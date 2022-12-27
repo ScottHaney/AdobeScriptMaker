@@ -67,9 +67,11 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                     {
                         ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", scribbleColorControlName)
                     };
+                    foreach (var pathComponent in pathGroup.Paths)
+                        pathComponent.ScribbleEffect = scribble;
 
                     components.Add(new TimedAdobeLayerComponent(
-                        new GroupedTogetherAdobeLayerComponents(component.Component, scribble),
+                        pathGroup,
                         component.StartTime,
                         component.EndTime));
                 }

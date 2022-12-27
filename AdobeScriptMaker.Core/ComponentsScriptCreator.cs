@@ -65,11 +65,9 @@ namespace AdobeScriptMaker.Core
                 else if (drawing is AdobeTextComponent text)
                     VisitText(layerVar, text);
                 else if (drawing is AdobeSliderControl slider)
-                    VisitSlider(compositionRef, slider);
+                    VisitSlider(slider);
                 else if (drawing is AdobeSharedColorControl sharedColor)
                     VisitColorControl(sharedColor);
-                else if (drawing is AdobeScribbleEffect scribble)
-                    VisitScribbleEffect(layerVar, scribble);
                 else if (drawing is AdobeTextControl textControl)
                     VisitText(layerVar, textControl);
                 else
@@ -115,6 +113,9 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
                 scriptText = AddSetPropertyScript($"{trimPathsVar}.property('End')", scriptText, path.TrimPaths.End);
             }
 
+            if (path.ScribbleEffect != null)
+                VisitScribbleEffect(layerVar, path.ScribbleEffect);
+
             _scriptBuilder.AddText(scriptText);
         }
 
@@ -137,22 +138,22 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 {colorControlVar}.name = '{colorControl.ControlName}';");
         }
 
-        private void VisitSlider(string compositionRef, AdobeSliderControl slider)
+        private void VisitSlider(AdobeSliderControl slider)
         {
-            var nullLayerVar = _scriptBuilder.GetNextAutoVariable();
+            var sliderVar = _scriptBuilder.GetNextAutoVariable();
+            var sharedLayersVar = _scriptBuilder.GetSharedControlsLayerVar();
 
-            _scriptBuilder.AddText(@$"var {nullLayerVar} = {compositionRef}.layers.addNull();
-{nullLayerVar}.effect.addProperty('ADBE Slider Control')('Slider');");
+            _scriptBuilder.AddText(@$"var {sliderVar} = {sharedLayersVar}.effect.addProperty('ADBE Slider Control')('Slider');");
 
             var adobeIndex = 1;
             foreach (var value in slider.Values)
             {
-                _scriptBuilder.AddText($"{nullLayerVar}.effect('Slider Control').property('Slider').setValueAtTime({value.Time}, {value.Value});");
-                _scriptBuilder.AddText($"{nullLayerVar}.effect('Slider Control').property('Slider').setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
+                _scriptBuilder.AddText($"{sliderVar}.setValueAtTime({value.Time}, {value.Value});");
+                _scriptBuilder.AddText($"{sliderVar}.setInterpolationTypeAtKey({adobeIndex}, KeyframeInterpolationType.HOLD, KeyframeInterpolationType.HOLD);");
             }
 
             if (!string.IsNullOrEmpty(slider.Name))
-                _scriptBuilder.AddText($"{nullLayerVar}.name = { slider.Name};");
+                _scriptBuilder.AddText($"{sliderVar}.name = { slider.Name};");
         }
 
         private void VisitMask(string layerVar, AdobeMaskComponent mask)

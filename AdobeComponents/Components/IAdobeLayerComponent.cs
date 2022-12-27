@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdobeComponents.Effects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,5 +13,10 @@ namespace AdobeComponents.Components
     public interface IAdobeSupportsMaskComponent
     {
         public AdobeMaskComponent Mask { get; set; }
+    }
+
+    public interface IAdobeSupportsScribbleEffect
+    {
+        public AdobeScribbleEffect ScribbleEffect { get; set; }
     }
 }

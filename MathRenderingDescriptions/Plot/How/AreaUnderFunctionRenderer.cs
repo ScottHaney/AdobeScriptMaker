@@ -55,11 +55,12 @@ namespace MathRenderingDescriptions.Plot.How
                 Start = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time - timing.ExitAnimationDuration.Time)),
                     new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time)))
             };
+            path.ScribbleEffect = scribble;
 
             return new RenderedComponents(
                 new TimedAdobeLayerComponent(
                     new GroupedTogetherAdobeLayerComponents(
-                        new AdobePathGroupComponent(path), scribble),
+                        new AdobePathGroupComponent(path)),
                         timing.WhenToStart.Time,
                         timing.WhenToStart.Time + timing.RenderDuration.Time));
         }
