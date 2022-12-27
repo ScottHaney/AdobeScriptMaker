@@ -26,6 +26,8 @@ namespace MathRenderingDescriptions.Plot.How
 
         public RenderedComponents Render(ITimingForRender timing)
         {
+            var dataTableTiming = (DataTableTimingForRender)timing;
+
             var matrixLayout = new SizedToEntriesMatrixEntriesLayout(
                 new MatrixInteriorMarginsDescription(0.1f, 0.1f, 0.1f, 0.1f),
                 _description.Data.NumRows,
@@ -40,9 +42,10 @@ namespace MathRenderingDescriptions.Plot.How
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
 
             var textControls = new List<AdobeTextComponent>();
-            for (int row = 0; row < _description.Data.NumRows; row++)
+            for (int col = 0; col < _description.Data.NumColumns; col++)
             {
-                for (int col = 0; col < _description.Data.NumColumns; col++)
+
+                for (int row = 0; row < _description.Data.NumRows; row++)
                 {
                     var entryBounds = layoutResult.GetEntryBounds(row, col);
                     entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
@@ -66,6 +69,28 @@ namespace MathRenderingDescriptions.Plot.How
                 return number.ToString();
             else
                 return number.ToString(_description.NumericToStringFormat);
+        }
+    }
+
+    public class DataTableTimingForRender : ITimingForRender
+    {
+        public AbsoluteTiming WhenToStart { get; }
+
+        public AbsoluteTiming RenderDuration { get; }
+
+        public AbsoluteTiming EntranceAnimationDuration { get; set; }
+
+        public AbsoluteTiming ExitAnimationDuration { get; set; }
+
+        public AbsoluteTiming[] ColumnTimings { get; set; }
+
+        public DataTableTimingForRender(AbsoluteTiming whenToStart,
+            AbsoluteTiming renderDuration,
+            AbsoluteTiming[] columnTimings)
+        {
+            WhenToStart = whenToStart;
+            RenderDuration = renderDuration;
+            ColumnTimings = columnTimings;
         }
     }
 }

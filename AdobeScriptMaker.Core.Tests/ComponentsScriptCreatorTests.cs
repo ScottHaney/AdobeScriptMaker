@@ -6,6 +6,7 @@ using MathDescriptions.Plot;
 using MathDescriptions.Plot.Calculus;
 using MathDescriptions.Plot.Functions;
 using MathRenderingDescriptions.Plot;
+using MathRenderingDescriptions.Plot.How;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MatrixLayout.ExpressionLayout.LayoutResults;
@@ -86,11 +87,13 @@ namespace AdobeScriptMaker.Core.Tests
 
             var compositionDuration = new AbsoluteTiming(30);
 
+            var dtTimingForRender = new DataTableTimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15), Array.Empty<AbsoluteTiming>());
+
             var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(2)) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(4)), null);
-            var dtToRender = new RenderingDescription(dataTable, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15)), null);
+            var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
 
             var converter = new UpdatedComponentsConverter();
             var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender });
