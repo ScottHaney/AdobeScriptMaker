@@ -19,4 +19,9 @@ namespace AdobeComponents.Components
     {
         public AdobeScribbleEffect ScribbleEffect { get; set; }
     }
+
+    public interface IAdobeSupportsTrimPathsEffect
+    {
+        public AdobeTrimPathsEffect TrimPathsEffect { get; set; }
+    }
 }

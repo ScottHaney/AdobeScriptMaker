@@ -75,6 +75,20 @@ namespace AdobeScriptMaker.Core
 
                 if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
                     VisitMask(layerVar, maskComponent.Mask);
+
+                if (drawing is IAdobeSupportsScribbleEffect scribbleComponent && scribbleComponent.ScribbleEffect != null)
+                    VisitScribbleEffect(layerVar, scribbleComponent.ScribbleEffect);
+
+                if (drawing is IAdobeSupportsTrimPathsEffect trimPathsComponent && trimPathsComponent.TrimPathsEffect != null)
+                {
+                    var trimPathsVar = _scriptBuilder.GetNextAutoVariable();
+                    var trimPathsText = @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');";
+
+                    trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", trimPathsText, trimPathsComponent.TrimPathsEffect.Start);
+                    trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('End')", trimPathsText, trimPathsComponent.TrimPathsEffect.End);
+
+                    _scriptBuilder.AddText(trimPathsText);
+                }
             }
         }
 
@@ -103,18 +117,6 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color'){path.ColorValue.GetScriptText()};");
             else
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0])");
-
-            if (path.TrimPaths != null)
-            {
-                var trimPathsVar = _scriptBuilder.GetNextAutoVariable();
-                scriptText = string.Join(Environment.NewLine, scriptText, @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');");
-
-                scriptText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", scriptText, path.TrimPaths.Start);
-                scriptText = AddSetPropertyScript($"{trimPathsVar}.property('End')", scriptText, path.TrimPaths.End);
-            }
-
-            if (path.ScribbleEffect != null)
-                VisitScribbleEffect(layerVar, path.ScribbleEffect);
 
             _scriptBuilder.AddText(scriptText);
         }

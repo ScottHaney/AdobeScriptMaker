@@ -8,7 +8,7 @@ using AdobeComponents.Effects;
 
 namespace AdobeComponents.Components
 {
-    public class AdobePathComponent : IAdobeSupportsMaskComponent, IAdobeSupportsScribbleEffect
+    public class AdobePathComponent : IAdobeSupportsMaskComponent, IAdobeSupportsScribbleEffect, IAdobeSupportsTrimPathsEffect
     {
         public readonly IAnimatedValue<PointF[]> Points;
         public float Thickness { get; set; } = 2;
@@ -22,6 +22,8 @@ namespace AdobeComponents.Components
         public AdobeMaskComponent Mask { get; set; }
 
         public AdobeScribbleEffect ScribbleEffect { get; set; }
+
+        public AdobeTrimPathsEffect TrimPathsEffect { get; set; }
 
         public AdobePathComponent(IAnimatedValue<PointF[]> points)
         {
