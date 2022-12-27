@@ -73,29 +73,37 @@ namespace AdobeScriptMaker.Core
                 else
                     throw new NotSupportedException(drawing.GetType().FullName);
 
-                if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
-                    VisitMask(layerVar, maskComponent.Mask);
+                AddEffects(drawing, layerVar);
+            }
+        }
 
-                if (drawing is IAdobeSupportsScribbleEffect scribbleComponent && scribbleComponent.ScribbleEffect != null)
-                    VisitScribbleEffect(layerVar, scribbleComponent.ScribbleEffect);
+        private void AddEffects(object drawing, string layerVar)
+        {
+            if (drawing is IAdobeSupportsMaskComponent maskComponent && maskComponent.Mask != null)
+                VisitMask(layerVar, maskComponent.Mask);
 
-                if (drawing is IAdobeSupportsTrimPathsEffect trimPathsComponent && trimPathsComponent.TrimPathsEffect != null)
-                {
-                    var trimPathsVar = _scriptBuilder.GetNextAutoVariable();
-                    var trimPathsText = @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');";
+            if (drawing is IAdobeSupportsScribbleEffect scribbleComponent && scribbleComponent.ScribbleEffect != null)
+                VisitScribbleEffect(layerVar, scribbleComponent.ScribbleEffect);
 
-                    trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", trimPathsText, trimPathsComponent.TrimPathsEffect.Start);
-                    trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('End')", trimPathsText, trimPathsComponent.TrimPathsEffect.End);
+            if (drawing is IAdobeSupportsTrimPathsEffect trimPathsComponent && trimPathsComponent.TrimPathsEffect != null)
+            {
+                var trimPathsVar = _scriptBuilder.GetNextAutoVariable();
+                var trimPathsText = @$"var {trimPathsVar} = {layerVar}.property('ADBE Root Vectors Group').addProperty('ADBE Vector Filter - Trim');";
 
-                    _scriptBuilder.AddText(trimPathsText);
-                }
+                trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('Start')", trimPathsText, trimPathsComponent.TrimPathsEffect.Start);
+                trimPathsText = AddSetPropertyScript($"{trimPathsVar}.property('End')", trimPathsText, trimPathsComponent.TrimPathsEffect.End);
+
+                _scriptBuilder.AddText(trimPathsText);
             }
         }
 
         private void VisitPathGroup(string layerVar, AdobePathGroupComponent pathGroup)
         {
             foreach (var path in pathGroup.Paths)
+            {
                 VisitPath(layerVar, path);
+                AddEffects(path, layerVar);
+            }
         }
 
         private void VisitPath(string layerVar, AdobePathComponent path)
