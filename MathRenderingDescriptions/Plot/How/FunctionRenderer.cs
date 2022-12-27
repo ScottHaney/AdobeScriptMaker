@@ -30,7 +30,7 @@ namespace MathRenderingDescriptions.Plot.How
             return new RenderedComponents(new TimedAdobeLayerComponent(
                 new AdobePathGroupComponent(new AdobePathComponent(new StaticValue<PointF[]>(points))
                 {
-                    TrimPaths = new AdobeComponents.Effects.AdobeTrimPathsEffect()
+                    TrimPathsEffect = new AdobeComponents.Effects.AdobeTrimPathsEffect()
                     {
                         Start = new StaticValue<double>(0),
                         End = new AnimatedValue<double>(

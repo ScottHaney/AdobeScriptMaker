@@ -15,8 +15,6 @@ namespace AdobeComponents.Components
         public bool IsClosed { get; set; }
         public bool HasLockedScale { get; set; } = true;
 
-        public AdobeTrimPathsEffect TrimPaths { get; set; }
-
         public IAdobeColorValue ColorValue { get; set; }
 
         public AdobeMaskComponent Mask { get; set; }
