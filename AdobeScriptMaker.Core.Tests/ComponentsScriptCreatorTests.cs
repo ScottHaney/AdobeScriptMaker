@@ -7,6 +7,7 @@ using MathDescriptions.Plot.Calculus;
 using MathDescriptions.Plot.Functions;
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.How;
+using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MatrixLayout.ExpressionLayout.LayoutResults;
@@ -65,12 +66,18 @@ namespace AdobeScriptMaker.Core.Tests
 
             var areaUnderFunction = new AreaUnderFunctionRenderingDescription(function);
 
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(4));
+
             var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
             var riemannSums = new RiemannSumsRenderingDescription(function,
-                new FitToDuration(sumsProvider.NumSums, 5),
+                new FitToDuration(sumsProvider.NumSums, whenToRenderRiemannSums.RenderDuration.Time),
                 sumsProvider);
 
             var riemannSumsMetadata = riemannSums.GetMetadata();
+            var riemannSumsTiming = new RiemannSumsTiming(riemannSums);
+
+            var riemannSumsTimes = riemannSumsTiming.GetTimes(whenToRenderRiemannSums.WhenToStart.Time);
+
             var dataTableData = new DataTableData(new List<List<double>>()
             {
                 riemannSumsMetadata.SumsDetails.Select(x => (double)x.NumSums).ToList(),
@@ -87,12 +94,16 @@ namespace AdobeScriptMaker.Core.Tests
 
             var compositionDuration = new AbsoluteTiming(30);
 
-            var dtTimingForRender = new DataTableTimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(15), Array.Empty<AbsoluteTiming>());
+            var dtTimingForRender = new DataTableTimingForRender(whenToRenderRiemannSums.WhenToStart,
+                new AbsoluteTiming(15),
+                riemannSumsTimes
+                    .Select(x => new AbsoluteTiming(x.CompletionTime - x.PostCompletionSplitAnimationTime))
+                    .ToArray());
 
             var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(2)) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
-            var rsToRender = new RenderingDescription(riemannSums, new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(4)), null);
+            var rsToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
             var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
 
             var converter = new UpdatedComponentsConverter();
