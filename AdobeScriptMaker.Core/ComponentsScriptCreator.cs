@@ -70,6 +70,8 @@ namespace AdobeScriptMaker.Core
                     VisitColorControl(sharedColor);
                 else if (drawing is AdobeScribbleEffect scribble)
                     VisitScribbleEffect(layerVar, scribble);
+                else if (drawing is AdobeTextControl textControl)
+                    VisitText(layerVar, textControl);
                 else
                     throw new NotSupportedException(drawing.GetType().FullName);
 
