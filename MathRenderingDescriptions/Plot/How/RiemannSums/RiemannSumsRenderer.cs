@@ -19,13 +19,10 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
     public class RiemannSumsRenderer : IHowToRender
     {
         private readonly RiemannSumsRenderingDescription _description;
-        private readonly IRiemannSumsTiming _timingManager;
         
-        public RiemannSumsRenderer(RiemannSumsRenderingDescription description,
-            IRiemannSumsTiming timingManager)
+        public RiemannSumsRenderer(RiemannSumsRenderingDescription description)
         {
             _description = description;
-            _timingManager = timingManager;
         }
 
         public RenderedComponents Render(ITimingForRender timing)
@@ -36,24 +33,24 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
             var scribbleColorControlName = "scribbleColorControl";
             var linesControlName = "linesColorControl";
 
-            RiemannSumTiming previousTimingResult = null;
-            foreach (var time in _timingManager.GetTimes(timing.WhenToStart.Time))
+            var riemannSumsTimings = _description.TimingDescription.GetTimings(timing.WhenToStart.Time, timing.RenderDuration.Time);
+
+            var index = 0;
+            foreach (var riemannSumTiming in riemannSumsTimings)
             {
-                var sums = CreateRiemannSum(time.NumRects);
-                var sumsEndTime = time.CompletionTime + time.PostCompletionSplitAnimationTime;
+                var sums = CreateRiemannSum(riemannSumTiming.NumRects);
 
                 var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
-                if (previousTimingResult == null)
-                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, currentTime, sumsEndTime, linesControlName));
+                if (index == 0)
+                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, riemannSumTiming, linesControlName));
                 else
-                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, currentTime, sumsEndTime, linesControlName));
+                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, riemannSumTiming, linesControlName));
 
-                if (time.PostCompletionSplitAnimationTime > 0)
+                if (riemannSumTiming.TransitionAnimationStartTime != null)
                 {
-                    var splitLines = CreateSplitLines(time.NumRects);
+                    var splitLines = CreateSplitLines(riemannSumTiming.NumRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
-                        time.CompletionTime,
-                        time.PostCompletionSplitAnimationTime,
+                        riemannSumTiming,
                         linesControlName));
                 }
 
@@ -78,7 +75,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                         component.EndTime));
                 }
 
-                previousTimingResult = time;
+                index++;
             }
 
             var scribbleColorControl = new AdobeSharedColorControl(scribbleColorControlName);
@@ -91,8 +88,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
         }
 
         private IEnumerable<TimedAdobeLayerComponent> CreateSplitLinesAnimation(List<SplitLine> splitLines,
-            double startTime,
-            double duration,
+            RiemannSumTimingResult timingResult,
             string colorControlName)
         {
             foreach (var splitLine in splitLines)
@@ -106,19 +102,18 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 yield return new TimedAdobeLayerComponent(
                     new AdobePathGroupComponent(new AdobePathComponent(
                         new AnimatedValue<PointF[]>(
-                            new ValueAtTime<PointF[]>(topOnlyPoints, new AnimationTime(startTime)),
-                            new ValueAtTime<PointF[]>(splitLine.GetPoints(), new AnimationTime(startTime + duration / 2))))
+                            new ValueAtTime<PointF[]>(topOnlyPoints, new AnimationTime(timingResult.TransitionAnimationStartTime.Value)),
+                            new ValueAtTime<PointF[]>(splitLine.GetPoints(), new AnimationTime(timingResult.EndTime))))
                     {
                         ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
                     }),
-                    startTime,
-                    startTime + duration);
+                    timingResult.TransitionAnimationStartTime.Value,
+                    timingResult.EndTime);
             }
         }
 
         private IEnumerable<TimedAdobeLayerComponent> CreateBottomUpAnimation(List<RiemannSumRect> rects,
-            double startTime,
-            double endTime,
+            RiemannSumTimingResult timingResult,
             string colorControlName)
         {
             foreach (var rect in rects)
@@ -135,20 +130,19 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 yield return new TimedAdobeLayerComponent(
                     new AdobePathGroupComponent(new AdobePathComponent(
                         new AnimatedValue<PointF[]>(
-                            new ValueAtTime<PointF[]>(startPoints, new AnimationTime(startTime)),
-                            new ValueAtTime<PointF[]>(endPoints, new AnimationTime((startTime + endTime) / 2))))
+                            new ValueAtTime<PointF[]>(startPoints, new AnimationTime(timingResult.EntranceTime)),
+                            new ValueAtTime<PointF[]>(endPoints, new AnimationTime(timingResult.SumIsInPlaceTime))))
                         {
                             IsClosed = true,
                             ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
-                    }),
-                    startTime,
-                    endTime);
+                        }),
+                    timingResult.EntranceTime,
+                    timingResult.EndTime);
             }
         }
 
         private IEnumerable<TimedAdobeLayerComponent> CreateSplitSumsAnimation(List<RiemannSumRect> rects,
-            double startTime,
-            double endTime,
+            RiemannSumTimingResult timingResult,
             string colorControlName)
         {
             for (int i = 0; i < rects.Count; i++)
@@ -169,14 +163,14 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                     yield return new TimedAdobeLayerComponent(
                         new AdobePathGroupComponent(new AdobePathComponent(
                             new AnimatedValue<PointF[]>(
-                                new ValueAtTime<PointF[]>(targetRect.GetPoints(), new AnimationTime(startTime)),
-                                new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime((startTime + endTime) / 2))))
+                                new ValueAtTime<PointF[]>(targetRect.GetPoints(), new AnimationTime(timingResult.EntranceTime)),
+                                new ValueAtTime<PointF[]>(currentRect.GetPoints(), new AnimationTime(timingResult.SumIsInPlaceTime))))
                             {
                                 IsClosed = true,
                                 ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
                         }),
-                        startTime,
-                        endTime);
+                        timingResult.EntranceTime,
+                        timingResult.EndTime);
                 }
                 else
                 {
@@ -187,8 +181,8 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                                 IsClosed = true,
                                 ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
                             }),
-                        startTime,
-                        endTime);
+                        timingResult.EntranceTime,
+                        timingResult.EndTime);
                 }
             }
         }
@@ -326,51 +320,6 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
             {
                 Rects = rects;
                 TotalArea = totalArea;
-            }
-        }
-    }
-
-    public interface IRiemannSumsTiming
-    {
-        IEnumerable<RiemannSumTiming> GetTimes(double startTime);
-    }
-
-    public class RiemannSumTiming
-    {
-        public readonly double CompletionTime;
-        public readonly double PostCompletionSplitAnimationTime;
-        public readonly int NumRects;
-
-        public RiemannSumTiming(double completionTime,
-            double postCompletionSplitAnimationTime,
-            int numRects)
-        {
-            CompletionTime = completionTime;
-            PostCompletionSplitAnimationTime = postCompletionSplitAnimationTime;
-            NumRects = numRects;
-        }
-    }
-
-    public class RiemannSumsTiming : IRiemannSumsTiming
-    {
-        private readonly RiemannSumsRenderingDescription _description;
-
-        public RiemannSumsTiming(RiemannSumsRenderingDescription description)
-        {
-            _description = description;
-        }
-
-        public IEnumerable<RiemannSumTiming> GetTimes(double startTime)
-        {
-            var currentTime = startTime;
-            foreach (var (index, numRects) in _description.SumsProvider.GetSums().Index())
-            {
-                var sumsEndTime = currentTime + _description.TimingDescription.GetTotalTimeForSum(index, numRects);
-                var transitionAnimationDuration = _description.TimingDescription.GetTransitionAnimationTimeForSum(index, numRects);
-
-                yield return new RiemannSumTiming(sumsEndTime + transitionAnimationDuration, transitionAnimationDuration, numRects);
-
-                currentTime = sumsEndTime;
             }
         }
     }

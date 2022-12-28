@@ -98,7 +98,7 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         private RenderedComponents RenderRiemannSums(RiemannSumsRenderingDescription rs,
             ITimingForRender timing)
         {
-            var renderer = new RiemannSumsRenderer(rs, new RiemannSumsTiming(rs));
+            var renderer = new RiemannSumsRenderer(rs);
             return renderer.Render(timing);
         }
 

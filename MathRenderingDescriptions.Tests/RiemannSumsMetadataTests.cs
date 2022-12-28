@@ -21,7 +21,7 @@ namespace MathRenderingDescriptions.Tests
 
             var sumsProvider = new SumsProvider(1);
             var riemannSums = new RiemannSumsRenderingDescription(function,
-                new FitToDuration(sumsProvider.NumSums, 5),
+                new FitToDuration(sumsProvider),
                 sumsProvider);
 
             var metadata = riemannSums.GetMetadata();

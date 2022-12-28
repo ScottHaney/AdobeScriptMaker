@@ -24,17 +24,11 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
         public RiemannSumsMetadata GetMetadata()
         {
             var sumsResults = new List<RiemannSumMetadata>();
-            double currentTime = 0;
 
             foreach (var (index, numRects) in SumsProvider.GetSums().Index())
             {
-                var duration = TimingDescription.GetTotalTimeForSum(index, numRects);
                 sumsResults.Add(new RiemannSumMetadata(GetArea(numRects),
-                    numRects,
-                    currentTime,
-                    currentTime + duration));
-
-                currentTime += duration;
+                    numRects));
             }
 
             return new RiemannSumsMetadata(sumsResults.ToArray());
@@ -69,18 +63,12 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
     {
         public readonly double TotalArea;
         public readonly int NumSums;
-        public readonly double StartTimeOffset;
-        public readonly double EndTimeOffset;
 
         public RiemannSumMetadata(double totalArea,
-            int numSums,
-            double startTimeOffset,
-            double endTimeOffset)
+            int numSums)
         {
             TotalArea = totalArea;
             NumSums = numSums;
-            StartTimeOffset = startTimeOffset;
-            EndTimeOffset = endTimeOffset;
         }
     }
 }

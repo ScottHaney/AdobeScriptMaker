@@ -6,30 +6,31 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
 {
     public class FitToDuration : ITimingDescription
     {
-        private readonly double _timePerSum;
-        private readonly double _numSums;
+        private readonly ISumsProvider _sumsProvider;
 
         public double TransitionPercentage = 0.18;
 
-        public FitToDuration(int numSums,
-            double totalDuration)
+        public FitToDuration(ISumsProvider sumsProvider)
         {
-            _timePerSum = totalDuration / numSums;
-            _numSums = numSums;
+            _sumsProvider = sumsProvider;
         }
 
-        public double GetTotalTimeForSum(int sumIndex, int numRects)
+        public IEnumerable<RiemannSumTimingResult> GetTimings(double startTime,
+            double duration)
         {
-            return _timePerSum;
-        }
+            var durationPerSum = duration / _sumsProvider.NumSums;
 
-        public double GetTransitionAnimationTimeForSum(int sumIndex, int numRects)
-        {
-            if (_numSums == sumIndex - 1)
-                return 0;
-            else
+            var currentTime = startTime;
+            var index = 0;
+            foreach (var numRects in _sumsProvider.GetSums())
             {
-                return GetTotalTimeForSum(sumIndex, numRects) * TransitionPercentage;
+                yield return new RiemannSumTimingResult(currentTime,
+                    (currentTime + durationPerSum) / 2,
+                    currentTime + durationPerSum,
+                    index == _sumsProvider.NumSums - 1 ? (double?)null : (currentTime + durationPerSum * (1 - TransitionPercentage)),
+                    numRects);
+
+                index++;
             }
         }
     }
