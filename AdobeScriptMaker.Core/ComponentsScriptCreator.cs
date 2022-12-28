@@ -14,12 +14,12 @@ namespace AdobeScriptMaker.Core
     public class ComponentsScriptCreator
     {
         private readonly ScriptBuilder _scriptBuilder = new ScriptBuilder();
-        public string Visit(AdobeScript script)
+        public string Visit(AdobeScript script, params SharedControlValue[] sharedControlValues)
         {
             foreach (var composition in script.Compositions)
                 VisitComposition(composition);
 
-            return _scriptBuilder.GetScriptText();
+            return _scriptBuilder.GetScriptText(sharedControlValues ?? Array.Empty<SharedControlValue>());
         }
 
         private void VisitComposition(AdobeComposition composition)
@@ -185,7 +185,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
         private void VisitScribbleEffect(string layerVar, AdobeScribbleEffect scribbleEffect)
         {
             var scribbleVar = _scriptBuilder.GetNextAutoVariable();
-            
+
             var scriptText = $@"var {scribbleVar} = {layerVar}.Effects.addProperty('ADBE Scribble Fill');
 {scribbleVar}.Mask = '{scribbleEffect.MaskName}';";
 
@@ -324,7 +324,7 @@ var {textDocVar} = {sourceTextVar}.value;
             _builder.AppendLine(text);
         }
 
-        public string GetScriptText()
+        public string GetScriptText(SharedControlValue[] sharedControlValues)
         {
             var scriptText = _builder.ToString();
             if (_sharedControlsLayerVar != null)
@@ -333,7 +333,14 @@ var {textDocVar} = {sourceTextVar}.value;
 {_sharedControlsLayerVar}.adjustmentLayer = true;
 {_sharedControlsLayerVar}.name = '{SHARED_CONTROLS_LAYER_NAME}';";
 
+                foreach (var sharedControlValue in sharedControlValues)
+                {
+                    sharedControlsLayerScriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, $"{_sharedControlsLayerVar}.Effects.property('{sharedControlValue.ControlName}').Color.setValue('{sharedControlValue.Value}');");
+                }
+
                 scriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, scriptText);
+
+                
             }
 
             return scriptText;
@@ -345,6 +352,19 @@ var {textDocVar} = {sourceTextVar}.value;
                 _sharedControlsLayerVar = _context.GetNextAutoVariable();
 
             return _sharedControlsLayerVar;
+        }
+    }
+
+    public class SharedControlValue
+    {
+        public readonly string ControlName;
+        public readonly string Value;
+
+        public SharedControlValue(string controlName,
+            string value)
+        {
+            ControlName = controlName;
+            Value = value;
         }
     }
 }
