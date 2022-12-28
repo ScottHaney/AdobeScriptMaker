@@ -150,10 +150,12 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
 
         private void VisitSlider(AdobeSliderControl slider)
         {
+            var sliderControlVar = _scriptBuilder.GetNextAutoVariable();
             var sliderVar = _scriptBuilder.GetNextAutoVariable();
             var sharedLayersVar = _scriptBuilder.GetSharedControlsLayerVar();
 
-            _scriptBuilder.AddText(@$"var {sliderVar} = {sharedLayersVar}.effect.addProperty('ADBE Slider Control')('Slider');");
+            _scriptBuilder.AddText(@$"var {sliderControlVar} = {sharedLayersVar}.effect.addProperty('ADBE Slider Control');
+var {sliderVar} = {sliderControlVar}('Slider');");
 
             var adobeIndex = 1;
             foreach (var value in slider.Values)
@@ -163,7 +165,7 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             }
 
             if (!string.IsNullOrEmpty(slider.Name))
-                _scriptBuilder.AddText($"{sliderVar}.name = { slider.Name};");
+                _scriptBuilder.AddText($"{sliderControlVar}.name = '{slider.Name}';");
         }
 
         private void VisitMask(string layerVar, AdobeMaskComponent mask)

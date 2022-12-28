@@ -26,6 +26,9 @@ namespace MathRenderingDescriptions.Plot.What
 
         public string GetFontColorControlName()
             => $"{UniqueName} - font color";
+
+        public string GetColumnSpacingControlName()
+            => $"{UniqueName} - column spacing";
     }
 
     public class DataTableData
@@ -34,6 +37,8 @@ namespace MathRenderingDescriptions.Plot.What
         public readonly int NumColumns;
 
         private readonly List<List<double>> _data;
+
+        public string[] RowHeaders { get; set; }
 
         public DataTableData(List<List<double>> data)
         {
