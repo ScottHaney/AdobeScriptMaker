@@ -36,6 +36,12 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
             return new RiemannSumsMetadata(sumsResults.ToArray());
         }
 
+        public string GetScribbleColorControlName()
+            => $"{UniqueName} - scribble color";
+
+        public string GetLinesColorControlName()
+            => $"{UniqueName} - lines color";
+
         private double GetArea(int numRects)
         {
             double area = 0;

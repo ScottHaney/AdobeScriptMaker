@@ -39,16 +39,16 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                 var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
                 if (index == 0)
-                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, riemannSumTiming, GetLinesColorControlName()));
+                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, riemannSumTiming, _description.GetLinesColorControlName()));
                 else
-                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, riemannSumTiming, GetLinesColorControlName()));
+                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, riemannSumTiming, _description.GetLinesColorControlName()));
 
                 if (riemannSumTiming.TransitionAnimationStartTime != null)
                 {
                     var splitLines = CreateSplitLines(riemannSumTiming.NumRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
                         riemannSumTiming,
-                        GetLinesColorControlName()));
+                        _description.GetLinesColorControlName()));
                 }
 
                 foreach (var component in riemannSumsComponents)
@@ -61,7 +61,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                     var scribble = new AdobeScribbleEffect(maskName)
                     {
-                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", GetScribbleColorControlName())
+                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetScribbleColorControlName())
                     };
                     foreach (var pathComponent in pathGroup.Paths)
                         pathComponent.ScribbleEffect = scribble;
@@ -75,20 +75,16 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 index++;
             }
 
-            var scribbleColorControl = new AdobeSharedColorControl(GetScribbleColorControlName());
+            var scribbleColorControl = new AdobeSharedColorControl(_description.GetScribbleColorControlName());
             components.Add(new TimedAdobeLayerComponent(scribbleColorControl, timing.WhenToStart.Time, currentTime));
 
-            var linesColorControl = new AdobeSharedColorControl(GetLinesColorControlName());
+            var linesColorControl = new AdobeSharedColorControl(_description.GetLinesColorControlName());
             components.Add(new TimedAdobeLayerComponent(linesColorControl, timing.WhenToStart.Time, currentTime));
 
             return new RenderedComponents(components);
         }
 
-        public string GetScribbleColorControlName()
-            => $"{_description.UniqueName} - scribble color";
-
-        public string GetLinesColorControlName()
-            => $"{_description.UniqueName} - lines color";
+        
 
         private IEnumerable<TimedAdobeLayerComponent> CreateSplitLinesAnimation(List<SplitLine> splitLines,
             RiemannSumTimingResult timingResult,

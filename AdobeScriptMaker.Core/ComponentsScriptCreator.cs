@@ -333,14 +333,13 @@ var {textDocVar} = {sourceTextVar}.value;
 {_sharedControlsLayerVar}.adjustmentLayer = true;
 {_sharedControlsLayerVar}.name = '{SHARED_CONTROLS_LAYER_NAME}';";
 
+                var sharedControlsValues = "";
                 foreach (var sharedControlValue in sharedControlValues)
                 {
-                    sharedControlsLayerScriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, $"{_sharedControlsLayerVar}.Effects.property('{sharedControlValue.ControlName}').Color.setValue('{sharedControlValue.Value}');");
+                    sharedControlsValues = String.Join(Environment.NewLine, sharedControlsValues, $"{_sharedControlsLayerVar}.Effects.property('{sharedControlValue.ControlName}').Color.setValue({sharedControlValue.Value});");
                 }
 
-                scriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, scriptText);
-
-                
+                scriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, scriptText, sharedControlsValues);
             }
 
             return scriptText;

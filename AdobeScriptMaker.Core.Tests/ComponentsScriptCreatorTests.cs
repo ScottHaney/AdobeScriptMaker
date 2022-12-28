@@ -103,6 +103,12 @@ namespace AdobeScriptMaker.Core.Tests
                     .Select(x => new AbsoluteTiming(x.SumIsInPlaceTime))
                     .ToArray());
 
+            var sharedControlValues = new SharedControlValue[]
+            {
+                new SharedControlValue(riemannSums.GetScribbleColorControlName(), "[0, 0, 0]"),
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+            };
+
             var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(2.1), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(4), new AbsoluteTiming(2)) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
@@ -113,7 +119,7 @@ namespace AdobeScriptMaker.Core.Tests
             var converted = converter.Convert(new List<RenderingDescription>() { axesToRender, functionToRender, aufToRender, rsToRender, dtToRender });
 
             var scriptCreator = new ComponentsScriptCreator();
-            var script = scriptCreator.Visit(converted);
+            var script = scriptCreator.Visit(converted, sharedControlValues);
         }
 
         /*[Test]
