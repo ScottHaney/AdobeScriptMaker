@@ -38,7 +38,7 @@ namespace MathRenderingDescriptions.Plot.How
             var layoutResult = matrixLayout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(
                 new TextMeasurer(),
                 font,
-                _description.Data.AllDataInMatrixOrder().Select(x => FormatNumber(x)).ToArray()));
+                _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray()));
 
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
             var fontColorControlName = "Data Table Font Color";
@@ -54,7 +54,7 @@ namespace MathRenderingDescriptions.Plot.How
                         entryBounds.Width,
                         entryBounds.Height);
 
-                    var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
+                    var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col), row),
                         entryBounds,
                         textSettings)
                     {
@@ -71,12 +71,12 @@ namespace MathRenderingDescriptions.Plot.How
             return new RenderedComponents(components);
         }
 
-        private string FormatNumber(double number)
+        private string FormatNumber(double number, int rowIndex)
         {
-            if (_description.NumericToStringFormat == null)
+            if (_description.NumericToStringFormats[rowIndex] == null)
                 return number.ToString();
             else
-                return number.ToString(_description.NumericToStringFormat);
+                return number.ToString(_description.NumericToStringFormats[rowIndex]);
         }
     }
 

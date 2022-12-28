@@ -11,7 +11,7 @@ namespace MathRenderingDescriptions.Plot.What
     {
         public readonly DataTableData Data;
 
-        public string NumericToStringFormat { get; set; }
+        public string[] NumericToStringFormats { get; set; }
 
         public TextSettings TextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
 
@@ -42,9 +42,10 @@ namespace MathRenderingDescriptions.Plot.What
             return _data[row][column];
         }
 
-        public IEnumerable<double> AllDataInMatrixOrder()
+        public IEnumerable<List<double>> AllDataInMatrixOrder()
         {
-            return _data.SelectMany(x => x);
+            foreach (var row in _data)
+                yield return row;
         }
     }
 }
