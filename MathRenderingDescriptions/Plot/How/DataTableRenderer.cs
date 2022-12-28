@@ -41,7 +41,7 @@ namespace MathRenderingDescriptions.Plot.How
 
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
 
-            var textControls = new List<AdobeTextComponent>();
+            var textControls = new List<TimedAdobeLayerComponent>();
             for (int col = 0; col < _description.Data.NumColumns; col++)
             {
 
@@ -53,14 +53,15 @@ namespace MathRenderingDescriptions.Plot.How
                         entryBounds.Width,
                         entryBounds.Height);
 
-                    textControls.Add(new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
+                    var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
                         entryBounds,
-                        textSettings));
+                        textSettings);
+
+                    textControls.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
                 }
             }
 
-            return new RenderedComponents(
-                textControls.Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time)));
+            return new RenderedComponents(textControls);
         }
 
         private string FormatNumber(double number)
