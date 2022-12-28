@@ -210,7 +210,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var textDocVar = _scriptBuilder.GetNextAutoVariable();
             lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
 
-            lines.Add($"{layerVar}.position.setValue([{text.Bounds.Left + text.Bounds.Width}, {text.Bounds.Top + text.Bounds.Height - GetFontHeightCorrection(text.Bounds.Height)}]);");
+            lines.Add($"{layerVar}.position.setValue([{text.Left + text.Size.Width}, {text.Top + text.Size.Height - GetFontHeightCorrection(text.Size.Height)}]);");
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
             //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185

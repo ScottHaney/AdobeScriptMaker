@@ -10,7 +10,9 @@ namespace AdobeComponents.Components
     public class AdobeTextComponent : IAdobeLayerComponent, IAdobeSupportsMaskComponent
     {
         public readonly string TextValue;
-        public readonly RectangleF Bounds;
+        public readonly SizeF Size;
+        public readonly float Left;
+        public readonly float Top;
         public readonly AdobeTextSettings TextSettings;
 
         public IAdobeColorValue FontColor { get; set; }
@@ -22,7 +24,22 @@ namespace AdobeComponents.Components
             AdobeTextSettings textSettings)
         {
             TextValue = textValue;
-            Bounds = bounds;
+            Size = bounds.Size;
+            Left = bounds.Left;
+            Top = bounds.Top;
+            TextSettings = textSettings;
+        }
+
+        public AdobeTextComponent(string textValue,
+            SizeF size,
+            float left,
+            float top,
+            AdobeTextSettings textSettings)
+        {
+            TextValue = textValue;
+            Size = size;
+            Left = left;
+            Top = top;
             TextSettings = textSettings;
         }
     }
