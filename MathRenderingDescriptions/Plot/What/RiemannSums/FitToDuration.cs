@@ -24,12 +24,14 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
             var index = 0;
             foreach (var numRects in _sumsProvider.GetSums())
             {
+                var endTime = currentTime + durationPerSum;
                 yield return new RiemannSumTimingResult(currentTime,
-                    (currentTime + durationPerSum) / 2,
-                    currentTime + durationPerSum,
+                    (currentTime + endTime) / 2,
+                    endTime,
                     index == _sumsProvider.NumSums - 1 ? (double?)null : (currentTime + durationPerSum * (1 - TransitionPercentage)),
                     numRects);
 
+                currentTime = endTime;
                 index++;
             }
         }
