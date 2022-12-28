@@ -12,6 +12,7 @@ using System.Drawing;
 using AdobeComponents.Components;
 using AdobeComponents.Animation;
 using RenderingDescriptions.Timing;
+using AdobeComponents.CommonValues;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -40,11 +41,11 @@ namespace MathRenderingDescriptions.Plot.How
                 _description.Data.AllDataInMatrixOrder().Select(x => FormatNumber(x)).ToArray()));
 
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
+            var fontColorControlName = "Data Table Font Color";
 
-            var textControls = new List<TimedAdobeLayerComponent>();
+            var components = new List<TimedAdobeLayerComponent>();
             for (int col = 0; col < _description.Data.NumColumns; col++)
             {
-
                 for (int row = 0; row < _description.Data.NumRows; row++)
                 {
                     var entryBounds = layoutResult.GetEntryBounds(row, col);
@@ -55,13 +56,19 @@ namespace MathRenderingDescriptions.Plot.How
 
                     var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col)),
                         entryBounds,
-                        textSettings);
+                        textSettings)
+                    {
+                        FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", fontColorControlName)
+                    };
 
-                    textControls.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+                    components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
                 }
             }
 
-            return new RenderedComponents(textControls);
+            var fontColorControl = new AdobeSharedColorControl(fontColorControlName);
+            components.Add(new TimedAdobeLayerComponent(fontColorControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+
+            return new RenderedComponents(components);
         }
 
         private string FormatNumber(double number)

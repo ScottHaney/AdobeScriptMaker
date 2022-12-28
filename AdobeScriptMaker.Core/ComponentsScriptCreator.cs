@@ -124,7 +124,7 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             if (path.ColorValue != null)
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color'){path.ColorValue.GetScriptText()};");
             else
-                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0])");
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
 
             _scriptBuilder.AddText(scriptText);
         }
@@ -217,8 +217,22 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
 var {textDocVar} = {sourceTextVar}.value;
 {textDocVar}.font = '{text.TextSettings.FontName}';
 {textDocVar}.fontSize = {text.TextSettings.FontSizeInPixels};
-{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;
-{sourceTextVar}.setValue({textDocVar});");
+{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
+
+            if (text.FontColor != null)
+            {
+                var fillVar = _scriptBuilder.GetNextAutoVariable();
+                lines.Add($@"var {fillVar} = {layerVar}.Effects.addProperty('ADBE Fill');");
+
+                if (text.FontColor != null)
+                {
+                    lines.Add($"{fillVar}.Color{text.FontColor.GetScriptText()};");
+                }
+            }
+            else
+                lines.Add($"{textDocVar}.fillColor.setValue([1, 0, 0]);");
+
+            lines.Add($"{sourceTextVar}.setValue({ textDocVar});");
 
             _scriptBuilder.AddText(string.Join(Environment.NewLine, lines.ToArray()));
         }

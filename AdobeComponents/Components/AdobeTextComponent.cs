@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdobeComponents.CommonValues;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace AdobeComponents.Components
         public readonly string TextValue;
         public readonly RectangleF Bounds;
         public readonly AdobeTextSettings TextSettings;
+
+        public IAdobeColorValue FontColor { get; set; }
 
         public AdobeMaskComponent Mask { get; set; }
 
