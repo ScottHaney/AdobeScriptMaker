@@ -67,6 +67,9 @@ namespace MathRenderingDescriptions.Plot.How
             var fontColorControl = new AdobeSharedColorControl(_description.GetFontColorControlName());
             components.Add(new TimedAdobeLayerComponent(fontColorControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
 
+            var columnSpacingSlider = new AdobeSliderControl() { Name = _description.GetColumnSpacingControlName() };
+            components.Add(new TimedAdobeLayerComponent(columnSpacingSlider, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+
             return new RenderedComponents(components);
         }
 
