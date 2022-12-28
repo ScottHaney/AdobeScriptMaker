@@ -12,9 +12,11 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
         public readonly ITimingDescription TimingDescription;
         public readonly ISumsProvider SumsProvider;
 
-        public RiemannSumsRenderingDescription(FunctionRenderingDescription functionDescription,
+        public RiemannSumsRenderingDescription(string uniqueName,
+            FunctionRenderingDescription functionDescription,
             ITimingDescription timingDescription,
             ISumsProvider sumsProvider)
+            : base(uniqueName)
         {
             FunctionDescription = functionDescription;
             TimingDescription = timingDescription;

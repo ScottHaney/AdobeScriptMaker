@@ -9,7 +9,9 @@ namespace MathRenderingDescriptions.Plot.What
     {
         public readonly FunctionRenderingDescription FunctionRenderingDescription;
 
-        public AreaUnderFunctionRenderingDescription(FunctionRenderingDescription functionRenderingDescription)
+        public AreaUnderFunctionRenderingDescription(string uniqueName,
+            FunctionRenderingDescription functionRenderingDescription)
+            : base(uniqueName)
         {
             FunctionRenderingDescription = functionRenderingDescription;
         }

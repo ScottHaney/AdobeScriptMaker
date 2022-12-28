@@ -4,7 +4,13 @@ using System.Text;
 
 namespace RenderingDescriptions.What
 {
-    public interface IWhatToRender
+    public abstract class IWhatToRender
     {
+        public readonly string UniqueName;
+
+        public IWhatToRender(string uniqueName)
+        {
+            UniqueName = uniqueName;
+        }
     }
 }

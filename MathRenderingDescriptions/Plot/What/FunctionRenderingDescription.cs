@@ -13,10 +13,12 @@ namespace MathRenderingDescriptions.Plot.What
         public double StartX { get; }
         public double EndX { get; }
 
-        public FunctionRenderingDescription(PlotLayoutDescription plotLayoutDescription,
+        public FunctionRenderingDescription(string uniqueName,
+            PlotLayoutDescription plotLayoutDescription,
             Func<double, double> function,
             double? startX = null,
             double? endX = null)
+            : base(uniqueName)
         {
             PlotLayoutDescription = plotLayoutDescription;
             Function = function;

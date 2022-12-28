@@ -16,11 +16,13 @@ namespace MathRenderingDescriptions.Tests
                     new PlotAxisLayoutDescription(800, 0, 5),
                     new PlotAxisLayoutDescription(800, 0, 5)), new PointF(100, 100));
 
-            var function = new FunctionRenderingDescription(plotLayoutDescription,
+            var function = new FunctionRenderingDescription("FuncDesc",
+                plotLayoutDescription,
                 x => x);
 
             var sumsProvider = new SumsProvider(1);
-            var riemannSums = new RiemannSumsRenderingDescription(function,
+            var riemannSums = new RiemannSumsRenderingDescription("SumsDesc",
+                function,
                 new FitToDuration(sumsProvider),
                 sumsProvider);
 

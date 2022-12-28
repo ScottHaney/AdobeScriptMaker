@@ -59,17 +59,21 @@ namespace AdobeScriptMaker.Core.Tests
                     new PlotAxisLayoutDescription(690, 0, 5),
                     new PlotAxisLayoutDescription(690, 0, 5)), new PointF(100, 300));
 
-            var axes = new AxesRenderingDescription(plotLayoutDescription);
+            var axes = new AxesRenderingDescription("Axes",
+                plotLayoutDescription);
 
-            var function = new FunctionRenderingDescription(plotLayoutDescription,
+            var function = new FunctionRenderingDescription("Function",
+                plotLayoutDescription,
                 x => x);
 
-            var areaUnderFunction = new AreaUnderFunctionRenderingDescription(function);
+            var areaUnderFunction = new AreaUnderFunctionRenderingDescription("AUC",
+                function);
 
             var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(4));
 
             var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
-            var riemannSums = new RiemannSumsRenderingDescription(function,
+            var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
+                function,
                 new FitToDuration(sumsProvider),
                 sumsProvider);
 
@@ -83,7 +87,8 @@ namespace AdobeScriptMaker.Core.Tests
             });
 
             var plotBounds = plotLayoutDescription.GetBounds();
-            var dataTable = new DataTableRenderingDescription(dataTableData)
+            var dataTable = new DataTableRenderingDescription("DataTable",
+                dataTableData)
             {
                 NumericToStringFormats = new[] { "N0", "N1" },
                 TextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels),

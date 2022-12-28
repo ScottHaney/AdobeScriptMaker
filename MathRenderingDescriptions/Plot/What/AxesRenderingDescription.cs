@@ -9,7 +9,9 @@ namespace MathRenderingDescriptions.Plot.What
     {
         public readonly PlotLayoutDescription PlotLayoutDescription;
 
-        public AxesRenderingDescription(PlotLayoutDescription plotLayoutDescription)
+        public AxesRenderingDescription(string uniqueName,
+            PlotLayoutDescription plotLayoutDescription)
+            : base(uniqueName)
         {
             PlotLayoutDescription = plotLayoutDescription;
         }

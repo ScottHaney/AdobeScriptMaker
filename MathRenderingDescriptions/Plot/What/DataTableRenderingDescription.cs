@@ -17,7 +17,9 @@ namespace MathRenderingDescriptions.Plot.What
 
         public PointF TopLeft { get; set; } = new PointF(0, 0);
 
-        public DataTableRenderingDescription(DataTableData data)
+        public DataTableRenderingDescription(string uniqueName,
+            DataTableData data)
+            : base(uniqueName)
         {
             Data = data;
         }
