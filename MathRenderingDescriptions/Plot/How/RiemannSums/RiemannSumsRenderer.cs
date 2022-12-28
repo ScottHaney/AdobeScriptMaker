@@ -19,7 +19,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
     public class RiemannSumsRenderer : IHowToRender
     {
         private readonly RiemannSumsRenderingDescription _description;
-        
+
         public RiemannSumsRenderer(RiemannSumsRenderingDescription description)
         {
             _description = description;
@@ -30,9 +30,6 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
             var components = new List<TimedAdobeLayerComponent>();
             double currentTime = timing.WhenToStart.Time;
 
-            var scribbleColorControlName = "scribbleColorControl";
-            var linesControlName = "linesColorControl";
-
             var riemannSumsTimings = _description.TimingDescription.GetTimings(timing.WhenToStart.Time, timing.RenderDuration.Time);
 
             var index = 0;
@@ -42,16 +39,16 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                 var riemannSumsComponents = new List<TimedAdobeLayerComponent>();
                 if (index == 0)
-                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, riemannSumTiming, linesControlName));
+                    riemannSumsComponents.AddRange(CreateBottomUpAnimation(sums, riemannSumTiming, GetLinesColorControlName()));
                 else
-                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, riemannSumTiming, linesControlName));
+                    riemannSumsComponents.AddRange(CreateSplitSumsAnimation(sums, riemannSumTiming, GetLinesColorControlName()));
 
                 if (riemannSumTiming.TransitionAnimationStartTime != null)
                 {
                     var splitLines = CreateSplitLines(riemannSumTiming.NumRects);
                     components.AddRange(CreateSplitLinesAnimation(splitLines,
                         riemannSumTiming,
-                        linesControlName));
+                        GetLinesColorControlName()));
                 }
 
                 foreach (var component in riemannSumsComponents)
@@ -64,7 +61,7 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                     var scribble = new AdobeScribbleEffect(maskName)
                     {
-                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", scribbleColorControlName)
+                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", GetScribbleColorControlName())
                     };
                     foreach (var pathComponent in pathGroup.Paths)
                         pathComponent.ScribbleEffect = scribble;
@@ -78,14 +75,20 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
                 index++;
             }
 
-            var scribbleColorControl = new AdobeSharedColorControl(scribbleColorControlName);
+            var scribbleColorControl = new AdobeSharedColorControl(GetScribbleColorControlName());
             components.Add(new TimedAdobeLayerComponent(scribbleColorControl, timing.WhenToStart.Time, currentTime));
 
-            var linesColorControl = new AdobeSharedColorControl(linesControlName);
+            var linesColorControl = new AdobeSharedColorControl(GetLinesColorControlName());
             components.Add(new TimedAdobeLayerComponent(linesColorControl, timing.WhenToStart.Time, currentTime));
 
             return new RenderedComponents(components);
         }
+
+        public string GetScribbleColorControlName()
+            => $"{_description.UniqueName} - scribble color";
+
+        public string GetLinesColorControlName()
+            => $"{_description.UniqueName} - lines color";
 
         private IEnumerable<TimedAdobeLayerComponent> CreateSplitLinesAnimation(List<SplitLine> splitLines,
             RiemannSumTimingResult timingResult,
