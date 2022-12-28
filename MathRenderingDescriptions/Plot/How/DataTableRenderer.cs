@@ -41,7 +41,6 @@ namespace MathRenderingDescriptions.Plot.How
                 _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray()));
 
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
-            var fontColorControlName = "Data Table Font Color";
 
             var components = new List<TimedAdobeLayerComponent>();
             for (int col = 0; col < _description.Data.NumColumns; col++)
@@ -58,14 +57,14 @@ namespace MathRenderingDescriptions.Plot.How
                         entryBounds,
                         textSettings)
                     {
-                        FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", fontColorControlName)
+                        FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
                     };
 
                     components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
                 }
             }
 
-            var fontColorControl = new AdobeSharedColorControl(fontColorControlName);
+            var fontColorControl = new AdobeSharedColorControl(_description.GetFontColorControlName());
             components.Add(new TimedAdobeLayerComponent(fontColorControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
 
             return new RenderedComponents(components);

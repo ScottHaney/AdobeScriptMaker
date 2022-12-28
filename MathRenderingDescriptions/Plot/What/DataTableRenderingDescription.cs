@@ -23,6 +23,9 @@ namespace MathRenderingDescriptions.Plot.What
         {
             Data = data;
         }
+
+        public string GetFontColorControlName()
+            => $"{UniqueName} - font color";
     }
 
     public class DataTableData

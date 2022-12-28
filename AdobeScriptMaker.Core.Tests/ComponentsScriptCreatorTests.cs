@@ -106,7 +106,8 @@ namespace AdobeScriptMaker.Core.Tests
             var sharedControlValues = new SharedControlValue[]
             {
                 new SharedControlValue(riemannSums.GetScribbleColorControlName(), "[0, 0, 0]"),
-                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]"),
+                new SharedControlValue(dataTable.GetFontColorControlName(), "[0, 0, 0]")
             };
 
             var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
