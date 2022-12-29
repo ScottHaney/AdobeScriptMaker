@@ -48,12 +48,11 @@ namespace MathRenderingDescriptions.Plot.How
             var layout = new MatrixExpressionLayout(matrixTextSettings, matrixLayoutSettings, new TextMeasurerFactory());
             var layoutResults = layout.Layout(annotatedMatrix);
 
-            var layoutResultsComponents = layoutResults.GetComponents();
-
+            var layoutResultsComponents = layoutResults.GetResults();
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
 
             var components = new List<TimedAdobeLayerComponent>();
-            foreach (var layoutResultComponent in layoutResultsComponents.OfType<MatrixEntriesLayoutResult>().Single().Results.Cast<MatrixEntryLayoutResult>())
+            foreach (var layoutResultComponent in layoutResultsComponents.OfType<MatrixEntryLayoutResult>())
             {
                 var entryBounds = layoutResultComponent.Bounds;
                 entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
@@ -74,6 +73,26 @@ namespace MathRenderingDescriptions.Plot.How
                 };
 
                 components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+            }
+
+            foreach (var textResult in layoutResultsComponents.OfType<TextLayoutResult>())
+            {
+                var entryBounds = textResult.Bounds;
+                entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
+                    entryBounds.Y + _description.TopLeft.Y,
+                    entryBounds.Width,
+                    entryBounds.Height);
+
+                var textControl = new AdobeTextComponent(textResult.Text,
+                    entryBounds.Size,
+                    new AdobeSliderValue(entryBounds.Left),
+                    new AdobeSliderValue(entryBounds.Top),
+                    textSettings)
+                {
+                    FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
+                };
+
+                components.Add(new TimedAdobeLayerComponent(textControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
             }
 
             /*for (int col = 0; col < _description.Data.NumColumns; col++)

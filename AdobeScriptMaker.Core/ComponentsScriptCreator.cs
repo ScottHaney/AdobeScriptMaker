@@ -213,7 +213,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var fontHeightCorrection = GetFontHeightCorrection(text.Size.Height);
             if (text.Left is AdobeSliderValue leftValue && text.Top is AdobeSliderValue topValue)
             {
-                lines.Add($"{layerVar}.position.setValue([{leftValue.Value + text.Size.Width}, {topValue.Value + text.Size.Height - fontHeightCorrection}];");
+                lines.Add($"{layerVar}.position.setValue([{leftValue.Value + text.Size.Width}, {topValue.Value + text.Size.Height - fontHeightCorrection}]);");
             }
             else
             {
