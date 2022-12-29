@@ -54,7 +54,9 @@ namespace MathRenderingDescriptions.Plot.How
                         entryBounds.Height);
 
                     var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col), row),
-                        entryBounds,
+                        entryBounds.Size,
+                        new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()),
+                        new AdobeSliderValue(entryBounds.Top),
                         textSettings)
                     {
                         FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())

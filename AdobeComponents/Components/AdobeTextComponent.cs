@@ -11,8 +11,8 @@ namespace AdobeComponents.Components
     {
         public readonly string TextValue;
         public readonly SizeF Size;
-        public readonly float Left;
-        public readonly float Top;
+        public readonly IAdobeSliderValue Left;
+        public readonly IAdobeSliderValue Top;
         public readonly AdobeTextSettings TextSettings;
 
         public IAdobeColorValue FontColor { get; set; }
@@ -25,15 +25,15 @@ namespace AdobeComponents.Components
         {
             TextValue = textValue;
             Size = bounds.Size;
-            Left = bounds.Left;
-            Top = bounds.Top;
+            Left = new AdobeSliderValue(bounds.Left);
+            Top = new AdobeSliderValue(bounds.Top);
             TextSettings = textSettings;
         }
 
         public AdobeTextComponent(string textValue,
             SizeF size,
-            float left,
-            float top,
+            IAdobeSliderValue left,
+            IAdobeSliderValue top,
             AdobeTextSettings textSettings)
         {
             TextValue = textValue;
