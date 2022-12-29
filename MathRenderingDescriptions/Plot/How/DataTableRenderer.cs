@@ -13,6 +13,9 @@ using AdobeComponents.Components;
 using AdobeComponents.Animation;
 using RenderingDescriptions.Timing;
 using AdobeComponents.CommonValues;
+using MatrixLayout.ExpressionDecorators;
+using MatrixLayout.ExpressionLayout;
+using MatrixLayout.ExpressionLayout.LayoutResults;
 
 namespace MathRenderingDescriptions.Plot.How
 {
@@ -29,21 +32,51 @@ namespace MathRenderingDescriptions.Plot.How
         {
             var dataTableTiming = (DataTableTimingForRender)timing;
 
-            var matrixLayout = new SizedToEntriesMatrixEntriesLayout(
-                new MatrixInteriorMarginsDescription(0.1f, 0.1f, 0.1f, 0.1f),
-                _description.Data.NumRows,
-                _description.Data.NumColumns);
-
             var font = _description.TextSettings.ToFont();
-            var layoutResult = matrixLayout.GetLayoutResult(new SizedMatrixEntriesLayoutInputParams(
-                new TextMeasurer(),
-                font,
-                _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray()));
+            var entryValues = _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray();
+
+            var annotatedMatrix = new AnnotatedMatrixComponent(
+                new MatrixComponent(_description.Data.NumRows, _description.Data.NumColumns, entryValues),
+                new MatrixAnnotations(new List<string>() { "Rectangles", "Area" }, false, new List<string>(), _description.TextSettings, 0));
+
+            var matrixTextSettings = new TextDisplayDescription("Arial", 72);
+            var matrixLayoutSettings = new MatrixLayoutDescription(
+                    new MatrixBracketsDescription(3, 35),
+                    new MatrixInteriorMarginsDescription(0.5f, 0.1f, 0.5f, 1),
+                    12, 20, 35);
+
+            var layout = new MatrixExpressionLayout(matrixTextSettings, matrixLayoutSettings, new TextMeasurerFactory());
+            var layoutResults = layout.Layout(annotatedMatrix);
+
+            var layoutResultsComponents = layoutResults.GetComponents();
 
             var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
 
             var components = new List<TimedAdobeLayerComponent>();
-            for (int col = 0; col < _description.Data.NumColumns; col++)
+            foreach (var layoutResultComponent in layoutResultsComponents.OfType<MatrixEntriesLayoutResult>().Single().Results.Cast<MatrixEntryLayoutResult>())
+            {
+                var entryBounds = layoutResultComponent.Bounds;
+                entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
+                    entryBounds.Y + _description.TopLeft.Y,
+                    entryBounds.Width,
+                    entryBounds.Height);
+
+                var row = layoutResultComponent.Row;
+                var col = layoutResultComponent.Column;
+
+                var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col), row),
+                    entryBounds.Size,
+                    new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()) { SliderMult = col },
+                    new AdobeSliderControlRef(entryBounds.Top, "thisComp", "Shared Controls Layer", _description.GetRowSpacingControlName()) { SliderMult = row },
+                    textSettings)
+                {
+                    FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
+                };
+
+                components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+            }
+
+            /*for (int col = 0; col < _description.Data.NumColumns; col++)
             {
                 for (int row = 0; row < _description.Data.NumRows; row++)
                 {
@@ -64,7 +97,7 @@ namespace MathRenderingDescriptions.Plot.How
 
                     components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
                 }
-            }
+            }*/
 
             var fontColorControl = new AdobeSharedColorControl(_description.GetFontColorControlName());
             components.Add(new TimedAdobeLayerComponent(fontColorControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));

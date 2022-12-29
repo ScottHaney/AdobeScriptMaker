@@ -93,13 +93,20 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public TextSettings TextSettings { get; private set; }
         public string Text { get; private set; }
 
+        public readonly int Row;
+        public readonly int Column;
+
         public MatrixEntryLayoutResult(RectangleF bounds,
             TextSettings textSettings,
-            string text)
+            string text,
+            int row,
+            int column)
         {
             Bounds = bounds;
             TextSettings = textSettings;
             Text = text;
+            Row = row;
+            Column = column;
         }
 
         public void ShiftDown(float shift)
