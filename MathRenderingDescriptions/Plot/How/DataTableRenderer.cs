@@ -32,14 +32,14 @@ namespace MathRenderingDescriptions.Plot.How
         {
             var dataTableTiming = (DataTableTimingForRender)timing;
 
-            var font = _description.TextSettings.ToFont();
+            var font = _description.EntryTextSettings.ToFont();
             var entryValues = _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray();
 
             var annotatedMatrix = new AnnotatedMatrixComponent(
                 new MatrixComponent(_description.Data.NumRows, _description.Data.NumColumns, entryValues),
-                new MatrixAnnotations(new List<string>() { "Rectangles", "Area" }, false, new List<string>(), _description.TextSettings, 0));
+                new MatrixAnnotations(new List<string>() { "Rectangles", "Area" }, false, new List<string>(), _description.RowHeaderTextSettings, 0));
 
-            var matrixTextSettings = new TextDisplayDescription(_description.TextSettings.FontName, (int)_description.TextSettings.FontSize);
+            var matrixTextSettings = new TextDisplayDescription(_description.EntryTextSettings.FontName, (int)_description.EntryTextSettings.FontSize);
             var matrixLayoutSettings = new MatrixLayoutDescription(
                     new MatrixBracketsDescription(0, 0),
                     new MatrixInteriorMarginsDescription(0, 0, 0, 0),

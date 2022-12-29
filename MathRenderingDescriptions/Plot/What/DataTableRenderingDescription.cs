@@ -13,7 +13,9 @@ namespace MathRenderingDescriptions.Plot.What
 
         public string[] NumericToStringFormats { get; set; }
 
-        public TextSettings TextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
+        public TextSettings EntryTextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
+
+        public TextSettings RowHeaderTextSettings { get; set; } = new TextSettings("Tahoma", 50, TextSettingsFontSizeUnit.Pixels);
 
         public PointF TopLeft { get; set; } = new PointF(0, 0);
 
