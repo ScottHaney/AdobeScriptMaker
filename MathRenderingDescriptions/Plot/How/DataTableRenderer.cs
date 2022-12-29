@@ -39,11 +39,11 @@ namespace MathRenderingDescriptions.Plot.How
                 new MatrixComponent(_description.Data.NumRows, _description.Data.NumColumns, entryValues),
                 new MatrixAnnotations(new List<string>() { "Rectangles", "Area" }, false, new List<string>(), _description.TextSettings, 0));
 
-            var matrixTextSettings = new TextDisplayDescription("Arial", 72);
+            var matrixTextSettings = new TextDisplayDescription(_description.TextSettings.FontName, (int)_description.TextSettings.FontSize);
             var matrixLayoutSettings = new MatrixLayoutDescription(
-                    new MatrixBracketsDescription(3, 35),
-                    new MatrixInteriorMarginsDescription(0.5f, 0.1f, 0.5f, 1),
-                    12, 20, 35);
+                    new MatrixBracketsDescription(0, 0),
+                    new MatrixInteriorMarginsDescription(0, 0, 0, 0),
+                    0, 0, 0);
 
             var layout = new MatrixExpressionLayout(matrixTextSettings, matrixLayoutSettings, new TextMeasurerFactory());
             var layoutResults = layout.Layout(annotatedMatrix);
