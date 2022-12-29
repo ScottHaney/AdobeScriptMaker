@@ -211,10 +211,17 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
 
             var fontHeightCorrection = GetFontHeightCorrection(text.Size.Height);
-            var leftPositionText = $"{text.Left.GetScriptText()} + {text.Size.Width}";
-            var topPositionText = $"{text.Top.GetScriptText()} + {text.Size.Height} - {fontHeightCorrection}";
+            if (text.Left is AdobeSliderValue leftValue && text.Top is AdobeSliderValue topValue)
+            {
+                lines.Add($"{layerVar}.position.setValue([{leftValue.Value + text.Size.Width}, {topValue.Value + text.Size.Height - fontHeightCorrection}];");
+            }
+            else
+            {
+                var leftPositionText = $"{text.Left.GetScriptText()} + {text.Size.Width}";
+                var topPositionText = $"{text.Top.GetScriptText()} + {text.Size.Height} - {fontHeightCorrection}";
 
-            lines.Add($"{layerVar}.position.expression = \"[({leftPositionText}), ({topPositionText})]\";");
+                lines.Add($"{layerVar}.position.expression = \"[({leftPositionText}), ({topPositionText})]\";");
+            }
 
             //The source text needs to be saved and then reset or else it doesn't work, which is weird. The idea was taken from:
             //https://community.adobe.com/t5/after-effects-discussions/unable-to-execute-script-at-line-17-unable-to-set-value-as-it-is-not-associated-with-a-layer/td-p/11782185
