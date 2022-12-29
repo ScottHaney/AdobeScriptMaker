@@ -192,7 +192,10 @@ namespace MatrixLayout.ExpressionLayout
 
                         textLayoutResults.Add(new TextLayoutResult(annotationBounds,
                             annotatedMatrixComponent.Annotations.TextSettings,
-                            annotation));
+                            annotation)
+                        {
+                            Metadata = new RowAnnotationMetadata(i)
+                        });
                     }
                 }
 

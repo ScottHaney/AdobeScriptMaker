@@ -32,6 +32,9 @@ namespace MathRenderingDescriptions.Plot.What
 
         public string GetRowSpacingControlName()
             => $"{UniqueName} - row spacing";
+
+        public string GetRowHeaderSpacingControlName()
+            => $"{UniqueName} - row header spacing";
     }
 
     public class DataTableData

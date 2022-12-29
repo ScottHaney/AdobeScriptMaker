@@ -12,6 +12,8 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
         public TextSettings TextSettings { get; private set; }
         public string Text { get; private set; }
 
+        public object Metadata { get; set; }
+
         public TextLayoutResult(RectangleF bounds,
             TextSettings textSettings,
             string text)
@@ -27,6 +29,16 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
                 Bounds.Top + shift,
                 Bounds.Width,
                 Bounds.Height);
+        }
+    }
+
+    public class RowAnnotationMetadata
+    {
+        public readonly int Row;
+
+        public RowAnnotationMetadata(int row)
+        {
+            Row = row;
         }
     }
 }
