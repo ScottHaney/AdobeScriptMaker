@@ -56,7 +56,7 @@ namespace MathRenderingDescriptions.Plot.How
                     var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col), row),
                         entryBounds.Size,
                         new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()) { SliderMult = col },
-                        new AdobeSliderValue(entryBounds.Top),
+                        new AdobeSliderControlRef(entryBounds.Top, "thisComp", "Shared Controls Layer", _description.GetRowSpacingControlName()) { SliderMult = row },
                         textSettings)
                     {
                         FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
@@ -71,6 +71,9 @@ namespace MathRenderingDescriptions.Plot.How
 
             var columnSpacingSlider = new AdobeSliderControl() { Name = _description.GetColumnSpacingControlName() };
             components.Add(new TimedAdobeLayerComponent(columnSpacingSlider, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
+
+            var rowSpacingSlider = new AdobeSliderControl() { Name = _description.GetRowSpacingControlName() };
+            components.Add(new TimedAdobeLayerComponent(rowSpacingSlider, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
 
             return new RenderedComponents(components);
         }

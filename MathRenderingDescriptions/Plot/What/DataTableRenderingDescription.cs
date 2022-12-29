@@ -29,6 +29,9 @@ namespace MathRenderingDescriptions.Plot.What
 
         public string GetColumnSpacingControlName()
             => $"{UniqueName} - column spacing";
+
+        public string GetRowSpacingControlName()
+            => $"{UniqueName} - row spacing";
     }
 
     public class DataTableData
