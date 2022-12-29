@@ -55,7 +55,7 @@ namespace MathRenderingDescriptions.Plot.How
 
                     var textControl = new AdobeTextComponent(FormatNumber(_description.Data.GetEntry(row, col), row),
                         entryBounds.Size,
-                        new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()),
+                        new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()) { SliderMult = col },
                         new AdobeSliderValue(entryBounds.Top),
                         textSettings)
                     {

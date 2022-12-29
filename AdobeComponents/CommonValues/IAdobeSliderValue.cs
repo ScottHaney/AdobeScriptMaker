@@ -11,16 +11,16 @@ namespace AdobeComponents.CommonValues
 
     public class AdobeSliderValue : IAdobeSliderValue
     {
-        private readonly float _value;
+        public readonly float Value;
 
         public AdobeSliderValue(float value)
         {
-            _value = value;
+            Value = value;
         }
 
         public string GetScriptText()
         {
-            return $"{_value}";
+            return $"{Value}";
         }
     }
 
@@ -30,6 +30,8 @@ namespace AdobeComponents.CommonValues
         private readonly string _compRef;
         private readonly string _layerName;
         private readonly string _colorControlName;
+
+        public float SliderMult { get; set; } = 1;
 
         public AdobeSliderControlRef(float startValue,
             string compRef,
@@ -44,7 +46,7 @@ namespace AdobeComponents.CommonValues
 
         public string GetScriptText()
         {
-            return $"{_startValue} + {_compRef}.layer('{_layerName}').effect('{_colorControlName}')('Slider')";
+            return $"{_startValue} + {SliderMult} * {_compRef}.layer('{_layerName}').effect('{_colorControlName}')('Slider')";
         }
     }
 }
