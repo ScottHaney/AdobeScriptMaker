@@ -92,7 +92,7 @@ namespace AdobeScriptMaker.Core.Tests
             {
                 NumericToStringFormats = new[] { "N0", "N1" },
                 EntryTextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels),
-                RowHeaderTextSettings = new TextSettings("Graphie Bold", 50, TextSettingsFontSizeUnit.Pixels),
+                RowHeaderTextSettings = new TextSettings("Graphie SemiBold", 50, TextSettingsFontSizeUnit.Pixels),
                 TopLeft = new PointF(plotBounds.X, plotBounds.Y + plotBounds.Height + 200)
             };
 

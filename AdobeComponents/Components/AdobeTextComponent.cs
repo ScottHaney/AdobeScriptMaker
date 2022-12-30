@@ -60,7 +60,7 @@ namespace AdobeComponents.Components
         {
             //Sometimes there is a difference in the name used by the font
             //for the operating system and for adobe after effects so account for that here
-            if (fontName.StartsWith("Graphie"))
+            if (fontName.StartsWith("Graphie "))
             {
                 var words = fontName.Split(' ');
                 return $"{words[0]}-{string.Join("", words.Skip(1))}";

@@ -32,7 +32,6 @@ namespace MathRenderingDescriptions.Plot.How
         {
             var dataTableTiming = (DataTableTimingForRender)timing;
 
-            var font = _description.EntryTextSettings.ToFont();
             var entryValues = _description.Data.AllDataInMatrixOrder().SelectMany((x, rowIndex) => x.Select(y => FormatNumber(y, rowIndex))).ToArray();
 
             var annotatedMatrix = new AnnotatedMatrixComponent(
@@ -49,7 +48,9 @@ namespace MathRenderingDescriptions.Plot.How
             var layoutResults = layout.Layout(annotatedMatrix);
 
             var layoutResultsComponents = layoutResults.GetResults();
-            var textSettings = new AdobeTextSettings(font.Name, font.SizeInPoints);
+
+            var entryFont = _description.EntryTextSettings.ToFont();
+            var entryTextSettings = new AdobeTextSettings(entryFont.Name, entryFont.SizeInPoints);
 
             var components = new List<TimedAdobeLayerComponent>();
             foreach (var layoutResultComponent in layoutResultsComponents.OfType<MatrixEntryLayoutResult>())
@@ -67,13 +68,16 @@ namespace MathRenderingDescriptions.Plot.How
                     entryBounds.Size,
                     new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetColumnSpacingControlName()) { SliderMult = col },
                     new AdobeSliderControlRef(entryBounds.Top, "thisComp", "Shared Controls Layer", _description.GetRowSpacingControlName()) { SliderMult = row },
-                    textSettings)
+                    entryTextSettings)
                 {
                     FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
                 };
 
                 components.Add(new TimedAdobeLayerComponent(textControl, dataTableTiming.ColumnTimings[col].Time, timing.WhenToStart.Time + timing.RenderDuration.Time));
             }
+
+            var rowHeadersFont = _description.RowHeaderTextSettings.ToFont();
+            var rowHeadersTextSettings = new AdobeTextSettings(rowHeadersFont.Name, rowHeadersFont.SizeInPoints);
 
             foreach (var textResult in layoutResultsComponents.OfType<TextLayoutResult>())
             {
@@ -87,7 +91,7 @@ namespace MathRenderingDescriptions.Plot.How
                     entryBounds.Size,
                     new AdobeSliderControlRef(entryBounds.Left, "thisComp", "Shared Controls Layer", _description.GetRowHeaderSpacingControlName()),
                     new AdobeSliderControlRef(entryBounds.Top, "thisComp", "Shared Controls Layer", _description.GetRowSpacingControlName()) { SliderMult = ((RowAnnotationMetadata)textResult.Metadata).Row },
-                    textSettings)
+                    rowHeadersTextSettings)
                 {
                     FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
                 };
