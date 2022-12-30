@@ -171,6 +171,12 @@ namespace MatrixLayout.ExpressionLayout
             {
                 if (annotatedMatrixComponent.Annotations.RowAnnotations?.Any() == true)
                 {
+                    var annotationFont = annotatedMatrixComponent.Annotations.TextSettings.ToFont();
+
+                    var maxWidth = annotatedMatrixComponent.Annotations.RowAnnotations
+                        .Select(x => textMeasurer.MeasureText(x, annotationFont))
+                        .Max(x => x.Width);
+
                     for (var i = 0; i < annotatedMatrixComponent.Annotations.RowAnnotations.Count; i++)
                     {
                         var annotation = annotatedMatrixComponent.Annotations.RowAnnotations[i];
@@ -178,11 +184,19 @@ namespace MatrixLayout.ExpressionLayout
                             continue;
 
                         var rowEntriesBounds = matrixLayout.GetRowBoundingBox(i);
-                        var annotationSize = textMeasurer.MeasureText(annotation, annotatedMatrixComponent.Annotations.TextSettings.ToFont());
+                        var annotationSize = textMeasurer.MeasureText(annotation, annotationFont);
 
                         var left = annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight
                             ? matrixLayout.BoundingBox.Right + annotatedMatrixComponent.Annotations.Padding
                             : matrixLayout.BoundingBox.Left - annotatedMatrixComponent.Annotations.Padding - annotationSize.Width;
+
+                        if (annotatedMatrixComponent.Annotations.RowAnnotationsAlignment == MatrixAnnotationsAlignment.Far)
+                        {
+                            if (annotatedMatrixComponent.Annotations.RowAnnotationsAreOnRight)
+                                left += (maxWidth - annotationSize.Width);
+                            else
+                                left -= (maxWidth - annotationSize.Width);
+                        }
 
                         var annotationBounds = new RectangleF(
                             left,
@@ -194,7 +208,8 @@ namespace MatrixLayout.ExpressionLayout
                             annotatedMatrixComponent.Annotations.TextSettings,
                             annotation)
                         {
-                            Metadata = new RowAnnotationMetadata(i)
+                            Metadata = new RowAnnotationMetadata(i),
+                            Justification = annotatedMatrixComponent.Annotations.RowAnnotationsAlignment == MatrixAnnotationsAlignment.Far ? TextJustification.Right : TextJustification.Left
                         });
                     }
                 }

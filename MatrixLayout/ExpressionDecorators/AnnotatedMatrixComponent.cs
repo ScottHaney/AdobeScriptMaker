@@ -27,6 +27,8 @@ namespace MatrixLayout.ExpressionDecorators
         public readonly TextSettings TextSettings;
         public readonly int Padding;
 
+        public MatrixAnnotationsAlignment RowAnnotationsAlignment { get; set; } = MatrixAnnotationsAlignment.Near;
+
         public MatrixAnnotations(List<string> rowAnnotations,
             bool rowAnnotationsAreOnRight,
             List<string> columnAnnotations,
@@ -39,5 +41,11 @@ namespace MatrixLayout.ExpressionDecorators
             TextSettings = textSettings;
             Padding = padding;
         }
+    }
+
+    public enum MatrixAnnotationsAlignment
+    {
+        Near,
+        Far
     }
 }

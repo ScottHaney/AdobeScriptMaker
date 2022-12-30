@@ -36,7 +36,10 @@ namespace MathRenderingDescriptions.Plot.How
 
             var annotatedMatrix = new AnnotatedMatrixComponent(
                 new MatrixComponent(_description.Data.NumRows, _description.Data.NumColumns, entryValues),
-                new MatrixAnnotations(new List<string>() { "Rectangles", "Area" }, false, new List<string>(), _description.RowHeaderTextSettings, 0));
+                new MatrixAnnotations(_description.RowHeaderValues, false, new List<string>(), _description.RowHeaderTextSettings, 0)
+                {
+                    RowAnnotationsAlignment = MatrixAnnotationsAlignment.Far
+                });
 
             var matrixTextSettings = new TextDisplayDescription(_description.EntryTextSettings.FontName, (int)_description.EntryTextSettings.FontSize);
             var matrixLayoutSettings = new MatrixLayoutDescription(
@@ -96,7 +99,8 @@ namespace MathRenderingDescriptions.Plot.How
                     new AdobeSliderControlRef(entryBounds.Top, "thisComp", "Shared Controls Layer", _description.GetRowSpacingControlName()) { SliderMult = ((RowAnnotationMetadata)textResult.Metadata).Row },
                     rowHeadersTextSettings)
                 {
-                    FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName())
+                    FontColor = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetFontColorControlName()),
+                    Justification = textResult.Justification == TextJustification.Right ? AdobeTextJustification.Right : AdobeTextJustification.Left
                 };
 
                 components.Add(new TimedAdobeLayerComponent(textControl, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time));

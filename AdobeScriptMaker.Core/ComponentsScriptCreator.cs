@@ -210,14 +210,18 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             var textDocVar = _scriptBuilder.GetNextAutoVariable();
             lines.Add($"var {textDocVar} = new TextDocument('{text.TextValue}');");
 
+            var additionalXOffset = text.Justification == AdobeTextJustification.Right
+                ? text.Size.Width
+                : 0;
+
             var fontHeightCorrection = GetFontHeightCorrection(text.Size.Height);
             if (text.Left is AdobeSliderValue leftValue && text.Top is AdobeSliderValue topValue)
             {
-                lines.Add($"{layerVar}.position.setValue([{leftValue.Value + text.Size.Width}, {topValue.Value + text.Size.Height - fontHeightCorrection}]);");
+                lines.Add($"{layerVar}.position.setValue([{leftValue.Value + additionalXOffset}, {topValue.Value + text.Size.Height - fontHeightCorrection}]);");
             }
             else
             {
-                var leftPositionText = $"{text.Left.GetScriptText()} + {text.Size.Width}";
+                var leftPositionText = $"{text.Left.GetScriptText()} + {additionalXOffset}";
                 var topPositionText = $"{text.Top.GetScriptText()} + {text.Size.Height} - {fontHeightCorrection}";
 
                 lines.Add($"{layerVar}.position.expression = \"[({leftPositionText}), ({topPositionText})]\";");
@@ -230,7 +234,7 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
 var {textDocVar} = {sourceTextVar}.value;
 {textDocVar}.font = '{text.TextSettings.FontName}';
 {textDocVar}.fontSize = {text.TextSettings.FontSizeInPixels};
-{textDocVar}.justification = ParagraphJustification.RIGHT_JUSTIFY;");
+{textDocVar}.justification = {(text.Justification == AdobeTextJustification.Right ? "ParagraphJustification.RIGHT_JUSTIFY" : "ParagraphJustification.LEFT_JUSTIFY")};");
 
             if (text.FontColor != null)
             {

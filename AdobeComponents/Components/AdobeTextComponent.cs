@@ -19,6 +19,8 @@ namespace AdobeComponents.Components
 
         public AdobeMaskComponent Mask { get; set; }
 
+        public AdobeTextJustification Justification { get; set; } = AdobeTextJustification.Right;
+
         public AdobeTextComponent(string textValue,
             RectangleF bounds,
             AdobeTextSettings textSettings)
@@ -42,6 +44,12 @@ namespace AdobeComponents.Components
             Top = top;
             TextSettings = textSettings;
         }
+    }
+
+    public enum AdobeTextJustification
+    {
+        Right,
+        Left
     }
 
     public class AdobeTextSettings

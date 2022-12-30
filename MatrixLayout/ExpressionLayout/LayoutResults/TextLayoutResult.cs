@@ -14,6 +14,8 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
 
         public object Metadata { get; set; }
 
+        public TextJustification Justification { get; set; } = TextJustification.Right;
+
         public TextLayoutResult(RectangleF bounds,
             TextSettings textSettings,
             string text)
@@ -30,6 +32,12 @@ namespace MatrixLayout.ExpressionLayout.LayoutResults
                 Bounds.Width,
                 Bounds.Height);
         }
+    }
+
+    public enum TextJustification
+    {
+        Right,
+        Left
     }
 
     public class RowAnnotationMetadata
