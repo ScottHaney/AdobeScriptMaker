@@ -49,6 +49,9 @@ namespace MathRenderingDescriptions.Plot.How
 
             var layoutResultsComponents = layoutResults.GetResults();
 
+            //Annotations can lay out with a negative x value so add an offset to make sure the table gets positioned where the description wants it to go
+            var leftOffset = Math.Abs(layoutResultsComponents.Min(x => x.Bounds.Left));
+
             var entryFont = _description.EntryTextSettings.ToFont();
             var entryTextSettings = new AdobeTextSettings(entryFont.Name, entryFont.SizeInPoints);
 
@@ -56,7 +59,7 @@ namespace MathRenderingDescriptions.Plot.How
             foreach (var layoutResultComponent in layoutResultsComponents.OfType<MatrixEntryLayoutResult>())
             {
                 var entryBounds = layoutResultComponent.Bounds;
-                entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
+                entryBounds = new RectangleF(entryBounds.X + leftOffset + _description.TopLeft.X,
                     entryBounds.Y + _description.TopLeft.Y,
                     entryBounds.Width,
                     entryBounds.Height);
@@ -82,7 +85,7 @@ namespace MathRenderingDescriptions.Plot.How
             foreach (var textResult in layoutResultsComponents.OfType<TextLayoutResult>())
             {
                 var entryBounds = textResult.Bounds;
-                entryBounds = new RectangleF(entryBounds.X + _description.TopLeft.X,
+                entryBounds = new RectangleF(entryBounds.X + leftOffset + _description.TopLeft.X,
                     entryBounds.Y + _description.TopLeft.Y,
                     entryBounds.Width,
                     entryBounds.Height);
