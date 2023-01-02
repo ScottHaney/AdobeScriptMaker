@@ -57,6 +57,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderAreaUnderFunction(auf, renderingDescription.Timing));
                 }
+                else if (renderingDescription.What is AreaUnderFunctionShapeRenderingDescription aufs)
+                {
+                    results.Add(RenderAreaUnderFunctionShape(aufs, renderingDescription.Timing));
+                }
                 else if (renderingDescription.What is RiemannSumsRenderingDescription rs)
                 {
                     results.Add(RenderRiemannSums(rs, renderingDescription.Timing));
@@ -90,6 +94,15 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             ITimingForRender timing)
         {
             var renderer = new AreaUnderFunctionRenderer(auf,
+                CreatePointsRenderer(auf.FunctionRenderingDescription));
+
+            return renderer.Render(timing);
+        }
+
+        private RenderedComponents RenderAreaUnderFunctionShape(AreaUnderFunctionShapeRenderingDescription auf,
+            ITimingForRender timing)
+        {
+            var renderer = new AreaUnderFunctionShapeRenderer(auf,
                 CreatePointsRenderer(auf.FunctionRenderingDescription));
 
             return renderer.Render(timing);

@@ -140,7 +140,7 @@ namespace AdobeScriptMaker.Core.Tests
                 plotLayoutDescription,
                 x => Math.Sin(x) + 3);
 
-            var areaUnderFunction = new AreaUnderFunctionRenderingDescription("AUC",
+            var areaUnderFunctionShape = new AreaUnderFunctionShapeRenderingDescription("AUC",
                 function);
 
             var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(2), new AbsoluteTiming(4));
@@ -186,7 +186,7 @@ namespace AdobeScriptMaker.Core.Tests
                 new SharedControlValue(dataTable.GetFontColorControlName(), "[0, 0, 0]")
             };
 
-            var aufToRender = new RenderingDescription(areaUnderFunction, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var rsToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
             var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
 
