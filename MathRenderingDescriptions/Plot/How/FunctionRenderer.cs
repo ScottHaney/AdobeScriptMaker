@@ -47,6 +47,8 @@ namespace MathRenderingDescriptions.Plot.How
     {
         private readonly FunctionRenderingDescription _description;
 
+        public int PixelStep { get; set; } = 2;
+
         public FunctionPointsRenderer(FunctionRenderingDescription description)
         {
             _description = description;
@@ -54,11 +56,25 @@ namespace MathRenderingDescriptions.Plot.How
 
         public PointF[] GetPoints()
         {
-            return new PointF[]
+            var visualStartX = _description.PlotLayoutDescription.GetVisualXValue(_description.StartX);
+            var visualEndX = _description.PlotLayoutDescription.GetVisualXValue(_description.EndX);
+
+            var numPixels = (int)(visualEndX - visualStartX + 1);
+            var numPixelSteps = numPixels / PixelStep;
+
+            var visualStep = (_description.EndX - _description.StartX) / numPixelSteps;
+
+            var points = new List<PointF>();
+            points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.StartX));
+
+            for (double i = _description.StartX + visualStep; i < _description.EndX; i += visualStep)
             {
-                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.StartX),
-                _description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.EndX)
-            };
+                points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, i));
+            }
+
+            points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.EndX));
+
+            return points.ToArray();
         }
     }
 }
