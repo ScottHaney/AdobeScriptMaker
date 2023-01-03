@@ -27,6 +27,12 @@ namespace MathRenderingDescriptions.Plot
             return AxesLayout.CreateFunctionPoint(function, GetBounds(), xValue);
         }
 
+        public Point CreateFunctionPoint(PolarFunctionRenderingDescription function,
+            double xValue)
+        {
+            return AxesLayout.CreateFunctionPoint(function, GetBounds(), xValue);
+        }
+
         public double GetVisualXValue(double xValue)
         {
             return AxesLayout.GetVisualXValue(xValue, GetBounds());
@@ -84,6 +90,17 @@ namespace MathRenderingDescriptions.Plot
             double xValue)
         {
             return CreatePoint(axisRect, xValue, function.Function(xValue));
+        }
+
+        public Point CreateFunctionPoint(PolarFunctionRenderingDescription function,
+            RectangleF axisRect,
+            double xValue)
+        {
+            var radius = function.Function(xValue);
+            var x = radius * Math.Cos(xValue);
+            var y = radius * Math.Sin(xValue);
+
+            return CreatePoint(axisRect, x, y);
         }
 
         private Point CreatePoint(RectangleF axisBoundingBox,

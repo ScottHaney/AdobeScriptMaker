@@ -13,13 +13,10 @@ namespace MathRenderingDescriptions.Plot.How
 {
     public class FunctionRenderer : IHowToRender
     {
-        private readonly FunctionRenderingDescription _description;
-        private readonly FunctionPointsRenderer _pointsRenderer;
+        private readonly IFunctionPointsRenderer _pointsRenderer;
 
-        public FunctionRenderer(FunctionRenderingDescription description,
-            FunctionPointsRenderer pointsRenderer)
+        public FunctionRenderer(IFunctionPointsRenderer pointsRenderer)
         {
-            _description = description;
             _pointsRenderer = pointsRenderer;
         }
 
@@ -43,7 +40,12 @@ namespace MathRenderingDescriptions.Plot.How
         }
     }
 
-    public class FunctionPointsRenderer
+    public interface IFunctionPointsRenderer
+    {
+        PointF[] GetPoints();
+    }
+
+    public class FunctionPointsRenderer : IFunctionPointsRenderer
     {
         private readonly FunctionRenderingDescription _description;
 
@@ -73,6 +75,35 @@ namespace MathRenderingDescriptions.Plot.How
             }
 
             points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.EndX));
+
+            return points.ToArray();
+        }
+    }
+
+    public class PolarFunctionPointsRenderer : IFunctionPointsRenderer
+    {
+        private readonly PolarFunctionRenderingDescription _description;
+
+        public double AngleStep { get; set; } = 0.1;
+
+        public PolarFunctionPointsRenderer(PolarFunctionRenderingDescription description)
+        {
+            _description = description;
+        }
+
+        public PointF[] GetPoints()
+        {
+            var numRadians = _description.EndAngle - _description.StartAngle;
+
+            var points = new List<PointF>();
+            points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.StartAngle));
+
+            for (double i = _description.StartAngle + AngleStep; i < _description.EndAngle; i += AngleStep)
+            {
+                points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, i));
+            }
+
+            points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.EndAngle));
 
             return points.ToArray();
         }

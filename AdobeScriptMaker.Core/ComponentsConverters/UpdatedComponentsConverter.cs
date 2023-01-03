@@ -53,6 +53,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderFunction(function, renderingDescription.Timing));
                 }
+                else if (renderingDescription.What is PolarFunctionRenderingDescription polarFunction)
+                {
+                    results.Add(RenderPolarFunction(polarFunction, renderingDescription.Timing));
+                }
                 else if (renderingDescription.What is AreaUnderFunctionRenderingDescription auf)
                 {
                     results.Add(RenderAreaUnderFunction(auf, renderingDescription.Timing));
@@ -84,10 +88,15 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
         private RenderedComponents RenderFunction(FunctionRenderingDescription function,
             ITimingForRender timing)
         {
-            var axesRenderer = new FunctionRenderer(function,
-                CreatePointsRenderer(function));
+            var functionRenderer = new FunctionRenderer(CreatePointsRenderer(function));
+            return functionRenderer.Render(timing);
+        }
 
-            return axesRenderer.Render(timing);
+        private RenderedComponents RenderPolarFunction(PolarFunctionRenderingDescription function,
+            ITimingForRender timing)
+        {
+            var polarFunctionRenderer = new FunctionRenderer(new PolarFunctionPointsRenderer(function));
+            return polarFunctionRenderer.Render(timing);
         }
 
         private RenderedComponents RenderAreaUnderFunction(AreaUnderFunctionRenderingDescription auf,
