@@ -130,8 +130,8 @@ namespace AdobeScriptMaker.Core.Tests
         {
             var plotLayoutDescription = new PlotLayoutDescription(
                 new PlotAxesLayoutDescription(
-                    new PlotAxisLayoutDescription(690, 0, 5),
-                    new PlotAxisLayoutDescription(690, 0, 5)), new PointF(100, 300));
+                    new PlotAxisLayoutDescription(850, 0, 5),
+                    new PlotAxisLayoutDescription(850, 0, 5)), new PointF(50, 300));
 
             var axes = new AxesRenderingDescription("Axes",
                 plotLayoutDescription);
@@ -143,7 +143,7 @@ namespace AdobeScriptMaker.Core.Tests
             var areaUnderFunctionShape = new AreaUnderFunctionShapeRenderingDescription("AUC",
                 function);
 
-            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(2), new AbsoluteTiming(4));
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(5));
 
             var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
             var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
@@ -186,7 +186,7 @@ namespace AdobeScriptMaker.Core.Tests
                 new SharedControlValue(dataTable.GetFontColorControlName(), "[0, 0, 0]")
             };
 
-            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(3.2), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var rsToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
             var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
 

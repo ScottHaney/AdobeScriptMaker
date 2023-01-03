@@ -45,6 +45,15 @@ namespace MathRenderingDescriptions.Plot.How
 
             var path = new AdobePathComponent(new StaticValue<PointF[]>(areaUnderFunctionPoints)) { IsClosed = true };
 
+            var trimPaths = new AdobeTrimPathsEffect()
+            {
+                End = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time)),
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.EntranceAnimationDuration.Time))),
+                Start = new AnimatedValue<double>(new ValueAtTime<double>(0, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time - timing.ExitAnimationDuration.Time)),
+                    new ValueAtTime<double>(100, new AnimationTime(timing.WhenToStart.Time + timing.RenderDuration.Time)))
+            };
+            path.TrimPathsEffect = trimPaths;
+
             return new RenderedComponents(
                 new TimedAdobeLayerComponent(
                     new GroupedTogetherAdobeLayerComponents(
