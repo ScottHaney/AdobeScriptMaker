@@ -205,16 +205,17 @@ namespace AdobeScriptMaker.Core.Tests
                     new PlotAxisLayoutDescription(850, 0, 5),
                     new PlotAxisLayoutDescription(850, 0, 5)), new PointF(50, 300));
 
+            var polarInfinitySign = new Func<double, double>(x => 2 + 2 * Math.Cos(2 * x));
             var function = new PolarFunctionRenderingDescription("Function",
                 plotLayoutDescription,
-                x => 2,
+                polarInfinitySign,
                 0,
-                2 * Math.PI);
+                4 * Math.PI);
 
             var compositionDuration = new AbsoluteTiming(30);
 
             var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(3.2), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
-            
+
             var converter = new UpdatedComponentsConverter();
             var converted = converter.Convert(new List<RenderingDescription>() { functionToRender });
 
