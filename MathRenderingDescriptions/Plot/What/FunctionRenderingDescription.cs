@@ -46,7 +46,7 @@ namespace MathRenderingDescriptions.Plot.What
             PlotLayoutDescription = plotLayoutDescription;
             Function = function;
 
-            if (endAngle >= startAngle)
+            if (startAngle >= endAngle)
                 throw new ArgumentException(nameof(endAngle));
 
             StartAngle = startAngle;

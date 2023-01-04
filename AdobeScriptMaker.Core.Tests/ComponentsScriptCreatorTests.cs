@@ -197,6 +197,31 @@ namespace AdobeScriptMaker.Core.Tests
             var script = scriptCreator.Visit(converted, sharedControlValues);
         }
 
+        [Test]
+        public void CreatesPolarFunction()
+        {
+            var plotLayoutDescription = new PlotLayoutDescription(
+                new PlotAxesLayoutDescription(
+                    new PlotAxisLayoutDescription(850, 0, 5),
+                    new PlotAxisLayoutDescription(850, 0, 5)), new PointF(50, 300));
+
+            var function = new PolarFunctionRenderingDescription("Function",
+                plotLayoutDescription,
+                x => 2,
+                0,
+                2 * Math.PI);
+
+            var compositionDuration = new AbsoluteTiming(30);
+
+            var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(3.2), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            
+            var converter = new UpdatedComponentsConverter();
+            var converted = converter.Convert(new List<RenderingDescription>() { functionToRender });
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted);
+        }
+
         /*[Test]
         public void CreatesPlotOfXSquaredPlusOne()
         {

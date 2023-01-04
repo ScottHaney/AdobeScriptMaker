@@ -93,8 +93,6 @@ namespace MathRenderingDescriptions.Plot.How
 
         public PointF[] GetPoints()
         {
-            var numRadians = _description.EndAngle - _description.StartAngle;
-
             var points = new List<PointF>();
             points.Add(_description.PlotLayoutDescription.CreateFunctionPoint(_description, _description.StartAngle));
 
