@@ -10,6 +10,7 @@ using MathRenderingDescriptions.Plot.How;
 using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
+using MathRenderingDescriptions.Plot.When;
 using MatrixLayout.ExpressionLayout.LayoutResults;
 using NUnit.Framework;
 using RenderingDescriptions;

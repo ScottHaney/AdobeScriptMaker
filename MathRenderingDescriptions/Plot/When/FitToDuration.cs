@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MathRenderingDescriptions.Plot.What.RiemannSums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MathRenderingDescriptions.Plot.What.RiemannSums
+namespace MathRenderingDescriptions.Plot.When
 {
     public class FitToDuration : ITimingDescription
     {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MoreLinq;
+using MathRenderingDescriptions.Plot.When;
 
 namespace MathRenderingDescriptions.Plot.What.RiemannSums
 {

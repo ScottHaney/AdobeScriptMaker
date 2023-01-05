@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MathRenderingDescriptions.Plot.What.RiemannSums
+namespace MathRenderingDescriptions.Plot.When
 {
     public interface ITimingDescription
     {

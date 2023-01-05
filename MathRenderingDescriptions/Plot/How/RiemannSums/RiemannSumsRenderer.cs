@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using MoreLinq;
 using RenderingDescriptions.Timing;
+using MathRenderingDescriptions.Plot.When;
 
 namespace MathRenderingDescriptions.Plot.How.RiemannSums
 {

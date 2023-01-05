@@ -1,6 +1,7 @@
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
+using MathRenderingDescriptions.Plot.When;
 using NUnit.Framework;
 using System.Drawing;
 
