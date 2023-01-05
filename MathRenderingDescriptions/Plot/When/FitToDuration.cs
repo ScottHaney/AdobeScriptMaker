@@ -1,4 +1,5 @@
-﻿using MathRenderingDescriptions.Plot.What.RiemannSums;
+﻿using MathRenderingDescriptions.Plot.What.Helpers;
+using MathRenderingDescriptions.Plot.What.RiemannSums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,11 +8,11 @@ namespace MathRenderingDescriptions.Plot.When
 {
     public class FitToDuration : ITimingDescription
     {
-        private readonly ISumsProvider _sumsProvider;
+        private readonly IIntervalSegmentation _sumsProvider;
 
         public double TransitionPercentage = 0.18;
 
-        public FitToDuration(ISumsProvider sumsProvider)
+        public FitToDuration(IIntervalSegmentation sumsProvider)
         {
             _sumsProvider = sumsProvider;
         }

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MathRenderingDescriptions.Plot.What.RiemannSums
+namespace MathRenderingDescriptions.Plot.What.Helpers
 {
-    public class SumsProvider : ISumsProvider
+    public class IntervalSegmentation : IIntervalSegmentation
     {
         private readonly int[] _sums;
         public int NumSums => _sums.Length;
 
-        public SumsProvider(params int[] sums)
+        public IntervalSegmentation(params int[] sums)
         {
             _sums = sums ?? Array.Empty<int>();
         }

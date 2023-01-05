@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using MoreLinq;
 using MathRenderingDescriptions.Plot.When;
+using MathRenderingDescriptions.Plot.What.Helpers;
 
 namespace MathRenderingDescriptions.Plot.What.RiemannSums
 {
@@ -11,12 +12,12 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
     {
         public readonly FunctionRenderingDescription FunctionDescription;
         public readonly ITimingDescription TimingDescription;
-        public readonly ISumsProvider SumsProvider;
+        public readonly IIntervalSegmentation SumsProvider;
 
         public RiemannSumsRenderingDescription(string uniqueName,
             FunctionRenderingDescription functionDescription,
             ITimingDescription timingDescription,
-            ISumsProvider sumsProvider)
+            IIntervalSegmentation sumsProvider)
             : base(uniqueName)
         {
             FunctionDescription = functionDescription;

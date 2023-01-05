@@ -9,6 +9,7 @@ using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.How;
 using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot.What.Helpers;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MathRenderingDescriptions.Plot.When;
 using MatrixLayout.ExpressionLayout.LayoutResults;
@@ -72,7 +73,7 @@ namespace AdobeScriptMaker.Core.Tests
 
             var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(6), new AbsoluteTiming(4));
 
-            var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
+            var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16);
             var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
                 function,
                 new FitToDuration(sumsProvider),
@@ -146,7 +147,7 @@ namespace AdobeScriptMaker.Core.Tests
 
             var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(5));
 
-            var sumsProvider = new SumsProvider(1, 2, 4, 8, 16);
+            var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16);
             var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
                 function,
                 new FitToDuration(sumsProvider),

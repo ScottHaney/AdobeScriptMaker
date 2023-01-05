@@ -1,5 +1,6 @@
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot.What.Helpers;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MathRenderingDescriptions.Plot.When;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace MathRenderingDescriptions.Tests
                 plotLayoutDescription,
                 x => x);
 
-            var sumsProvider = new SumsProvider(1);
+            var sumsProvider = new IntervalSegmentation(1);
             var riemannSums = new RiemannSumsRenderingDescription("SumsDesc",
                 function,
                 new FitToDuration(sumsProvider),
