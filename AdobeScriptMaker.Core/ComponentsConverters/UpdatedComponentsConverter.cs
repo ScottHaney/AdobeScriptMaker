@@ -12,6 +12,8 @@ using AdobeComponents.Components.Layers;
 using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using RenderingDescriptions.Timing;
+using MathRenderingDescriptions.Plot.What.ArcLength;
+using MathRenderingDescriptions.Plot.How.ArcLength;
 
 namespace AdobeScriptMaker.Core.ComponentsConverters
 {
@@ -69,6 +71,10 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
                 {
                     results.Add(RenderRiemannSums(rs, renderingDescription.Timing));
                 }
+                else if (renderingDescription.What is ArcLengthRenderingDescription arc)
+                {
+                    results.Add(RenderArcLength(arc, renderingDescription.Timing));
+                }
                 else if (renderingDescription.What is DataTableRenderingDescription dt)
                 {
                     results.Add(RenderDataTable(dt, renderingDescription.Timing));
@@ -121,6 +127,13 @@ namespace AdobeScriptMaker.Core.ComponentsConverters
             ITimingForRender timing)
         {
             var renderer = new RiemannSumsRenderer(rs);
+            return renderer.Render(timing);
+        }
+
+        private RenderedComponents RenderArcLength(ArcLengthRenderingDescription arc,
+            ITimingForRender timing)
+        {
+            var renderer = new ArcLengthRenderer(arc);
             return renderer.Render(timing);
         }
 
