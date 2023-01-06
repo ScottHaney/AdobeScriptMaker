@@ -26,5 +26,8 @@ namespace MathRenderingDescriptions.Plot.What.ArcLength
             TimingDescription = timingDescription;
             IntervalSegmentation = intervalSegmentation;
         }
+
+        public string GetLinesColorControlName()
+            => $"{UniqueName} - lines color";
     }
 }
