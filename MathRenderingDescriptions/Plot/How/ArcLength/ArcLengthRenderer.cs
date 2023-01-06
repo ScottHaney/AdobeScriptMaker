@@ -98,9 +98,7 @@ namespace MathRenderingDescriptions.Plot.How.ArcLength
         {
             foreach (var line in lines)
             {
-                var centerPoint = _description.FunctionDescription.PlotLayoutDescription.ToVisualPoint(line.GetCenterPoint());
-                var leftPoint = _description.FunctionDescription.PlotLayoutDescription.ToVisualPoint(line.LeftPoint);
-                var rightPoint = _description.FunctionDescription.PlotLayoutDescription.ToVisualPoint(line.RightPoint);
+                var centerPoint = line.GetCenterPoint();
 
                 var startPoints = new PointF[]
                 {
@@ -110,8 +108,8 @@ namespace MathRenderingDescriptions.Plot.How.ArcLength
 
                 var endPoints = new PointF[]
                 {
-                    leftPoint,
-                    rightPoint
+                    line.LeftPoint,
+                    line.RightPoint
                 };
 
                 yield return new TimedAdobeLayerComponent(

@@ -9,6 +9,7 @@ using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.How;
 using MathRenderingDescriptions.Plot.How.RiemannSums;
 using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot.What.ArcLength;
 using MathRenderingDescriptions.Plot.What.Helpers;
 using MathRenderingDescriptions.Plot.What.RiemannSums;
 using MathRenderingDescriptions.Plot.When;
@@ -194,6 +195,50 @@ namespace AdobeScriptMaker.Core.Tests
 
             var converter = new UpdatedComponentsConverter();
             var converted = converter.Convert(new List<RenderingDescription>() { aufToRender, rsToRender, dtToRender });
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted, sharedControlValues);
+        }
+
+        [Test]
+        public void CreatesArcLengthAnimation()
+        {
+            var plotLayoutDescription = new PlotLayoutDescription(
+                new PlotAxesLayoutDescription(
+                    new PlotAxisLayoutDescription(600, 0, 5),
+                    new PlotAxisLayoutDescription(600, 0, 5)), new PointF(50, 100));
+
+            var axes = new AxesRenderingDescription("Axes",
+                plotLayoutDescription);
+
+            var function = new FunctionRenderingDescription("Function",
+                plotLayoutDescription,
+                x => Math.Sin(2 * x));
+
+            var derivative = new FunctionRenderingDescription("Derivative",
+                plotLayoutDescription,
+                x => 2 * Math.Cos(2 * x));
+
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(5));
+
+            var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16, 32, 64);
+            var riemannSums = new ArcLengthRenderingDescription("ArcLength",
+                function,
+                derivative,
+                new FitToDuration(sumsProvider),
+                sumsProvider);
+
+            var compositionDuration = new AbsoluteTiming(30);
+
+            var sharedControlValues = new SharedControlValue[]
+            {
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+            };
+
+            var arcLengthToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
+
+            var converter = new UpdatedComponentsConverter();
+            var converted = converter.Convert(new List<RenderingDescription>() { arcLengthToRender });
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted, sharedControlValues);
