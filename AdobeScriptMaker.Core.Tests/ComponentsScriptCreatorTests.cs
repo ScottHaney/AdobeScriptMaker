@@ -270,6 +270,77 @@ namespace AdobeScriptMaker.Core.Tests
             var script = scriptCreator.Visit(converted);
         }
 
+        [Test]
+        public void CreateDerivateAsArcLengthVideoAnimation()
+        {
+            var plotLayoutDescription = new PlotLayoutDescription(
+                new PlotAxesLayoutDescription(
+                    new PlotAxisLayoutDescription(850, 0, 5),
+                    new PlotAxisLayoutDescription(850, 0, 5)), new PointF(50, 300));
+
+            var axes = new AxesRenderingDescription("Axes",
+                plotLayoutDescription);
+
+            var function = new FunctionRenderingDescription("Function",
+                plotLayoutDescription,
+                x => Math.Sin(x) + 3);
+
+            var areaUnderFunctionShape = new AreaUnderFunctionShapeRenderingDescription("AUC",
+                function);
+
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(5));
+
+            var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16);
+            var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
+                function,
+                new FitToDuration(sumsProvider),
+                sumsProvider);
+
+            var riemannSumsMetadata = riemannSums.GetMetadata();
+            var riemannSumsTimes = riemannSums.TimingDescription.GetTimings(whenToRenderRiemannSums.WhenToStart.Time, whenToRenderRiemannSums.RenderDuration.Time);
+
+            var dataTableData = new DataTableData(new List<List<double>>()
+            {
+                riemannSumsMetadata.SumsDetails.Select(x => (double)x.NumSums).ToList(),
+                riemannSumsMetadata.SumsDetails.Select(x => x.TotalArea).ToList()
+            });
+
+            var plotBounds = plotLayoutDescription.GetBounds();
+            var dataTable = new DataTableRenderingDescription("DataTable",
+                dataTableData)
+            {
+                NumericToStringFormats = new[] { "N0", "N1" },
+                EntryTextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels),
+                RowHeaderTextSettings = new TextSettings("Graphie Light", 50, TextSettingsFontSizeUnit.Pixels),
+                RowHeaderValues = new List<string>() { "Rectangles", "Area" },
+                TopLeft = new PointF(plotBounds.X, plotBounds.Y + plotBounds.Height + 200)
+            };
+
+            var compositionDuration = new AbsoluteTiming(30);
+
+            var dtTimingForRender = new DataTableTimingForRender(whenToRenderRiemannSums.WhenToStart,
+                new AbsoluteTiming(15),
+                riemannSumsTimes
+                    .Select(x => new AbsoluteTiming(x.SumIsInPlaceTime))
+                    .ToArray());
+
+            var sharedControlValues = new SharedControlValue[]
+            {
+                new SharedControlValue(riemannSums.GetScribbleColorControlName(), "[0, 0, 0]"),
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+            };
+
+            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(3.2), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            var rsToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
+            var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
+
+            var converter = new UpdatedComponentsConverter();
+            var converted = converter.Convert(new List<RenderingDescription>() { aufToRender, rsToRender });
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted, sharedControlValues);
+        }
+
         /*[Test]
         public void CreatesPlotOfXSquaredPlusOne()
         {
