@@ -126,6 +126,11 @@ var {strokeVar} = {vectorsGroupVar}.addProperty('ADBE Vector Graphic - Stroke');
             else
                 scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Color').setValue([0, 0, 0]);");
 
+            if (path.StrokeWidth is AdobeSliderValue sliderVal)
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Width').setValue({sliderVal.Value});");
+            else
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{strokeVar}.property('ADBE Vector Stroke Width').expression = \"{path.StrokeWidth.GetScriptText()}\";");
+
             _scriptBuilder.AddText(scriptText);
         }
 

@@ -29,5 +29,8 @@ namespace MathRenderingDescriptions.Plot.What.ArcLength
 
         public string GetLinesColorControlName()
             => $"{UniqueName} - lines color";
+
+        public string GetLinesStrokeWidthControlName()
+            => $"{UniqueName} - stroke width";
     }
 }

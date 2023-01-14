@@ -374,7 +374,8 @@ namespace AdobeScriptMaker.Core.Tests
 
             var sharedControlValues = new SharedControlValue[]
             {
-                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]"),
+                new SharedControlValue(riemannSums.GetLinesStrokeWidthControlName(), "2") { PropertyText = "('Slider')"}
             };
 
             var arcLengthToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);

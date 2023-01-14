@@ -23,6 +23,8 @@ namespace AdobeComponents.Components
 
         public AdobeTrimPathsEffect TrimPathsEffect { get; set; }
 
+        public IAdobeSliderValue StrokeWidth { get; set; } = new AdobeSliderValue(2);
+
         public AdobePathComponent(IAnimatedValue<PointF[]> points)
         {
             Points = points;

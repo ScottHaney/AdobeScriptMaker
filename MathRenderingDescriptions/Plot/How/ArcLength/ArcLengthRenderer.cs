@@ -58,6 +58,9 @@ namespace MathRenderingDescriptions.Plot.How.ArcLength
             var linesColorControl = new AdobeSharedColorControl(_description.GetLinesColorControlName());
             components.Add(new TimedAdobeLayerComponent(linesColorControl, timing.WhenToStart.Time, currentTime));
 
+            var strokeWidthControl = new AdobeSliderControl() { Name = _description.GetLinesStrokeWidthControlName() };
+            components.Add(new TimedAdobeLayerComponent(strokeWidthControl, timing.WhenToStart.Time, currentTime));
+
             return new RenderedComponents(components);
         }
 
@@ -119,7 +122,8 @@ namespace MathRenderingDescriptions.Plot.How.ArcLength
                             new ValueAtTime<PointF[]>(endPoints, new AnimationTime(timingResult.SumIsInPlaceTime))))
                     {
                         IsClosed = true,
-                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
+                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName),
+                        StrokeWidth = new AdobeSliderControlRef(0, "thisComp", "Shared Controls Layer", _description.GetLinesStrokeWidthControlName())
                     }),
                     timingResult.EntranceTime,
                     timingResult.EndTime);
@@ -155,7 +159,8 @@ namespace MathRenderingDescriptions.Plot.How.ArcLength
                                 new ValueAtTime<PointF[]>(newLine.GetPoints(), new AnimationTime(timingResult.SumIsInPlaceTime))))
                         {
                             IsClosed = true,
-                            ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName)
+                            ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", colorControlName),
+                            StrokeWidth = new AdobeSliderControlRef(0, "thisComp", "Shared Controls Layer", _description.GetLinesStrokeWidthControlName())
                         }),
                         timingResult.EntranceTime,
                         timingResult.EndTime);
