@@ -271,12 +271,12 @@ namespace AdobeScriptMaker.Core.Tests
         }
 
         [Test]
-        public void CreateDerivateAsArcLengthVideoAnimation()
+        public void CreateDerivativeAsArcLengthVideoRiemannSumsAnimation()
         {
             var plotLayoutDescription = new PlotLayoutDescription(
                 new PlotAxesLayoutDescription(
-                    new PlotAxisLayoutDescription(850, 0, 5),
-                    new PlotAxisLayoutDescription(850, 0, 5)), new PointF(50, 300));
+                    new PlotAxisLayoutDescription(600, 0, 5),
+                    new PlotAxisLayoutDescription(600, 0, 5)), new PointF(50, 300));
 
             var axes = new AxesRenderingDescription("Axes",
                 plotLayoutDescription);
@@ -288,7 +288,7 @@ namespace AdobeScriptMaker.Core.Tests
             var areaUnderFunctionShape = new AreaUnderFunctionShapeRenderingDescription("AUC",
                 function);
 
-            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(5), new AbsoluteTiming(5));
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(1), new AbsoluteTiming(3));
 
             var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16);
             var riemannSums = new RiemannSumsRenderingDescription("RiemannSums",
@@ -327,15 +327,61 @@ namespace AdobeScriptMaker.Core.Tests
             var sharedControlValues = new SharedControlValue[]
             {
                 new SharedControlValue(riemannSums.GetScribbleColorControlName(), "[0, 0, 0]"),
-                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]"),
+                new SharedControlValue(riemannSums.GetWigglesPerSecondControlName(), "0") { PropertyText = "('Slider')"}
             };
 
-            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(3.2), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
+            var aufToRender = new RenderingDescription(areaUnderFunctionShape, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5), ExitAnimationDuration = new AbsoluteTiming(0.5) }, null);
             var rsToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
             var dtToRender = new RenderingDescription(dataTable, dtTimingForRender, null);
 
             var converter = new UpdatedComponentsConverter();
             var converted = converter.Convert(new List<RenderingDescription>() { aufToRender, rsToRender });
+
+            var scriptCreator = new ComponentsScriptCreator();
+            var script = scriptCreator.Visit(converted, sharedControlValues);
+        }
+
+        [Test]
+        public void CreatesDerivativeAsArcLengthDerivativesAnimation()
+        {
+            var plotLayoutDescription = new PlotLayoutDescription(
+                new PlotAxesLayoutDescription(
+                    new PlotAxisLayoutDescription(600, 0, 5),
+                    new PlotAxisLayoutDescription(600, 0, 5)), new PointF(50, 100));
+
+            var axes = new AxesRenderingDescription("Axes",
+                plotLayoutDescription);
+
+            var function = new FunctionRenderingDescription("Function",
+                plotLayoutDescription,
+                x => Math.Sin(x) + 3);
+
+            var derivative = new FunctionRenderingDescription("Derivative",
+                plotLayoutDescription,
+                x => Math.Cos(x));
+
+            var whenToRenderRiemannSums = new TimingForRender(new AbsoluteTiming(1), new AbsoluteTiming(3));
+
+            var sumsProvider = new IntervalSegmentation(1, 2, 4, 8, 16);
+            var riemannSums = new ArcLengthRenderingDescription("ArcLength",
+                function,
+                derivative,
+                new FitToDuration(sumsProvider),
+                sumsProvider);
+
+            var compositionDuration = new AbsoluteTiming(30);
+
+            var sharedControlValues = new SharedControlValue[]
+            {
+                new SharedControlValue(riemannSums.GetLinesColorControlName(), "[0, 0, 0]")
+            };
+
+            var arcLengthToRender = new RenderingDescription(riemannSums, whenToRenderRiemannSums, null);
+            var functionToRender = new RenderingDescription(function, new TimingForRender(new AbsoluteTiming(0), compositionDuration) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
+
+            var converter = new UpdatedComponentsConverter();
+            var converted = converter.Convert(new List<RenderingDescription>() { arcLengthToRender, functionToRender });
 
             var scriptCreator = new ComponentsScriptCreator();
             var script = scriptCreator.Visit(converted, sharedControlValues);

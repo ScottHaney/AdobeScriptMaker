@@ -62,8 +62,10 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
                     var scribble = new AdobeScribbleEffect(maskName)
                     {
-                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetScribbleColorControlName())
+                        ColorValue = new AdobeColorControlRef("thisComp", "Shared Controls Layer", _description.GetScribbleColorControlName()),
+                        WigglesPerSecond = new AdobeSliderControlRef(0, "thisComp", "Shared Controls Layer", _description.GetWigglesPerSecondControlName())
                     };
+
                     foreach (var pathComponent in pathGroup.Paths)
                         pathComponent.ScribbleEffect = scribble;
 
@@ -81,6 +83,9 @@ namespace MathRenderingDescriptions.Plot.How.RiemannSums
 
             var linesColorControl = new AdobeSharedColorControl(_description.GetLinesColorControlName());
             components.Add(new TimedAdobeLayerComponent(linesColorControl, timing.WhenToStart.Time, currentTime));
+
+            var wigglesControl = new AdobeSliderControl() { Name = _description.GetWigglesPerSecondControlName() };
+            components.Add(new TimedAdobeLayerComponent(wigglesControl, timing.WhenToStart.Time, currentTime));
 
             return new RenderedComponents(components);
         }

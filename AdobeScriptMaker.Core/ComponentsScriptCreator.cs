@@ -199,6 +199,15 @@ var {maskShapeVar} = {maskVar}.property('maskShape');
             scriptText = AddSetPropertyScript($"{scribbleVar}.property('Start')", scriptText, scribbleEffect.Start);
             scriptText = AddSetPropertyScript($"{scribbleVar}.property('End')", scriptText, scribbleEffect.End);
 
+            if (scribbleEffect.WigglesPerSecond is AdobeSliderValue wigglesSliderVal)
+            {
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.property('Wiggles/Second').setValue({wigglesSliderVal.Value});");
+            }
+            else
+            {
+                scriptText = string.Join(Environment.NewLine, scriptText, $"{scribbleVar}.property('Wiggles/Second').expression = \"{scribbleEffect.WigglesPerSecond.GetScriptText()}\";");
+            }
+
             _scriptBuilder.AddText(scriptText);
         }
 
@@ -353,7 +362,7 @@ var {textDocVar} = {sourceTextVar}.value;
                 var sharedControlsValues = "";
                 foreach (var sharedControlValue in sharedControlValues)
                 {
-                    sharedControlsValues = String.Join(Environment.NewLine, sharedControlsValues, $"{_sharedControlsLayerVar}.Effects.property('{sharedControlValue.ControlName}').Color.setValue({sharedControlValue.Value});");
+                    sharedControlsValues = String.Join(Environment.NewLine, sharedControlsValues, $"{_sharedControlsLayerVar}.Effects.property('{sharedControlValue.ControlName}'){sharedControlValue.PropertyText}.setValue({sharedControlValue.Value});");
                 }
 
                 scriptText = String.Join(Environment.NewLine, sharedControlsLayerScriptText, scriptText, sharedControlsValues);
@@ -375,6 +384,8 @@ var {textDocVar} = {sourceTextVar}.value;
     {
         public readonly string ControlName;
         public readonly string Value;
+
+        public string PropertyText = ".Color";
 
         public SharedControlValue(string controlName,
             string value)

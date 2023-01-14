@@ -18,6 +18,8 @@ namespace AdobeComponents.Effects
 
         public IAnimatedValue<double> End { get; set; }
 
+        public IAdobeSliderValue WigglesPerSecond { get; set; } = new AdobeSliderValue(10);
+
         public AdobeScribbleEffect(string maskName)
         {
             MaskName = maskName;

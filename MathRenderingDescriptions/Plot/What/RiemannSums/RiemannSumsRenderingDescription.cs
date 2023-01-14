@@ -44,6 +44,9 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
         public string GetLinesColorControlName()
             => $"{UniqueName} - lines color";
 
+        public string GetWigglesPerSecondControlName()
+            => $"{UniqueName} - wiggles";
+
         private double GetArea(int numRects)
         {
             double area = 0;
