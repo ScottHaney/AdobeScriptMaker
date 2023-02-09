@@ -73,24 +73,34 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
     public interface IDigitCreator
     {
-        void CreateDigit();
+        List<PointF> Carve();
     }
 
     public class DigitSculpture : IDigitCreator
     {
-        public void CreateDigit()
+        private readonly RectangleF _marble;
+        private readonly IDigitCorner _cornerDescription;
+
+        public DigitSculpture(RectangleF marble,
+            IDigitCorner cornerDescription)
         {
-            throw new NotImplementedException();
+            _marble = marble;
+            _cornerDescription = cornerDescription;
         }
-    }
 
-    public class DigitMarble
-    {
-        private readonly RectangleF _size;
-
-        public DigitMarble(RectangleF size)
+        public List<PointF> Carve()
         {
-            _size = size;
+            var corners = new[] { DigitCornerName.TopLeft, DigitCornerName.TopRight, DigitCornerName.BottomRight, DigitCornerName.BottomLeft };
+
+            var points = new List<PointF>();
+            foreach (var corner in corners)
+            {
+                var trianglePoints = _cornerDescription.GetPoints(corner, _marble);
+                points.Add(trianglePoints.First());
+                points.Add(trianglePoints.Last());
+            }
+
+            return points;
         }
     }
 
