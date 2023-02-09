@@ -19,15 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectRendering", "DirectRe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathDescriptions", "MathDescriptions\MathDescriptions.csproj", "{96E98EDB-A885-48F8-9AFD-B9EB120589DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingDescriptions", "RenderingDescriptions\RenderingDescriptions.csproj", "{798304A8-62E6-4E7E-A570-A03F36F44F0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenderingDescriptions", "RenderingDescriptions\RenderingDescriptions.csproj", "{798304A8-62E6-4E7E-A570-A03F36F44F0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathRenderingDescriptions", "MathRenderingDescriptions\MathRenderingDescriptions.csproj", "{6B70A013-2B40-4495-8925-E7BF3FFF2667}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathRenderingDescriptions", "MathRenderingDescriptions\MathRenderingDescriptions.csproj", "{6B70A013-2B40-4495-8925-E7BF3FFF2667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeComponents", "AdobeComponents\AdobeComponents.csproj", "{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeComponents", "AdobeComponents\AdobeComponents.csproj", "{89BE9FBB-EF22-49A3-82C3-27E598CF8A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VFXComponents", "RenderingPrimitives\VFXComponents.csproj", "{581C5775-78B5-47E2-8C0E-DF84E80642FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VFXComponents", "RenderingPrimitives\VFXComponents.csproj", "{581C5775-78B5-47E2-8C0E-DF84E80642FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathRenderingDescriptions.Tests", "MathRenderingDescriptions.Tests\MathRenderingDescriptions.Tests.csproj", "{D48CDED6-FDAC-44E0-BEC6-FB6ADE78CCB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathRenderingDescriptions.Tests", "MathRenderingDescriptions.Tests\MathRenderingDescriptions.Tests.csproj", "{D48CDED6-FDAC-44E0-BEC6-FB6ADE78CCB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IllustratorRenderingDescriptions", "IllustratorRenderingDescriptions\IllustratorRenderingDescriptions.csproj", "{EBFBB24A-00F9-4E78-A98B-D775425C6B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IllustratorRenderingDescriptions.Tests", "IllustratorRenderingDescriptions.Tests\IllustratorRenderingDescriptions.Tests.csproj", "{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{D48CDED6-FDAC-44E0-BEC6-FB6ADE78CCB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D48CDED6-FDAC-44E0-BEC6-FB6ADE78CCB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D48CDED6-FDAC-44E0-BEC6-FB6ADE78CCB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBFBB24A-00F9-4E78-A98B-D775425C6B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBFBB24A-00F9-4E78-A98B-D775425C6B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBFBB24A-00F9-4E78-A98B-D775425C6B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBFBB24A-00F9-4E78-A98B-D775425C6B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
