@@ -154,6 +154,20 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     intersectionPoint
                 };
             }
+            else if (cornerName == DigitCornerName.BottomRight)
+            {
+                var bottomRight = outerBounds.BottomRight();
+
+                var refPoint = new PointF(bottomRight.X - xLength, bottomRight.Y);
+                var intersectionPoint = new PointF(bottomRight.X, bottomRight.Y - xLength * slope);
+
+                return new PointF[]
+                {
+                    intersectionPoint,
+                    bottomRight,
+                    refPoint
+                };
+            }
             else
             {
                 throw new NotImplementedException();

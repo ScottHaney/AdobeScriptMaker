@@ -27,5 +27,16 @@ namespace IllustratorRenderingDescriptions.Tests
 
             CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, topRightPoints);
         }
+
+        [Test]
+        public void Creates_Bottom_Right_Corner_In_A_Square_At_45_Degrees()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(0.5f, 45);
+
+            var bottomRightPoints = corner.GetPoints(DigitCornerName.BottomRight, digitBoundingBox);
+
+            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, bottomRightPoints);
+        }
     }
 }
