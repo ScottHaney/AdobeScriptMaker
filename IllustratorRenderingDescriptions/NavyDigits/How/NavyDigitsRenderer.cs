@@ -139,6 +139,21 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     refPoint
                 };
             }
+            else if (cornerName == DigitCornerName.TopRight)
+            {
+                var topRight = outerBounds.TopRight();
+
+                var refPoint = new PointF(topRight.X - xLength, topRight.Y);
+                var intersectionPoint = new PointF(topRight.X, topRight.Y + xLength * slope);
+
+
+                return new PointF[]
+                {
+                    refPoint,
+                    topRight,
+                    intersectionPoint
+                };
+            }
             else
             {
                 throw new NotImplementedException();
