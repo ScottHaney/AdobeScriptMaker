@@ -168,9 +168,23 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     refPoint
                 };
             }
+            else if (cornerName == DigitCornerName.BottomLeft)
+            {
+                var bottomLeft = outerBounds.BottomLeft();
+
+                var refPoint = new PointF(bottomLeft.X + xLength, bottomLeft.Y);
+                var intersectionPoint = new PointF(bottomLeft.X, bottomLeft.Y - xLength * slope);
+
+                return new PointF[]
+                {
+                    refPoint,
+                    bottomLeft,
+                    intersectionPoint
+                };
+            }
             else
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
     }
