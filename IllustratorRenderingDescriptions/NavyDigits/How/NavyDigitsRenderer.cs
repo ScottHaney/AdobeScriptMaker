@@ -136,7 +136,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (name == DigitHoleName.Bottom)
             {
-                throw new NotImplementedException();
+                var lowerRect = new RectangleF(new PointF(outerBounds.Left, outerBounds.Top + outerBounds.Height / 2), new SizeF(outerBounds.Width, outerBounds.Height / 2));
+
+                return new[]
+                {
+                    new PointF(outerBounds.Left + digitLineWidth, lowerRect.Top + digitLineWidth / 2),
+                    new PointF(outerBounds.Right - digitLineWidth, lowerRect.Top + digitLineWidth / 2),
+                    new PointF(outerBounds.Right - digitLineWidth, lowerRect.Bottom - digitLineWidth),
+                    new PointF(outerBounds.Left + digitLineWidth, lowerRect.Bottom - digitLineWidth)
+                };
             }
             else
                 throw new NotSupportedException();

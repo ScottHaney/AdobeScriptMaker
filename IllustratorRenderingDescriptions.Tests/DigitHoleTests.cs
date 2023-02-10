@@ -27,5 +27,24 @@ namespace IllustratorRenderingDescriptions.Tests
 
             CollectionAssert.AreEqual(expectedResult, actualResult);
         }
+
+        [Test]
+        public void Removes_The_Bottom_Hole()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var hole = new DigitHole(0.1f);
+
+            var actualResult = hole.GetPoints(DigitHoleName.Bottom, digitBoundingBox);
+
+            var expectedResult = new[]
+            {
+                new PointF(10, 55),
+                new PointF(90, 55),
+                new PointF(90, 90),
+                new PointF(10, 90)
+            };
+
+            CollectionAssert.AreEqual(expectedResult, actualResult);
+        }
     }
 }
