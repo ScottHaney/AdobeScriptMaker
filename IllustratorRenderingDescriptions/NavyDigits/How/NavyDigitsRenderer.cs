@@ -157,6 +157,35 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         Bottom
     }
 
+    public interface IDigitCrossBar
+    {
+        PointF[] GetPoints(RectangleF outerBounds);
+    }
+
+    public class DigitCrossBar : IDigitCrossBar
+    {
+        private readonly float _lineWidthPercentage;
+
+        public DigitCrossBar(float lineWidthPercentage)
+        {
+            _lineWidthPercentage = lineWidthPercentage;
+        }
+
+        public PointF[] GetPoints(RectangleF outerBounds)
+        {
+            var lineHeight = _lineWidthPercentage * outerBounds.Width;
+            var middleY = outerBounds.Top + outerBounds.Height / 2;
+
+            return new[]
+            {
+                new PointF(outerBounds.Left + lineHeight, middleY - lineHeight / 2),
+                new PointF(outerBounds.Right - lineHeight, middleY - lineHeight / 2),
+                new PointF(outerBounds.Right - lineHeight, middleY + lineHeight / 2),
+                new PointF(outerBounds.Left + lineHeight, middleY + lineHeight / 2)
+            };
+        }
+    }
+
     public interface IDigitCorner
     {
         PointF[] GetPoints(DigitCornerName cornerName, RectangleF outerBounds);
