@@ -157,6 +157,60 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         Bottom
     }
 
+    public interface IDigitTriangleInset
+    {
+        PointF[] GetPoints(DigitTriangleInsetName name, RectangleF outerBounds);
+    }
+
+    public class DigitTriangleInset : IDigitTriangleInset
+    {
+        private readonly float _widthPercentage;
+        private readonly float _angle;
+
+        public DigitTriangleInset(float widthPercentage,
+            float angle)
+        {
+            _widthPercentage = widthPercentage;
+            _angle = angle;
+        }
+
+        public PointF[] GetPoints(DigitTriangleInsetName name, RectangleF outerBounds)
+        {
+            var insetLength = _widthPercentage * outerBounds.Width;
+            var slope = Math.Tan(_angle * (Math.PI / 180));
+
+            var sidesYOffset = (float)(slope * insetLength);
+            var midpointY = outerBounds.Top + outerBounds.Height / 2;
+
+            if (name == DigitTriangleInsetName.Left)
+            {
+                return new[]
+                {
+                    new PointF(outerBounds.Left, midpointY + sidesYOffset),
+                    new PointF(outerBounds.Left + insetLength, midpointY),
+                    new PointF(outerBounds.Left, midpointY - sidesYOffset)
+                };
+            }
+            else if (name == DigitTriangleInsetName.Right)
+            {
+                return new[]
+                {
+                    new PointF(outerBounds.Right, midpointY - sidesYOffset),
+                    new PointF(outerBounds.Right - insetLength, midpointY),
+                    new PointF(outerBounds.Right, midpointY + sidesYOffset)
+                };
+            }
+            else
+                throw new NotSupportedException();
+        }
+    }
+
+    public enum DigitTriangleInsetName
+    {
+        Left,
+        Right
+    }
+
     public interface IDigitCrossBar
     {
         PointF[] GetPoints(RectangleF outerBounds);
