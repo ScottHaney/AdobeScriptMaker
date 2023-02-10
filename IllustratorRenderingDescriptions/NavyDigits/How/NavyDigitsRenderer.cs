@@ -104,6 +104,51 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         }
     }
 
+    public interface IDigitHole
+    {
+        PointF[] GetPoints(DigitHoleName name, RectangleF outerBounds);
+    }
+
+    public class DigitHole : IDigitHole
+    {
+        private readonly float _widthPaddingPercentage;
+
+        public DigitHole(float widthPaddingPercentage)
+        {
+            _widthPaddingPercentage = widthPaddingPercentage;
+        }
+
+        public PointF[] GetPoints(DigitHoleName name, RectangleF outerBounds)
+        {
+            var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
+
+            if (name == DigitHoleName.Top)
+            {
+                var upperRect = new RectangleF(outerBounds.TopLeft(), new SizeF(outerBounds.Width, outerBounds.Height / 2));
+
+                return new[]
+                {
+                    new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + digitLineWidth),
+                    new PointF(outerBounds.Right - digitLineWidth, outerBounds.Top + digitLineWidth),
+                    new PointF(outerBounds.Right - digitLineWidth, upperRect.Bottom - digitLineWidth / 2),
+                    new PointF(outerBounds.Left + digitLineWidth, upperRect.Bottom - digitLineWidth / 2)
+                };
+            }
+            else if (name == DigitHoleName.Bottom)
+            {
+                throw new NotImplementedException();
+            }
+            else
+                throw new NotSupportedException();
+        }
+    }
+
+    public enum DigitHoleName
+    {
+        Top,
+        Bottom
+    }
+
     public interface IDigitCorner
     {
         PointF[] GetPoints(DigitCornerName cornerName, RectangleF outerBounds);
