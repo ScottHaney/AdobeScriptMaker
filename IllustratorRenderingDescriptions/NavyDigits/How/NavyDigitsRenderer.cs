@@ -39,9 +39,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
-            if (digit == 0)
-            {
-                var sculpture = new DigitSculpture(boundingBox,
+            //if (digit == 0)
+            //{
+                /*var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
                     new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
                     new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45),
@@ -51,17 +51,19 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCrossBar(0.2f))
                 { Id = digit.ToString() };
 
-                return sculpture.Carve();
-            }
-            else if (digit == 2)
+                return sculpture.Carve();*/
+            //}
+            if (digit == 2)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
                     new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
-                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true },
-                    new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true }, 
                     new DigitHole(DigitHoleName.Top, 0.2f),
-                    new DigitHole(DigitHoleName.Bottom, 0.2f))
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.BottomRight, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f),
+                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true },
+                    new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true })
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
@@ -147,6 +149,71 @@ app.executeMenuCommand(""ungroup"");");
     public interface IDigitChisleAction
     {
         PointF[] GetPoints(RectangleF outerBounds);
+    }
+
+    public class DigitVerticalBar : IDigitChisleAction
+    {
+        private readonly DigitVerticalBarName _name;
+        private readonly float _widthPaddingPercentage;
+
+        public DigitVerticalBar(DigitVerticalBarName name,
+            float widthPaddingPercentage)
+        {
+            _name = name;
+            _widthPaddingPercentage = widthPaddingPercentage;
+        }
+
+        public PointF[] GetPoints(RectangleF outerBounds)
+        {
+            var dimension = _widthPaddingPercentage * outerBounds.Width;
+
+            if (_name == DigitVerticalBarName.TopLeft)
+            {
+                var topLeft = new PointF(0, dimension);
+                var bottomRight = new PointF(dimension, outerBounds.Height / 2 - dimension / 2);
+
+                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                return rect.ToPathPoints();
+            }
+            else if (_name == DigitVerticalBarName.TopRight)
+            {
+                var topLeft = new PointF(outerBounds.Width - dimension, dimension);
+                var bottomRight = new PointF(outerBounds.Width, outerBounds.Height / 2 - dimension / 2);
+
+                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                return rect.ToPathPoints();
+            }
+            else if (_name == DigitVerticalBarName.BottomRight)
+            {
+                var topLeft = new PointF(outerBounds.Width - dimension, outerBounds.Height / 2 + dimension / 2);
+                var bottomRight = new PointF(outerBounds.Width, outerBounds.Height - dimension);
+
+                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                return rect.ToPathPoints();
+            }
+            else if (_name == DigitVerticalBarName.BottomLeft)
+            {
+                var topLeft = new PointF(0, outerBounds.Height / 2 + dimension / 2);
+                var bottomRight = new PointF(dimension, outerBounds.Height - dimension);
+
+                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                return rect.ToPathPoints();
+            }
+            else
+                throw new NotSupportedException();
+        }
+    }
+
+    public enum DigitVerticalBarName
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
     }
 
     public class DigitHole : IDigitChisleAction
