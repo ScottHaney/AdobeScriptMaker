@@ -75,19 +75,33 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
     public interface IDigitCreator
     {
-        List<PointF> Carve();
+        string Carve();
     }
 
     public class DigitSculpture : IDigitCreator
     {
         private readonly RectangleF _marble;
+        private readonly IDigitChisleAction[] _chiselActions;
 
-        public DigitSculpture(RectangleF marble)
+        public DigitSculpture(RectangleF marble,
+            params IDigitChisleAction[] chiselActions)
         {
             _marble = marble;
+            _chiselActions = chiselActions ?? Array.Empty<IDigitChisleAction>();
         }
 
-        public List<PointF> Carve()
+        public string Carve()
+        {
+            var result = new List<PointF[]>();
+            foreach (var chiselAction in _chiselActions)
+            {
+                result.Add(chiselAction.GetPoints(_marble));
+            }
+
+            return ConvertToScript(result);
+        }
+
+        private string ConvertToScript(List<PointF[]> chiseledOutSections)
         {
             throw new NotImplementedException();
         }
@@ -95,6 +109,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
     public interface IDigitChisleAction
     {
+        PointF[] GetPoints(RectangleF outerBounds);
     }
 
     public class DigitHole : IDigitChisleAction
