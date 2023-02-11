@@ -53,6 +53,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
                 return sculpture.Carve();
             }
+            else if (digit == 1)
+            {
+                return string.Empty;
+            }
             else if (digit == 2)
             {
                 var sculpture = new DigitSculpture(boundingBox,
@@ -64,6 +68,90 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f) { OverhangPercentage = 0.3f },
                     new DigitCorner(DigitCornerName.TopLeft, 0.2f, 45) { MoveToCenter = true },
                     new DigitCorner(DigitCornerName.BottomRight, 0.2f, 45) { MoveToCenter = true })
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
+            }
+            else if (digit == 3)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    //new DigitCrossBar(0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f) { OverhangPercentage = 0.3f },
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, 0.2f) { OverhangPercentage = 0.3f },
+                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.05f, 45))
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
+            }
+            else if (digit == 4)
+            {
+                return string.Empty;
+            }
+            else if (digit == 5)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.TopRight, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, 0.2f) { OverhangPercentage = 0.3f },
+                    new DigitCorner(DigitCornerName.TopRight, 0.2f, 45) { MoveToCenter = true })
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
+            }
+            else if (digit == 6)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.TopRight, 0.2f) { OverhangPercentage = 0.3f },
+                    new DigitCorner(DigitCornerName.TopRight, 0.2f, 45) { MoveToCenter = true })
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
+            }
+            else if (digit == 7)
+            {
+                return string.Empty;
+            }
+            else if (digit == 8)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.05f, 45),
+                    new DigitTriangleInset(DigitTriangleInsetName.Left, 0.05f, 45))
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
+            }
+            else if (digit == 9)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, 0.2f) { OverhangPercentage = 0.3f},
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.2f, 45) { MoveToCenter = true })
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
