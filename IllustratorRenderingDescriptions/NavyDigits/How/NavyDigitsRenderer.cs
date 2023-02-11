@@ -55,7 +55,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 1)
             {
-                return string.Empty;
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitOneChisler(0.2f))
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
             }
             else if (digit == 2)
             {
@@ -128,7 +132,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 7)
             {
-                return string.Empty;
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitSevenChisler(0.85f, 0.25f))
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
             }
             else if (digit == 8)
             {
@@ -174,6 +182,29 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
     public interface IDigitCreator
     {
         string Carve();
+    }
+
+    public class DigitOneChisler : IDigitChisleAction
+    {
+        private readonly float _lineWidthPercentage;
+
+        public DigitOneChisler(float lineWidthPercentage)
+        {
+            _lineWidthPercentage = lineWidthPercentage;
+        }
+
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
+        {
+            var lineWidth = _lineWidthPercentage * outerBounds.Width;
+
+            var leftOverSpace = outerBounds.Width - lineWidth;
+            var leftCutout = new RectangleF(outerBounds.TopLeft(), new SizeF(leftOverSpace / 2, outerBounds.Height));
+
+            yield return leftCutout.ToPathPoints();
+
+            var rightCutout = new RectangleF(outerBounds.Right - leftOverSpace / 2, outerBounds.Top, leftOverSpace / 2, outerBounds.Height);
+            yield return rightCutout.ToPathPoints();
+        }
     }
 
     public class DigitFourChisler : IDigitChisleAction
@@ -239,6 +270,50 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             };
 
             yield return topLeftCutout;
+        }
+    }
+
+    public class DigitSevenChisler : IDigitChisleAction
+    {
+        private readonly float _bottomBoxPercentage;
+        private readonly float _slantLineWidthPercentage;
+
+        public DigitSevenChisler(float bottomBoxPercentage,
+            float slantLineWidthPercentage)
+        {
+            _bottomBoxPercentage = bottomBoxPercentage;
+            _slantLineWidthPercentage = slantLineWidthPercentage;
+        }
+
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
+        {
+            var bottomBoxHeight = _bottomBoxPercentage * outerBounds.Height;
+            var bottomBox = new RectangleF(outerBounds.Left, outerBounds.Bottom - bottomBoxHeight, outerBounds.Width, bottomBoxHeight);
+
+            var slantLineWidth = _slantLineWidthPercentage * outerBounds.Width;
+
+            var rightSlantLineBottomPoint = new PointF(bottomBox.Left + slantLineWidth, bottomBox.Bottom);
+            var rightSlantLineTopPoint = bottomBox.TopRight();
+
+            var leftSlantLineBottomPoint = bottomBox.BottomLeft();
+            var leftSlantLineTopPoint = new PointF(bottomBox.Right - slantLineWidth, bottomBox.Top);
+
+            var bottomLeftCutout = new[]
+            {
+                bottomBox.TopLeft(),
+                leftSlantLineTopPoint,
+                leftSlantLineBottomPoint
+            };
+            yield return bottomLeftCutout;
+
+            var bottomRightCutout = new[]
+            {
+                rightSlantLineBottomPoint,
+                rightSlantLineTopPoint,
+                bottomBox.BottomRight()
+            };
+            yield return bottomRightCutout;
+
         }
     }
 
