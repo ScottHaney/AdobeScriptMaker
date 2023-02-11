@@ -92,7 +92,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             else if (digit == 4)
             {
                 var sculpture = new DigitSculpture(boundingBox,
-                    new DigitFourChisler(0.2f, 0.2f, 0.65f, 0.65f))
+                    new DigitFourChisler(0.2f, 0.2f, 0.65f, 0.65f, 0.15f))
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
@@ -182,22 +182,26 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private readonly float _horizontalLineHeightPercentage;
         private readonly float _linesIntersectionXPercentage;
         private readonly float _linesIntersectionYPercentage;
+        private readonly float _slantBarWidthPercentage;
 
         public DigitFourChisler(float verticalLineWidthPercentage,
             float horizontalLineHeightPercentage,
             float linesIntersectionXPercentage,
-            float linesIntersectionYPercentage)
+            float linesIntersectionYPercentage,
+            float slantBarWidthPercentage)
         {
             _verticalLineWidthPercentage = verticalLineWidthPercentage;
             _horizontalLineHeightPercentage = horizontalLineHeightPercentage;
             _linesIntersectionXPercentage = linesIntersectionXPercentage;
             _linesIntersectionYPercentage = linesIntersectionYPercentage;
+            _slantBarWidthPercentage = slantBarWidthPercentage;
         }
 
         public IEnumerable<PointF[]> GetPoints(RectangleF marble)
         {
             var verticalLineWidth = _verticalLineWidthPercentage * marble.Width;
             var horizontalLineHeight = _horizontalLineHeightPercentage * marble.Width;
+            var slantBarWidth = _slantBarWidthPercentage * marble.Width;
 
             var intersectionX = marble.Left + _linesIntersectionXPercentage * marble.Width;
             var intersectionY = marble.Top + _linesIntersectionYPercentage * marble.Height;
@@ -220,6 +224,21 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var topLeftRect = new RectangleF(marble.Left, marble.Top, innerRect.Left - marble.Left, innerRect.Top - marble.Top);
             var topLeftTriangle = new PointF[] { topLeftRect.BottomLeft(), topLeftRect.TopLeft(), topLeftRect.TopRight() };
             yield return topLeftTriangle;
+
+            var slope = (topLeftRect.Bottom - topLeftRect.Top) / (topLeftRect.Right - topLeftRect.Left);
+            var topLeftCutoutBottomLeftPoint = new PointF(topLeftRect.Left + slantBarWidth, topLeftRect.Bottom);
+            var topLeftCutoutBottomRightPoint = innerRect.TopLeft();
+
+            var topLeftCutoutTopPoint = new PointF(topLeftCutoutBottomRightPoint.X, topLeftCutoutBottomRightPoint.Y - slope * (topLeftRect.Width - slantBarWidth));
+
+            var topLeftCutout = new[]
+            {
+                topLeftCutoutBottomLeftPoint,
+                topLeftCutoutTopPoint,
+                topLeftCutoutBottomRightPoint
+            };
+
+            yield return topLeftCutout;
         }
     }
 
