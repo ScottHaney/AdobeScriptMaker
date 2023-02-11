@@ -81,7 +81,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45),
                     new DigitHole(DigitHoleName.Top, 0.2f),
                     new DigitHole(DigitHoleName.Bottom, 0.2f),
-                    //new DigitCrossBar(0.2f),
+                    new DigitCrossBar(0.2f) { ExtendLeft = true, RightPadding = 0.3f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f) { OverhangPercentage = 0.3f },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, 0.2f) { OverhangPercentage = 0.3f },
                     new DigitTriangleInset(DigitTriangleInsetName.Right, 0.05f, 45))
@@ -434,6 +434,9 @@ app.activeDocument.selection = null;");
     {
         private readonly float _lineWidthPercentage;
 
+        public bool ExtendLeft { get; set; }
+        public float RightPadding { get; set; }
+
         public DigitCrossBar(float lineWidthPercentage)
         {
             _lineWidthPercentage = lineWidthPercentage;
@@ -444,12 +447,17 @@ app.activeDocument.selection = null;");
             var lineHeight = _lineWidthPercentage * outerBounds.Width;
             var middleY = outerBounds.Top + outerBounds.Height / 2;
 
+            var crossBarWidth = (outerBounds.Right - outerBounds.Left) - 2 * lineHeight;
+
+            var leftShift = ExtendLeft ? lineHeight : 0;
+            var rightShift = RightPadding * crossBarWidth;
+
             return new[]
             {
-                new PointF(outerBounds.Left + lineHeight, middleY - lineHeight / 2),
-                new PointF(outerBounds.Right - lineHeight, middleY - lineHeight / 2),
-                new PointF(outerBounds.Right - lineHeight, middleY + lineHeight / 2),
-                new PointF(outerBounds.Left + lineHeight, middleY + lineHeight / 2)
+                new PointF(outerBounds.Left + lineHeight - leftShift, middleY - lineHeight / 2),
+                new PointF(outerBounds.Right - lineHeight - rightShift, middleY - lineHeight / 2),
+                new PointF(outerBounds.Right - lineHeight - rightShift, middleY + lineHeight / 2),
+                new PointF(outerBounds.Left + lineHeight - leftShift, middleY + lineHeight / 2)
             };
         }
     }
