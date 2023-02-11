@@ -103,7 +103,40 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         private string ConvertToScript(List<PointF[]> chiseledOutSections)
         {
-            throw new NotImplementedException();
+            var script = new StringBuilder();
+            script.AppendLine(@"var doc = app.activeDocument;");
+
+            //Render the paths
+            script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", "marble"));
+
+            for (int i = 0; i < chiseledOutSections.Count; i++)
+            {
+                script.AppendLine(CreatePath(chiseledOutSections[i], "doc.pathItems", $"chiselSection{i}"));
+            }
+
+            script.AppendLine(@"app.executeMenuCommand(""group"");
+app.executeMenuCommand(""Live Pathfinder Exclude"");
+app.executeMenuCommand(""expandStyle"");
+app.executeMenuCommand(""ungroup"");");
+
+            return script.ToString();
+        }
+
+        private string CreatePath(PointF[] points, string pathItems, string variableName)
+        {
+            return $@"var {variableName} = {pathItems}.add();
+{variableName}.setEntirePath({CreateJavaScriptArray(points)});
+{variableName}.closed = true;
+{variableName}.selected = true
+{variableName}.fillColor = new RGBColor();
+{variableName}.fillColor.red = 255;
+{variableName}.fillColor.green = 0;
+{variableName}.fillColor.blue = 0;";
+        }
+
+        private string CreateJavaScriptArray(PointF[] points)
+        {
+            return $"[{string.Join(",", points.Select(x => $"[{x.X}, {x.Y}]"))}]";
         }
     }
 
@@ -389,6 +422,17 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         public static PointF BottomLeft(this RectangleF rect)
         {
             return new PointF(rect.Left, rect.Bottom);
+        }
+
+        public static PointF[] ToPathPoints(this RectangleF rect)
+        {
+            return new[]
+            {
+                rect.TopLeft(),
+                rect.TopRight(),
+                rect.BottomRight(),
+                rect.BottomLeft()
+            };
         }
     }
 
