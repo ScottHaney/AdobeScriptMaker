@@ -183,7 +183,7 @@ app.executeMenuCommand(""ungroup"");");
                 var overhangHeight = OverhangPercentage * rect.Height;
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
-                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
                 return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.TopRight)
@@ -196,7 +196,7 @@ app.executeMenuCommand(""ungroup"");");
                 var overhangHeight = OverhangPercentage * rect.Height;
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
-                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
                 return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.BottomRight)
@@ -209,7 +209,7 @@ app.executeMenuCommand(""ungroup"");");
                 var overhangHeight = OverhangPercentage * rect.Height;
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
-                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
                 return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.BottomLeft)
@@ -222,7 +222,7 @@ app.executeMenuCommand(""ungroup"");");
                 var overhangHeight = OverhangPercentage * rect.Height;
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
-                rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
+                rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
                 return rect.ToPathPoints();
             }
             else
