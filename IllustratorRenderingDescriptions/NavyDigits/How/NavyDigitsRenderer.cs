@@ -62,8 +62,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, 0.2f),
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, 0.2f),
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f),
-                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45) { MoveToCenter = true },
-                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45) { MoveToCenter = true })
+                    new DigitCorner(DigitCornerName.TopLeft, 0.2f, 45) { MoveToCenter = true },
+                    new DigitCorner(DigitCornerName.BottomRight, 0.2f, 45) { MoveToCenter = true })
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
