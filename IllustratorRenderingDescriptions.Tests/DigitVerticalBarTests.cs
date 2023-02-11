@@ -12,45 +12,45 @@ namespace IllustratorRenderingDescriptions.Tests
         [Test]
         public void Removes_TopLeft_Vertical_Bar()
         {
-            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var digitBoundingBox = new RectangleF(1000, 1000, 100, 100);
             var verticalBar = new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.1f);
 
             var verticalBarPoints = verticalBar.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 10), new PointF(10, 10), new PointF(10, 45), new PointF(0, 45) }, verticalBarPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(1000, 1010), new PointF(1010, 1010), new PointF(1010, 1045), new PointF(1000, 1045) }, verticalBarPoints);
         }
 
         [Test]
         public void Removes_TopRight_Vertical_Bar()
         {
-            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var digitBoundingBox = new RectangleF(1000, 1000, 100, 100);
             var verticalBar = new DigitVerticalBar(DigitVerticalBarName.TopRight, 0.1f);
 
             var verticalBarPoints = verticalBar.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(90, 10), new PointF(100, 10), new PointF(100, 45), new PointF(90, 45) }, verticalBarPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(1090, 1010), new PointF(1100, 1010), new PointF(1100, 1045), new PointF(1090, 1045) }, verticalBarPoints);
         }
 
         [Test]
         public void Removes_BottomRight_Vertical_Bar()
         {
-            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var digitBoundingBox = new RectangleF(1000, 1000, 100, 100);
             var verticalBar = new DigitVerticalBar(DigitVerticalBarName.BottomRight, 0.1f);
 
             var verticalBarPoints = verticalBar.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(90, 55), new PointF(100, 55), new PointF(100, 90), new PointF(90, 90) }, verticalBarPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(1090, 1055), new PointF(1100, 1055), new PointF(1100, 1090), new PointF(1090, 1090) }, verticalBarPoints);
         }
 
         [Test]
         public void Removes_BottomLeft_Vertical_Bar()
         {
-            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var digitBoundingBox = new RectangleF(1000, 1000, 100, 100);
             var verticalBar = new DigitVerticalBar(DigitVerticalBarName.BottomLeft, 0.1f);
 
             var verticalBarPoints = verticalBar.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(10, 55), new PointF(10, 90), new PointF(0, 90) }, verticalBarPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(1000, 1055), new PointF(1010, 1055), new PointF(1010, 1090), new PointF(1000, 1090) }, verticalBarPoints);
         }
     }
 }
