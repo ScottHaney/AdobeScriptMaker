@@ -142,7 +142,10 @@ app.executeMenuCommand(""ungroup"");");
 
         private string CreateJavaScriptArray(PointF[] points)
         {
-            return $"[{string.Join(",", points.Select(x => $"[{x.X}, {x.Y}]"))}]";
+            //Make sure to slip the points vertically since illustrator renders towards
+            //the top of the screen as y increases rather than the standard programming
+            //way of having increasing y render towards the bottom of the screen
+            return $"[{string.Join(",", points.Select(x => $"[{x.X}, {-x.Y}]"))}]";
         }
     }
 
