@@ -16,59 +16,58 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 {
     public class NavyDigitsRenderer
     {
-        private readonly NavyDigitsRenderingDescription _description;
+        private readonly SizeF _boundingBoxSize;
 
-        public NavyDigitsRenderer(NavyDigitsRenderingDescription description)
+        public NavyDigitsRenderer(SizeF boundingBoxSize)
         {
-            _description = description;
+            _boundingBoxSize = boundingBoxSize;
         }
 
         public string CreateScript()
         {
-            var sculpture = new DigitSculpture(new RectangleF(0, 0, 500, 800));
+            var result = new StringBuilder();
+            var currentTopLeft = new PointF(0, 0);
 
-            throw new NotImplementedException();
+            for (int i = 0; i <= 9; i++)
+            {
+                result.AppendLine(CreateDigitScript(i, new RectangleF(currentTopLeft, _boundingBoxSize)));
+                currentTopLeft = new PointF(currentTopLeft.X + _boundingBoxSize.Width, currentTopLeft.Y);
+            }
 
-            /*float sizeRatio = 1.2f;
-            float horizontalLinesPadding = 0.1f;
-            float verticalLinesPadding = 0.1f;
+            return result.ToString();
+        }
 
-            var width = _description.Dimension;
-            var height = width * sizeRatio;
+        private string CreateDigitScript(int digit, RectangleF boundingBox)
+        {
+            if (digit == 0)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, 0.1f, 45),
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f),
+                    new DigitCrossBar(0.2f))
+                { Id = digit.ToString() };
 
-            float horizontalPaddingPercentage = 0.2f;
-            float verticalPaddingPercentage = 0.2f;
+                return sculpture.Carve();
+            }
+            else if (digit == 2)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true },
+                    new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true }, 
+                    new DigitHole(DigitHoleName.Top, 0.2f),
+                    new DigitHole(DigitHoleName.Bottom, 0.2f))
+                { Id = digit.ToString() };
 
-            float cornerTrianglePercentage = 0.2f;
-            float 
-
-            var digitBoundingBox = new RectangleF(new PointF(300, 300), new SizeF(width, height));
-            var rectanglePositioner = new RectanglePositioner(digitBoundingBox);
-
-            var pointsCreator = new PointsCreator(new PointF(digitBoundingBox.Left, digitBoundingBox.Top));
-
-            pointsCreator.MoveToX(rectanglePositioner.GetInteriorLeftX(horizontalLinesPadding));
-            pointsCreator.MoveToX(rectanglePositioner.GetInteriorRightX(horizontalLinesPadding));
-
-            pointsCreator.Move(rectanglePositioner.GetInteriorRightX(0),
-                rectanglePositioner.GetInteriorTopY(cornerTrianglePercentage));
-
-
-
-            var topLeft = new PointF(300, 300);
-            var points = new List<PointF>();
-
-            points.Add(new PointF(topLeft.X + _description.Dimension * horizontalPaddingPercentage,
-                topLeft.Y));
-
-            points.Add(*/
-
-            /*var xAxis = new AdobePathComponent(new StaticValue<Point>);
-            var yAxis = new AdobePathComponent(yAxisValues);
-
-            return new RenderedComponents(new IAdobeLayerComponent[] { new AdobePathGroupComponent(xAxis), new AdobePathGroupComponent(yAxis) }
-                .Select(x => new TimedAdobeLayerComponent(x, timing.WhenToStart.Time, timing.WhenToStart.Time + timing.RenderDuration.Time))
-                .ToArray());*/
+                return sculpture.Carve();
+            }
+            else
+                return string.Empty;
         }
     }
 
@@ -82,6 +81,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
     {
         private readonly RectangleF _marble;
         private readonly IDigitChisleAction[] _chiselActions;
+
+        public string Id { get; set; }
 
         public DigitSculpture(RectangleF marble,
             params IDigitChisleAction[] chiselActions)
@@ -106,12 +107,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var script = new StringBuilder();
             script.AppendLine(@"var doc = app.activeDocument;");
 
+            var idPostfix = $"{(string.IsNullOrEmpty(Id) ? "" : $"_{Id}")}";
+
             //Render the paths
-            script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", "marble"));
+            script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", $"marble{idPostfix}"));
+
 
             for (int i = 0; i < chiseledOutSections.Count; i++)
             {
-                script.AppendLine(CreatePath(chiseledOutSections[i], "doc.pathItems", $"chiselSection{i}"));
+                script.AppendLine(CreatePath(chiseledOutSections[i], "doc.pathItems", $"chiselSection{i}{idPostfix}"));
             }
 
             script.AppendLine(@"app.executeMenuCommand(""group"");
