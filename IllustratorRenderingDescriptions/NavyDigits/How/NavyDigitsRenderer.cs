@@ -258,6 +258,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private readonly float _widthPercentage;
         private readonly float _angle;
 
+        public bool MoveToCenter { get; set; }
+
         public DigitCorner(float widthPercentage,
             float angle)
         {
@@ -266,6 +268,28 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         }
 
         public PointF[] GetPoints(DigitCornerName cornerName, RectangleF outerBounds)
+        {
+            var points = GetPointsInternal(cornerName, outerBounds);
+
+            if (MoveToCenter)
+            {
+                var centerBarHeight = _widthPercentage * outerBounds.Width;
+                var distance = outerBounds.Height / 2 - centerBarHeight / 2;
+
+                var cornerPoint = points.Skip(1).First();
+                var shift = cornerPoint.Y == outerBounds.Top
+                    ? distance
+                    : -distance;
+
+                return points
+                    .Select(x => new PointF(x.X, x.Y + shift))
+                    .ToArray();
+            }
+            else
+                return points;
+        }
+
+        private PointF[] GetPointsInternal(DigitCornerName cornerName, RectangleF outerBounds)
         {
             var xLength = outerBounds.Width * _widthPercentage;
             var slope = (float)Math.Tan(_angle * (Math.PI / 180));
