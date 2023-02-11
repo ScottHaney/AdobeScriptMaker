@@ -56,14 +56,14 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             if (digit == 2)
             {
                 var sculpture = new DigitSculpture(boundingBox,
-                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
-                    new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
+                    new DigitCorner(DigitCornerName.TopRight, 0.15f, 45),
                     new DigitHole(DigitHoleName.Top, 0.2f),
                     new DigitHole(DigitHoleName.Bottom, 0.2f),
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, 0.2f),
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f),
-                    new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true },
-                    new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true })
+                    new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45) { MoveToCenter = true },
+                    new DigitCorner(DigitCornerName.BottomRight, 0.15f, 45) { MoveToCenter = true })
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
