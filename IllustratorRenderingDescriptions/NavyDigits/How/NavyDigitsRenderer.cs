@@ -120,6 +120,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 script.AppendLine(CreatePath(chiseledOutSections[i], "doc.pathItems", $"chiselSection{i}{idPostfix}"));
             }
 
+            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
             script.AppendLine(@"app.executeMenuCommand(""group"");
 app.executeMenuCommand(""Live Pathfinder Exclude"");
 app.executeMenuCommand(""expandStyle"");
