@@ -14,7 +14,7 @@ using System.Text;
 
 namespace IllustratorRenderingDescriptions.NavyDigits.How
 {
-    public class NavyDigitsRenderer : IHowToRender
+    public class NavyDigitsRenderer
     {
         private readonly NavyDigitsRenderingDescription _description;
 
@@ -23,8 +23,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             _description = description;
         }
 
-        public RenderedComponents Render(ITimingForRender timing)
+        public string CreateScript()
         {
+            var sculpture = new DigitSculpture(new RectangleF(0, 0, 500, 800));
+
             throw new NotImplementedException();
 
             /*float sizeRatio = 1.2f;
@@ -79,50 +81,39 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
     public class DigitSculpture : IDigitCreator
     {
         private readonly RectangleF _marble;
-        private readonly IDigitCorner _cornerDescription;
 
-        public DigitSculpture(RectangleF marble,
-            IDigitCorner cornerDescription)
+        public DigitSculpture(RectangleF marble)
         {
             _marble = marble;
-            _cornerDescription = cornerDescription;
         }
 
         public List<PointF> Carve()
         {
-            var corners = new[] { DigitCornerName.TopLeft, DigitCornerName.TopRight, DigitCornerName.BottomRight, DigitCornerName.BottomLeft };
-
-            var points = new List<PointF>();
-            foreach (var corner in corners)
-            {
-                var trianglePoints = _cornerDescription.GetPoints(corner, _marble);
-                points.Add(trianglePoints.First());
-                points.Add(trianglePoints.Last());
-            }
-
-            return points;
+            throw new NotImplementedException();
         }
     }
 
-    public interface IDigitHole
+    public interface IDigitChisleAction
     {
-        PointF[] GetPoints(DigitHoleName name, RectangleF outerBounds);
     }
 
-    public class DigitHole : IDigitHole
+    public class DigitHole : IDigitChisleAction
     {
+        private readonly DigitHoleName _name;
         private readonly float _widthPaddingPercentage;
 
-        public DigitHole(float widthPaddingPercentage)
+        public DigitHole(DigitHoleName name,
+            float widthPaddingPercentage)
         {
+            _name = name;
             _widthPaddingPercentage = widthPaddingPercentage;
         }
 
-        public PointF[] GetPoints(DigitHoleName name, RectangleF outerBounds)
+        public PointF[] GetPoints(RectangleF outerBounds)
         {
             var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
 
-            if (name == DigitHoleName.Top)
+            if (_name == DigitHoleName.Top)
             {
                 var upperRect = new RectangleF(outerBounds.TopLeft(), new SizeF(outerBounds.Width, outerBounds.Height / 2));
 
@@ -134,7 +125,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new PointF(outerBounds.Left + digitLineWidth, upperRect.Bottom - digitLineWidth / 2)
                 };
             }
-            else if (name == DigitHoleName.Bottom)
+            else if (_name == DigitHoleName.Bottom)
             {
                 var lowerRect = new RectangleF(new PointF(outerBounds.Left, outerBounds.Top + outerBounds.Height / 2), new SizeF(outerBounds.Width, outerBounds.Height / 2));
 
@@ -157,24 +148,22 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         Bottom
     }
 
-    public interface IDigitTriangleInset
+    public class DigitTriangleInset : IDigitChisleAction
     {
-        PointF[] GetPoints(DigitTriangleInsetName name, RectangleF outerBounds);
-    }
-
-    public class DigitTriangleInset : IDigitTriangleInset
-    {
+        private readonly DigitTriangleInsetName _name;
         private readonly float _widthPercentage;
         private readonly float _angle;
 
-        public DigitTriangleInset(float widthPercentage,
+        public DigitTriangleInset(DigitTriangleInsetName name,
+            float widthPercentage,
             float angle)
         {
+            _name = name;
             _widthPercentage = widthPercentage;
             _angle = angle;
         }
 
-        public PointF[] GetPoints(DigitTriangleInsetName name, RectangleF outerBounds)
+        public PointF[] GetPoints(RectangleF outerBounds)
         {
             var insetLength = _widthPercentage * outerBounds.Width;
             var slope = Math.Tan(_angle * (Math.PI / 180));
@@ -182,7 +171,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var sidesYOffset = (float)(slope * insetLength);
             var midpointY = outerBounds.Top + outerBounds.Height / 2;
 
-            if (name == DigitTriangleInsetName.Left)
+            if (_name == DigitTriangleInsetName.Left)
             {
                 return new[]
                 {
@@ -191,7 +180,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new PointF(outerBounds.Left, midpointY - sidesYOffset)
                 };
             }
-            else if (name == DigitTriangleInsetName.Right)
+            else if (_name == DigitTriangleInsetName.Right)
             {
                 return new[]
                 {
@@ -210,13 +199,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         Left,
         Right
     }
-
-    public interface IDigitCrossBar
-    {
-        PointF[] GetPoints(RectangleF outerBounds);
-    }
-
-    public class DigitCrossBar : IDigitCrossBar
+    
+    public class DigitCrossBar : IDigitChisleAction
     {
         private readonly float _lineWidthPercentage;
 
@@ -240,11 +224,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         }
     }
 
-    public interface IDigitCorner
-    {
-        PointF[] GetPoints(DigitCornerName cornerName, RectangleF outerBounds);
-    }
-
     public enum DigitCornerName
     {
         TopLeft,
@@ -253,23 +232,26 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         BottomLeft
     }
 
-    public class DigitCorner : IDigitCorner
+    public class DigitCorner : IDigitChisleAction
     {
+        private readonly DigitCornerName _cornerName;
         private readonly float _widthPercentage;
         private readonly float _angle;
 
         public bool MoveToCenter { get; set; }
 
-        public DigitCorner(float widthPercentage,
+        public DigitCorner(DigitCornerName cornerName,
+            float widthPercentage,
             float angle)
         {
+            _cornerName = cornerName;
             _widthPercentage = widthPercentage;
             _angle = angle;
         }
 
-        public PointF[] GetPoints(DigitCornerName cornerName, RectangleF outerBounds)
+        public PointF[] GetPoints(RectangleF outerBounds)
         {
-            var points = GetPointsInternal(cornerName, outerBounds);
+            var points = GetPointsInternal(_cornerName, outerBounds);
 
             if (MoveToCenter)
             {

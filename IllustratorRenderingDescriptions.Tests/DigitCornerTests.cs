@@ -10,9 +10,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Top_Left_Corner_In_A_Square_At_45_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.5f, 45);
+            var corner = new DigitCorner(DigitCornerName.TopLeft, 0.5f, 45);
 
-            var topLeftPoints = corner.GetPoints(DigitCornerName.TopLeft, digitBoundingBox);
+            var topLeftPoints = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, topLeftPoints);
         }
@@ -21,9 +21,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Centered_Top_Left_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.1f, 45) { MoveToCenter = true };
+            var corner = new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(DigitCornerName.TopLeft, digitBoundingBox);
+            var points = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, points);
         }
@@ -32,9 +32,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Top_Right_Corner_In_A_Square_At_45_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.5f, 45);
+            var corner = new DigitCorner(DigitCornerName.TopRight, 0.5f, 45);
 
-            var topRightPoints = corner.GetPoints(DigitCornerName.TopRight, digitBoundingBox);
+            var topRightPoints = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, topRightPoints);
         }
@@ -43,9 +43,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Centered_Top_Right_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.1f, 45) { MoveToCenter = true };
+            var corner = new DigitCorner(DigitCornerName.TopRight, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(DigitCornerName.TopRight, digitBoundingBox);
+            var points = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, points);
         }
@@ -54,9 +54,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Bottom_Right_Corner_In_A_Square_At_45_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.5f, 45);
+            var corner = new DigitCorner(DigitCornerName.BottomRight, 0.5f, 45);
 
-            var bottomRightPoints = corner.GetPoints(DigitCornerName.BottomRight, digitBoundingBox);
+            var bottomRightPoints = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, bottomRightPoints);
         }
@@ -65,9 +65,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Centered_Bottom_Right_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.1f, 45) { MoveToCenter = true };
+            var corner = new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(DigitCornerName.BottomRight, digitBoundingBox);
+            var points = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, points);
         }
@@ -76,9 +76,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Bottom_Left_Corner_In_A_Square_At_45_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.5f, 45);
+            var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.5f, 45);
 
-            var bottomLeftPoints = corner.GetPoints(DigitCornerName.BottomLeft, digitBoundingBox);
+            var bottomLeftPoints = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, bottomLeftPoints);
         }
@@ -87,9 +87,9 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Creates_Centered_Bottom_Left_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(0.1f, 45) { MoveToCenter = true };
+            var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(DigitCornerName.BottomLeft, digitBoundingBox);
+            var points = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, points);
         }

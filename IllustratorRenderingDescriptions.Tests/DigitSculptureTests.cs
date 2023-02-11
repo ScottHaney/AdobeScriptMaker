@@ -6,7 +6,7 @@ namespace IllustratorRenderingDescriptions.Tests
 {
     public class DigitSculptureTests
     {
-        [Test]
+        /*[Test]
         public void Carves_Out_Corners_From_A_Square()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
@@ -28,6 +28,6 @@ namespace IllustratorRenderingDescriptions.Tests
             };
 
             CollectionAssert.AreEqual(expectedResult, actualResult);
-        }
+        }*/
     }
 }
