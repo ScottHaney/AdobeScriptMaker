@@ -1,6 +1,7 @@
 using IllustratorRenderingDescriptions.NavyDigits.How;
 using NUnit.Framework;
 using System.Drawing;
+using System.Linq;
 
 namespace IllustratorRenderingDescriptions.Tests
 {
@@ -14,7 +15,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var topLeftPoints = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, topLeftPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, topLeftPoints.SelectMany(x => x));
         }
 
         [Test]
@@ -25,7 +26,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var points = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, points);
+            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, points.SelectMany(x => x));
         }
 
         [Test]
@@ -36,7 +37,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var topRightPoints = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, topRightPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, topRightPoints.SelectMany(x => x));
         }
 
         [Test]
@@ -47,7 +48,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var points = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, points);
+            CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, points.SelectMany(x => x));
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var bottomRightPoints = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, bottomRightPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, bottomRightPoints.SelectMany(x => x));
         }
 
         [Test]
@@ -69,7 +70,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var points = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, points);
+            CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, points.SelectMany(x => x));
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var bottomLeftPoints = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, bottomLeftPoints);
+            CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, bottomLeftPoints.SelectMany(x => x));
         }
 
         [Test]
@@ -91,7 +92,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var points = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, points);
+            CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, points.SelectMany(x => x));
         }
     }
 }

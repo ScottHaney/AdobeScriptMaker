@@ -91,7 +91,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 4)
             {
-                return string.Empty;
+                var sculpture = new DigitSculpture(boundingBox,
+                    new DigitFourChisler(0.2f, 0.2f, 0.65f, 0.65f))
+                { Id = digit.ToString() };
+
+                return sculpture.Carve();
             }
             else if (digit == 5)
             {
@@ -161,10 +165,62 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         }
     }
 
+    public interface IDigitScriptCreator
+    {
+        string Create(IEnumerable<PointF[]> chiseledOutPieces);
+    }
+
 
     public interface IDigitCreator
     {
         string Carve();
+    }
+
+    public class DigitFourChisler : IDigitChisleAction
+    {
+        private readonly float _verticalLineWidthPercentage;
+        private readonly float _horizontalLineHeightPercentage;
+        private readonly float _linesIntersectionXPercentage;
+        private readonly float _linesIntersectionYPercentage;
+
+        public DigitFourChisler(float verticalLineWidthPercentage,
+            float horizontalLineHeightPercentage,
+            float linesIntersectionXPercentage,
+            float linesIntersectionYPercentage)
+        {
+            _verticalLineWidthPercentage = verticalLineWidthPercentage;
+            _horizontalLineHeightPercentage = horizontalLineHeightPercentage;
+            _linesIntersectionXPercentage = linesIntersectionXPercentage;
+            _linesIntersectionYPercentage = linesIntersectionYPercentage;
+        }
+
+        public IEnumerable<PointF[]> GetPoints(RectangleF marble)
+        {
+            var verticalLineWidth = _verticalLineWidthPercentage * marble.Width;
+            var horizontalLineHeight = _horizontalLineHeightPercentage * marble.Width;
+
+            var intersectionX = marble.Left + _linesIntersectionXPercentage * marble.Width;
+            var intersectionY = marble.Top + _linesIntersectionYPercentage * marble.Height;
+
+            var innerRect = new RectangleF(
+                intersectionX - verticalLineWidth / 2,
+                intersectionY + horizontalLineHeight / 2,
+                verticalLineWidth,
+                horizontalLineHeight);
+
+            var bottomLeftRect = new RectangleF(marble.Left, innerRect.Bottom, innerRect.Left - marble.Left, marble.Bottom - innerRect.Bottom);
+            yield return bottomLeftRect.ToPathPoints();
+
+            var bottomRightRect = new RectangleF(innerRect.Right, innerRect.Bottom, marble.Right - innerRect.Right, marble.Bottom - innerRect.Bottom);
+            yield return bottomRightRect.ToPathPoints();
+
+            var topRightRect = new RectangleF(innerRect.Right, marble.Top, marble.Right - innerRect.Right, innerRect.Top - marble.Top);
+            yield return topRightRect.ToPathPoints();
+
+            var topLeftRect = new RectangleF(marble.Left, marble.Top, innerRect.Left - marble.Left, innerRect.Top - marble.Top);
+            var topLeftTriangle = new PointF[] { topLeftRect.BottomLeft(), topLeftRect.TopLeft(), topLeftRect.TopRight() };
+            yield return topLeftTriangle;
+        }
     }
 
     public class DigitSculpture : IDigitCreator
@@ -186,7 +242,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var result = new List<PointF[]>();
             foreach (var chiselAction in _chiselActions)
             {
-                result.Add(chiselAction.GetPoints(_marble));
+                result.AddRange(chiselAction.GetPoints(_marble));
             }
 
             return ConvertToScript(result);
@@ -241,8 +297,10 @@ app.activeDocument.selection = null;");
 
     public interface IDigitChisleAction
     {
-        PointF[] GetPoints(RectangleF outerBounds);
+        IEnumerable<PointF[]> GetPoints(RectangleF outerBounds);
     }
+
+
 
     public class DigitVerticalBar : IDigitChisleAction
     {
@@ -258,7 +316,7 @@ app.activeDocument.selection = null;");
             _widthPaddingPercentage = widthPaddingPercentage;
         }
 
-        public PointF[] GetPoints(RectangleF outerBounds)
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
         {
             var dimension = _widthPaddingPercentage * outerBounds.Width;
 
@@ -273,7 +331,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                return rect.ToPathPoints();
+                yield return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.TopRight)
             {
@@ -286,7 +344,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                return rect.ToPathPoints();
+                yield return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.BottomRight)
             {
@@ -299,7 +357,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                return rect.ToPathPoints();
+                yield return rect.ToPathPoints();
             }
             else if (_name == DigitVerticalBarName.BottomLeft)
             {
@@ -312,7 +370,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                return rect.ToPathPoints();
+                yield return rect.ToPathPoints();
             }
             else
                 throw new NotSupportedException();
@@ -339,7 +397,7 @@ app.activeDocument.selection = null;");
             _widthPaddingPercentage = widthPaddingPercentage;
         }
 
-        public PointF[] GetPoints(RectangleF outerBounds)
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
         {
             var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
 
@@ -347,7 +405,7 @@ app.activeDocument.selection = null;");
             {
                 var upperRect = new RectangleF(outerBounds.TopLeft(), new SizeF(outerBounds.Width, outerBounds.Height / 2));
 
-                return new[]
+                yield return new[]
                 {
                     new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + digitLineWidth),
                     new PointF(outerBounds.Right - digitLineWidth, outerBounds.Top + digitLineWidth),
@@ -359,7 +417,7 @@ app.activeDocument.selection = null;");
             {
                 var lowerRect = new RectangleF(new PointF(outerBounds.Left, outerBounds.Top + outerBounds.Height / 2), new SizeF(outerBounds.Width, outerBounds.Height / 2));
 
-                return new[]
+                yield return new[]
                 {
                     new PointF(outerBounds.Left + digitLineWidth, lowerRect.Top + digitLineWidth / 2),
                     new PointF(outerBounds.Right - digitLineWidth, lowerRect.Top + digitLineWidth / 2),
@@ -393,7 +451,7 @@ app.activeDocument.selection = null;");
             _angle = angle;
         }
 
-        public PointF[] GetPoints(RectangleF outerBounds)
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
         {
             var insetLength = _widthPercentage * outerBounds.Width;
             var slope = Math.Tan(_angle * (Math.PI / 180));
@@ -403,7 +461,7 @@ app.activeDocument.selection = null;");
 
             if (_name == DigitTriangleInsetName.Left)
             {
-                return new[]
+                yield return new[]
                 {
                     new PointF(outerBounds.Left, midpointY + sidesYOffset),
                     new PointF(outerBounds.Left + insetLength, midpointY),
@@ -412,7 +470,7 @@ app.activeDocument.selection = null;");
             }
             else if (_name == DigitTriangleInsetName.Right)
             {
-                return new[]
+                yield return new[]
                 {
                     new PointF(outerBounds.Right, midpointY - sidesYOffset),
                     new PointF(outerBounds.Right - insetLength, midpointY),
@@ -442,7 +500,7 @@ app.activeDocument.selection = null;");
             _lineWidthPercentage = lineWidthPercentage;
         }
 
-        public PointF[] GetPoints(RectangleF outerBounds)
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
         {
             var lineHeight = _lineWidthPercentage * outerBounds.Width;
             var middleY = outerBounds.Top + outerBounds.Height / 2;
@@ -452,7 +510,7 @@ app.activeDocument.selection = null;");
             var leftShift = ExtendLeft ? lineHeight : 0;
             var rightShift = RightPadding * crossBarWidth;
 
-            return new[]
+            yield return new[]
             {
                 new PointF(outerBounds.Left + lineHeight - leftShift, middleY - lineHeight / 2),
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY - lineHeight / 2),
@@ -487,7 +545,7 @@ app.activeDocument.selection = null;");
             _angle = angle;
         }
 
-        public PointF[] GetPoints(RectangleF outerBounds)
+        public IEnumerable<PointF[]> GetPoints(RectangleF outerBounds)
         {
             var points = GetPointsInternal(_cornerName, outerBounds);
 
@@ -501,12 +559,12 @@ app.activeDocument.selection = null;");
                     ? distance
                     : -distance;
 
-                return points
+                yield return points
                     .Select(x => new PointF(x.X, x.Y + shift))
                     .ToArray();
             }
             else
-                return points;
+                yield return points;
         }
 
         private PointF[] GetPointsInternal(DigitCornerName cornerName, RectangleF outerBounds)

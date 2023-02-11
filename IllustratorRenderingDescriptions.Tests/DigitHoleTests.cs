@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace IllustratorRenderingDescriptions.Tests
@@ -25,7 +26,7 @@ namespace IllustratorRenderingDescriptions.Tests
                 new PointF(10, 45)
             };
 
-            CollectionAssert.AreEqual(expectedResult, actualResult);
+            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x));
         }
 
         [Test]
@@ -44,7 +45,7 @@ namespace IllustratorRenderingDescriptions.Tests
                 new PointF(10, 90)
             };
 
-            CollectionAssert.AreEqual(expectedResult, actualResult);
+            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x));
         }
     }
 }
