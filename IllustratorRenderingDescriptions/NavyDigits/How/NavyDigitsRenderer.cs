@@ -160,6 +160,8 @@ app.executeMenuCommand(""ungroup"");");
         private readonly DigitVerticalBarName _name;
         private readonly float _widthPaddingPercentage;
 
+        public float OverhangPercentage { get; set; }
+
         public DigitVerticalBar(DigitVerticalBarName name,
             float widthPaddingPercentage)
         {
@@ -177,6 +179,10 @@ app.executeMenuCommand(""ungroup"");");
                 var bottomRight = new PointF(dimension, outerBounds.Height / 2 - dimension / 2);
 
                 var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+
+                var overhangHeight = OverhangPercentage * rect.Height;
+                rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
+
                 rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
                 return rect.ToPathPoints();
             }
@@ -186,6 +192,10 @@ app.executeMenuCommand(""ungroup"");");
                 var bottomRight = new PointF(outerBounds.Width, outerBounds.Height / 2 - dimension / 2);
 
                 var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+
+                var overhangHeight = OverhangPercentage * rect.Height;
+                rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
+
                 rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
                 return rect.ToPathPoints();
             }
@@ -195,6 +205,10 @@ app.executeMenuCommand(""ungroup"");");
                 var bottomRight = new PointF(outerBounds.Width, outerBounds.Height - dimension);
 
                 var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+
+                var overhangHeight = OverhangPercentage * rect.Height;
+                rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
+
                 rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
                 return rect.ToPathPoints();
             }
@@ -204,6 +218,10 @@ app.executeMenuCommand(""ungroup"");");
                 var bottomRight = new PointF(dimension, outerBounds.Height - dimension);
 
                 var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+
+                var overhangHeight = OverhangPercentage * rect.Height;
+                rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
+
                 rect.Location = new PointF(outerBounds.TopLeft().X + topLeft.X, outerBounds.TopLeft().Y + topLeft.Y);
                 return rect.ToPathPoints();
             }
