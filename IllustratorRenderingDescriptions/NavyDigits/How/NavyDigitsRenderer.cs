@@ -39,9 +39,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
-            //if (digit == 0)
-            //{
-                /*var sculpture = new DigitSculpture(boundingBox,
+            if (digit == 0)
+            {
+                var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45),
                     new DigitCorner(DigitCornerName.TopRight, 0.1f, 45),
                     new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45),
@@ -51,9 +51,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCrossBar(0.2f))
                 { Id = digit.ToString() };
 
-                return sculpture.Carve();*/
-            //}
-            if (digit == 2)
+                return sculpture.Carve();
+            }
+            else if (digit == 2)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, 0.15f, 45),
@@ -61,7 +61,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Top, 0.2f),
                     new DigitHole(DigitHoleName.Bottom, 0.2f),
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, 0.2f),
-                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f),
+                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.2f) { OverhangPercentage = 0.3f },
                     new DigitCorner(DigitCornerName.TopLeft, 0.2f, 45) { MoveToCenter = true },
                     new DigitCorner(DigitCornerName.BottomRight, 0.2f, 45) { MoveToCenter = true })
                 { Id = digit.ToString() };
@@ -124,7 +124,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             script.AppendLine(@"app.executeMenuCommand(""group"");
 app.executeMenuCommand(""Live Pathfinder Exclude"");
 app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");");
+app.executeMenuCommand(""ungroup"");
+app.activeDocument.selection = null;");
 
             return script.ToString();
         }
