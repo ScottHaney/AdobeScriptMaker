@@ -13,9 +13,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.TopLeft, 0.5f, 45);
 
-            var topLeftPoints = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, topLeftPoints.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -24,9 +24,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, points.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -35,9 +35,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.TopRight, 0.5f, 45);
 
-            var topRightPoints = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, topRightPoints.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -46,9 +46,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.TopRight, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, points.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -57,9 +57,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.BottomRight, 0.5f, 45);
 
-            var bottomRightPoints = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, bottomRightPoints.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -68,9 +68,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, points.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -79,9 +79,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.5f, 45);
 
-            var bottomLeftPoints = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, bottomLeftPoints.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -90,9 +90,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.1f, 45) { MoveToCenter = true };
 
-            var points = corner.GetPoints(digitBoundingBox);
+            var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, points.SelectMany(x => x));
+            CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, actualResult.SelectMany(x => x.Points));
         }
     }
 }

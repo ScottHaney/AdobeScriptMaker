@@ -26,7 +26,7 @@ namespace IllustratorRenderingDescriptions.Tests
                 new PointF(10, 45)
             };
 
-            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x));
+            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace IllustratorRenderingDescriptions.Tests
                 new PointF(10, 90)
             };
 
-            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x));
+            CollectionAssert.AreEqual(expectedResult, actualResult.SelectMany(x => x.Points));
         }
     }
 }
