@@ -6,11 +6,13 @@ using RenderingDescriptions.Timing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 
 namespace IllustratorRenderingDescriptions.NavyDigits.How
 {
@@ -200,10 +202,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var leftOverSpace = outerBounds.Width - lineWidth;
             var leftCutout = new RectangleF(outerBounds.TopLeft(), new SizeF(leftOverSpace / 2, outerBounds.Height));
 
-            yield return new DigitChiselResult(leftCutout.ToPathPoints(), DigitChiselLocation.Left);
+            yield return new DigitChiselResult(leftCutout, RectangleSideName.Left);
 
             var rightCutout = new RectangleF(outerBounds.Right - leftOverSpace / 2, outerBounds.Top, leftOverSpace / 2, outerBounds.Height);
-            yield return new DigitChiselResult(rightCutout.ToPathPoints(), DigitChiselLocation.Right);
+            yield return new DigitChiselResult(rightCutout);
         }
     }
 
@@ -244,17 +246,17 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 horizontalLineHeight);
 
             var bottomLeftRect = new RectangleF(marble.Left, innerRect.Bottom, innerRect.Left - marble.Left, marble.Bottom - innerRect.Bottom);
-            yield return new DigitChiselResult(bottomLeftRect.ToPathPoints(), DigitChiselLocation.Left);
+            yield return new DigitChiselResult(bottomLeftRect, RectangleSideName.Top);
 
             var bottomRightRect = new RectangleF(innerRect.Right, innerRect.Bottom, marble.Right - innerRect.Right, marble.Bottom - innerRect.Bottom);
-            yield return new DigitChiselResult(bottomRightRect.ToPathPoints(), DigitChiselLocation.Right);
+            yield return new DigitChiselResult(bottomRightRect, RectangleSideName.Left, RectangleSideName.Top);
 
             var topRightRect = new RectangleF(innerRect.Right, marble.Top, marble.Right - innerRect.Right, innerRect.Top - marble.Top);
-            yield return new DigitChiselResult(topRightRect.ToPathPoints(), DigitChiselLocation.Right);
+            yield return new DigitChiselResult(topRightRect, RectangleSideName.Left);
 
             var topLeftRect = new RectangleF(marble.Left, marble.Top, innerRect.Left - marble.Left, innerRect.Top - marble.Top);
             var topLeftTriangle = new PointF[] { topLeftRect.BottomLeft(), topLeftRect.TopLeft(), topLeftRect.TopRight() };
-            yield return new DigitChiselResult(topLeftTriangle, DigitChiselLocation.Left);
+            yield return new DigitChiselResult(topLeftTriangle, false, false, false);
 
             var slope = (topLeftRect.Bottom - topLeftRect.Top) / (topLeftRect.Right - topLeftRect.Left);
             var topLeftCutoutBottomLeftPoint = new PointF(topLeftRect.Left + slantBarWidth, topLeftRect.Bottom);
@@ -269,7 +271,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 topLeftCutoutBottomRightPoint
             };
 
-            yield return new DigitChiselResult(topLeftCutout, DigitChiselLocation.Left);
+            yield return new DigitChiselResult(topLeftCutout, true, false, false);
         }
     }
 
@@ -304,7 +306,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 leftSlantLineTopPoint,
                 leftSlantLineBottomPoint
             };
-            yield return new DigitChiselResult(bottomLeftCutout, DigitChiselLocation.Left);
+            yield return new DigitChiselResult(bottomLeftCutout, true, false, false);
 
             var bottomRightCutout = new[]
             {
@@ -312,7 +314,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 rightSlantLineTopPoint,
                 bottomBox.BottomRight()
             };
-            yield return new DigitChiselResult(bottomRightCutout, DigitChiselLocation.Right);
+            yield return new DigitChiselResult(bottomRightCutout, true, false, false);
 
         }
     }
@@ -421,13 +423,101 @@ app.activeDocument.selection = null;");
     public class DigitChiselResult
     {
         public readonly PointF[] Points;
-        public readonly DigitChiselLocation Location;
+        public readonly ChiselShadowsInfo ShadowsInfo;
 
         public DigitChiselResult(PointF[] points,
-            DigitChiselLocation location)
+            params bool[] isShadowSide)
         {
             Points = points;
-            Location = location;
+
+            var items = new List<ShadowLineInfo>();
+            var sideIndex = 0;
+            foreach (var pair in points.Zip(points.Skip(1), (x, y) => new { Start = x, End = y }))
+            {
+                items.Add(new ShadowLineInfo(pair.Start, pair.End, isShadowSide[sideIndex]));
+                sideIndex++;
+            }
+
+            ShadowsInfo = new ChiselShadowsInfo(items);
+        }
+
+        public DigitChiselResult(PointF[] points,
+            ChiselShadowsInfo shadowsInfo)
+        {
+            Points = points;
+            ShadowsInfo = shadowsInfo;
+        }
+
+        public DigitChiselResult(RectangleF rect,
+            params RectangleSideName[] shadowSides)
+        {
+            Points = rect.ToPathPoints();
+
+            ShadowsInfo = new ChiselShadowsInfo(
+                GetSides(rect)
+                    .Select(x => new ShadowLineInfo(x.Start, x.End, shadowSides.Contains(x.Name)))
+                    .ToList());
+        }
+
+        private IEnumerable<RectangleSide> GetSides(RectangleF rect)
+        {
+            yield return new RectangleSide(rect.BottomLeft(), rect.TopLeft(), RectangleSideName.Left);
+            yield return new RectangleSide(rect.TopLeft(), rect.TopRight(), RectangleSideName.Top);
+            yield return new RectangleSide(rect.TopRight(), rect.BottomRight(), RectangleSideName.Right);
+            yield return new RectangleSide(rect.BottomRight(), rect.BottomLeft(), RectangleSideName.Bottom);
+        }
+
+        private class RectangleSide
+        {
+            public readonly PointF Start;
+            public readonly PointF End;
+            public readonly RectangleSideName Name;
+
+            public RectangleSide(PointF start,
+                PointF end,
+                RectangleSideName name)
+            {
+                Start = start;
+                End = end;
+                Name = name;
+            }
+        }
+    }
+
+    public enum RectangleSideName
+    {
+        Left,
+        Top,
+        Right,
+        Bottom
+    }
+
+    public class ChiselShadowsInfo
+    {
+        public readonly List<ShadowLineInfo> ShadowLineInfos;
+
+        public static readonly ChiselShadowsInfo Empty = new ChiselShadowsInfo(new List<ShadowLineInfo>());
+
+        public ChiselShadowsInfo(List<ShadowLineInfo> shadowLineInfos)
+        {
+            ShadowLineInfos = shadowLineInfos;
+        }
+    }
+
+    public class ShadowLineInfo
+    {
+        public readonly PointF Start;
+        public readonly PointF End;
+
+        public readonly bool CastsShadow;
+
+        public ShadowLineInfo(PointF start,
+            PointF end,
+            bool castsShadow)
+        {
+            Start = start;
+            End = end;
+            CastsShadow = castsShadow;
         }
     }
 
@@ -468,7 +558,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect.ToPathPoints(), DigitChiselLocation.Left);
+                yield return new DigitChiselResult(rect, RectangleSideName.Top);
             }
             else if (_name == DigitVerticalBarName.TopRight)
             {
@@ -481,7 +571,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect.ToPathPoints(), DigitChiselLocation.Right);
+                yield return new DigitChiselResult(rect, RectangleSideName.Top, RectangleSideName.Left);
             }
             else if (_name == DigitVerticalBarName.BottomRight)
             {
@@ -494,7 +584,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect.ToPathPoints(), DigitChiselLocation.Right);
+                yield return new DigitChiselResult(rect, RectangleSideName.Top, RectangleSideName.Left);
             }
             else if (_name == DigitVerticalBarName.BottomLeft)
             {
@@ -507,7 +597,7 @@ app.activeDocument.selection = null;");
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect.ToPathPoints(), DigitChiselLocation.Left);
+                yield return new DigitChiselResult(rect, RectangleSideName.Top);
             }
             else
                 throw new NotSupportedException();
@@ -548,7 +638,7 @@ app.activeDocument.selection = null;");
                     new PointF(outerBounds.Right - digitLineWidth, outerBounds.Top + digitLineWidth),
                     new PointF(outerBounds.Right - digitLineWidth, upperRect.Bottom - digitLineWidth / 2),
                     new PointF(outerBounds.Left + digitLineWidth, upperRect.Bottom - digitLineWidth / 2)
-                }, DigitChiselLocation.Center);
+                }, true, false, false, true);
             }
             else if (_name == DigitHoleName.Bottom)
             {
@@ -560,7 +650,7 @@ app.activeDocument.selection = null;");
                     new PointF(outerBounds.Right - digitLineWidth, lowerRect.Top + digitLineWidth / 2),
                     new PointF(outerBounds.Right - digitLineWidth, lowerRect.Bottom - digitLineWidth),
                     new PointF(outerBounds.Left + digitLineWidth, lowerRect.Bottom - digitLineWidth)
-                }, DigitChiselLocation.Center);
+                }, true, false, false, true);
             }
             else
                 throw new NotSupportedException();
@@ -603,7 +693,7 @@ app.activeDocument.selection = null;");
                     new PointF(outerBounds.Left, midpointY + sidesYOffset),
                     new PointF(outerBounds.Left + insetLength, midpointY),
                     new PointF(outerBounds.Left, midpointY - sidesYOffset)
-                }, DigitChiselLocation.Left);
+                }, false, true, false);
             }
             else if (_name == DigitTriangleInsetName.Right)
             {
@@ -612,7 +702,7 @@ app.activeDocument.selection = null;");
                     new PointF(outerBounds.Right, midpointY - sidesYOffset),
                     new PointF(outerBounds.Right - insetLength, midpointY),
                     new PointF(outerBounds.Right, midpointY + sidesYOffset)
-                }, DigitChiselLocation.Right);
+                }, true, false, false);
             }
             else
                 throw new NotSupportedException();
@@ -653,7 +743,7 @@ app.activeDocument.selection = null;");
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY - lineHeight / 2),
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY + lineHeight / 2),
                 new PointF(outerBounds.Left + lineHeight - leftShift, middleY + lineHeight / 2)
-            }, DigitChiselLocation.Center);
+            }, true, false, false, true);
         }
     }
 
@@ -698,7 +788,7 @@ app.activeDocument.selection = null;");
 
                 yield return new DigitChiselResult(result.Points
                     .Select(x => new PointF(x.X, x.Y + shift))
-                    .ToArray(), result.Location);
+                    .ToArray(), result.ShadowsInfo);
             }
             else
                 yield return result;
@@ -716,13 +806,16 @@ app.activeDocument.selection = null;");
                 var refPoint = new PointF(topLeft.X + xLength, topLeft.Y);
                 var intersectionPoint = new PointF(topLeft.X, topLeft.Y + xLength * slope);
 
+                var shadowSides = MoveToCenter
+                    ? new[] { false, true, false }
+                    : new[] { false, false, false };
 
                 return new DigitChiselResult(new PointF[]
                 {
                     intersectionPoint,
                     topLeft,
                     refPoint
-                }, DigitChiselLocation.Left);
+                }, shadowSides);
             }
             else if (cornerName == DigitCornerName.TopRight)
             {
@@ -731,13 +824,16 @@ app.activeDocument.selection = null;");
                 var refPoint = new PointF(topRight.X - xLength, topRight.Y);
                 var intersectionPoint = new PointF(topRight.X, topRight.Y + xLength * slope);
 
+                var shadowSides = MoveToCenter
+                    ? new[] { true, false, false }
+                    : new[] { false, false, true };
 
                 return new DigitChiselResult(new PointF[]
                 {
                     refPoint,
                     topRight,
                     intersectionPoint
-                }, DigitChiselLocation.Right);
+                }, shadowSides);
             }
             else if (cornerName == DigitCornerName.BottomRight)
             {
@@ -746,12 +842,16 @@ app.activeDocument.selection = null;");
                 var refPoint = new PointF(bottomRight.X - xLength, bottomRight.Y);
                 var intersectionPoint = new PointF(bottomRight.X, bottomRight.Y - xLength * slope);
 
+                var shadowSides = MoveToCenter
+                    ? new[] { false, false, true }
+                    : new[] { false, false, true };
+
                 return new DigitChiselResult(new PointF[]
                 {
                     intersectionPoint,
                     bottomRight,
                     refPoint
-                }, DigitChiselLocation.Right);
+                }, shadowSides);
             }
             else if (cornerName == DigitCornerName.BottomLeft)
             {
@@ -760,12 +860,16 @@ app.activeDocument.selection = null;");
                 var refPoint = new PointF(bottomLeft.X + xLength, bottomLeft.Y);
                 var intersectionPoint = new PointF(bottomLeft.X, bottomLeft.Y - xLength * slope);
 
+                var shadowSides = MoveToCenter
+                    ? new[] { false, false, true }
+                    : new[] { false, false, false };
+
                 return new DigitChiselResult(new PointF[]
                 {
                     refPoint,
                     bottomLeft,
                     intersectionPoint
-                }, DigitChiselLocation.Left);
+                }, shadowSides);
             }
             else
             {
