@@ -364,11 +364,14 @@ app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
 
+            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix));
+
             return script.ToString();
         }
 
         private string CreateShadowScript(RectangleF marble,
-            float dimensionPercentage)
+            float dimensionPercentage,
+            string idPostfix)
         {
             var script = new StringBuilder();
 
@@ -376,8 +379,8 @@ app.activeDocument.selection = null;");
             var rightShadowRect = new RectangleF(marble.TopRight(), new SizeF(shadowDimension, marble.Height));
             var bottomShadowRect = new RectangleF(marble.BottomLeft(), new SizeF(marble.Width, shadowDimension));
 
-            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.PathItems", "shadow_right"));
-            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.PathItems", "shadow_bottom"));
+            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_right{idPostfix}"));
+            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_bottom{idPostfix}"));
 
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
             script.AppendLine(@"app.executeMenuCommand(""group"");
