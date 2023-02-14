@@ -352,11 +352,32 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             //Render the paths
             script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", $"marble{idPostfix}"));
 
-
             for (int i = 0; i < chiseledOutSections.Count; i++)
             {
                 script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}{idPostfix}"));
             }
+
+            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
+            script.AppendLine(@"app.executeMenuCommand(""group"");
+app.executeMenuCommand(""Live Pathfinder Exclude"");
+app.executeMenuCommand(""expandStyle"");
+app.executeMenuCommand(""ungroup"");
+app.activeDocument.selection = null;");
+
+            return script.ToString();
+        }
+
+        private string CreateShadowScript(RectangleF marble,
+            float dimensionPercentage)
+        {
+            var script = new StringBuilder();
+
+            var shadowDimension = dimensionPercentage * marble.Width;
+            var rightShadowRect = new RectangleF(marble.TopRight(), new SizeF(shadowDimension, marble.Height));
+            var bottomShadowRect = new RectangleF(marble.BottomLeft(), new SizeF(marble.Width, shadowDimension));
+
+            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.PathItems", "shadow_right"));
+            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.PathItems", "shadow_bottom"));
 
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
             script.AppendLine(@"app.executeMenuCommand(""group"");
@@ -373,7 +394,7 @@ app.activeDocument.selection = null;");
             return $@"var {variableName} = {pathItems}.add();
 {variableName}.setEntirePath({CreateJavaScriptArray(points)});
 {variableName}.closed = true;
-{variableName}.selected = true
+{variableName}.selected = true;
 {variableName}.fillColor = new RGBColor();
 {variableName}.fillColor.red = 255;
 {variableName}.fillColor.green = 0;
