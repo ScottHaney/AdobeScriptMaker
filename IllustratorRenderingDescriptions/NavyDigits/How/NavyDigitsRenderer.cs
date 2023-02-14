@@ -376,15 +376,15 @@ app.activeDocument.selection = null;");
             var script = new StringBuilder();
 
             var shadowDimension = dimensionPercentage * marble.Width;
-            var rightShadowRect = new RectangleF(marble.TopRight(), new SizeF(shadowDimension, marble.Height));
+            var rightShadowRect = new RectangleF(marble.TopRight(), new SizeF(shadowDimension, marble.Height + shadowDimension));
             var bottomShadowRect = new RectangleF(marble.BottomLeft(), new SizeF(marble.Width, shadowDimension));
 
-            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_right{idPostfix}"));
-            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_bottom{idPostfix}"));
+            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_right{idPostfix}", true));
+            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_bottom{idPostfix}", true));
 
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
             script.AppendLine(@"app.executeMenuCommand(""group"");
-app.executeMenuCommand(""Live Pathfinder Exclude"");
+app.executeMenuCommand(""Live Pathfinder Add"");
 app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
@@ -392,14 +392,14 @@ app.activeDocument.selection = null;");
             return script.ToString();
         }
 
-        private string CreatePath(PointF[] points, string pathItems, string variableName)
+        private string CreatePath(PointF[] points, string pathItems, string variableName, bool isBlack = false)
         {
             return $@"var {variableName} = {pathItems}.add();
 {variableName}.setEntirePath({CreateJavaScriptArray(points)});
 {variableName}.closed = true;
 {variableName}.selected = true;
 {variableName}.fillColor = new RGBColor();
-{variableName}.fillColor.red = 255;
+{variableName}.fillColor.red = {(isBlack ? 0 : 255)};
 {variableName}.fillColor.green = 0;
 {variableName}.fillColor.blue = 0;";
         }
