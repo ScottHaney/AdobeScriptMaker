@@ -31,7 +31,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             for (int i = 0; i <= 9; i++)
             {
                 result.AppendLine(CreateDigitScript(i, new RectangleF(currentTopLeft, _boundingBoxSize)));
-                currentTopLeft = new PointF(currentTopLeft.X + _boundingBoxSize.Width, currentTopLeft.Y);
+                currentTopLeft = new PointF(currentTopLeft.X + _boundingBoxSize.Width + 100, currentTopLeft.Y);
             }
 
             return result.ToString();
