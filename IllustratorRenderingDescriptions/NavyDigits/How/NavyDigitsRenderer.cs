@@ -359,22 +359,13 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}{idPostfix}"));
             }
 
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude"));
-            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            /*script.AppendLine(@"app.executeMenuCommand(""group"");
-app.executeMenuCommand(""Live Pathfinder Exclude"");
-app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");
-app.activeDocument.selection = null;");
-
-            script.AppendLine($"doc.pathItems[0].name = '{Id}'");*/
-
-            //script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
+            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
 
             return script.ToString();
         }
 
-        private string CreatePathFinderScript(string pathFinderAction)
+        private string CreatePathFinderScript(string pathFinderAction, string resultName)
         {
             var script = new StringBuilder();
 
@@ -391,10 +382,23 @@ app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
 
-            script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{Id}'; }}
-else {{ doc.pathItems[0].name = '{Id}'; }}");
+            script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
+else {{ doc.pathItems[0].name = '{resultName}'; }}");
 
             return script.ToString();
+        }
+
+        private string SelectNamedPathOrCompoundPath(string name)
+        {
+            return $@"var compoundMatch = null;
+for (var i = 0; i < doc.compoundPathItems.length; i++) {{
+if (doc.compoundPathItems[i].name == '{name}') {{ doc.compoundPathItems[i].selected = true; break; }}
+}}
+if (!compoundMatch) {{
+for (var i = 0; i < doc.pathItems.length; i++) {{
+if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; break; }}
+}}
+}}";
         }
 
         private string CreateShadowScript(RectangleF marble,
@@ -421,15 +425,8 @@ else {{ doc.pathItems[0].name = '{Id}'; }}");
                 shadowLineIndex++;
             }
 
-            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            script.AppendLine(@"app.executeMenuCommand(""group"");
-app.executeMenuCommand(""Live Pathfinder Add"");
-app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");
-app.activeDocument.selection = null;");
-
             var shadowLinesGroupName = $"{Id}_shadow_lines";
-            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{shadowLinesGroupName}'");
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName));
 
             var removeShadowLineIndex = 0;
             foreach (var removeShadowLine in removeShadowLines)
@@ -438,28 +435,13 @@ app.activeDocument.selection = null;");
                 removeShadowLineIndex++;
             }
 
-            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            script.AppendLine(@"app.executeMenuCommand(""group"");
-app.executeMenuCommand(""Live Pathfinder Add"");
-app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");
-app.activeDocument.selection = null;");
-
             var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
-            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{removeShadowLinesGroupName}'");
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName));
 
-            script.AppendLine($"doc.compoundPathItems.findByName('{shadowLinesGroupName}').selected = true;");
-            script.AppendLine($"doc.compoundPathItems.findByName('{removeShadowLinesGroupName}').selected = true;");
+            script.AppendLine(SelectNamedPathOrCompoundPath(shadowLinesGroupName));
+            script.AppendLine(SelectNamedPathOrCompoundPath(removeShadowLinesGroupName));
 
-            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            script.AppendLine(@"app.executeMenuCommand(""group"");
-app.executeMenuCommand(""Live Pathfinder Exclude"");
-app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");
-app.activeDocument.selection = null;");
-
-            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{Id}_shadows'");
-
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", $"{Id}_shadows"));
             return script.ToString();
         }
 
