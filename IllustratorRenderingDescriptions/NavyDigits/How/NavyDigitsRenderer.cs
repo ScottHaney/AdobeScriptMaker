@@ -366,23 +366,34 @@ app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
 
-            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix));
+            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
 
             return script.ToString();
         }
 
         private string CreateShadowScript(RectangleF marble,
             float dimensionPercentage,
-            string idPostfix)
+            string idPostfix,
+            List<DigitChiselResult> chiseledOutSections)
         {
             var script = new StringBuilder();
 
-            var shadowDimension = dimensionPercentage * marble.Width;
-            var rightShadowRect = new RectangleF(marble.TopRight(), new SizeF(shadowDimension, marble.Height + shadowDimension));
-            var bottomShadowRect = new RectangleF(marble.BottomLeft(), new SizeF(marble.Width, shadowDimension));
+            var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+            var allLineInfos = chiseledOutSections
+                .Concat(new[] { marbleShadowsInfo })
+                .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
+                .ToList();
 
-            script.AppendLine(CreatePath(rightShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_right{idPostfix}", true));
-            script.AppendLine(CreatePath(bottomShadowRect.ToPathPoints(), "doc.pathItems", $"shadow_bottom{idPostfix}", true));
+            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
+            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
+
+
+            var shadowLineIndex = 0;
+            foreach (var shadowLine in shadowLines)
+            {
+                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", false, true));
+                shadowLineIndex++;
+            }
 
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
             script.AppendLine(@"app.executeMenuCommand(""group"");
@@ -394,7 +405,7 @@ app.activeDocument.selection = null;");
             return script.ToString();
         }
 
-        private string CreatePath(PointF[] points, string pathItems, string variableName, bool isBlack = false)
+        private string CreatePath(PointF[] points, string pathItems, string variableName, bool isClosed = true, bool isBlack = false)
         {
             return $@"var {variableName} = {pathItems}.add();
 {variableName}.setEntirePath({CreateJavaScriptArray(points)});
