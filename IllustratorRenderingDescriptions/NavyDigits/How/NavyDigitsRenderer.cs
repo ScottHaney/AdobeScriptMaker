@@ -404,7 +404,8 @@ if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; brea
         private string CreateShadowScript(RectangleF marble,
             float dimensionPercentage,
             string idPostfix,
-            List<DigitChiselResult> chiseledOutSections)
+            List<DigitChiselResult> chiseledOutSections,
+            float shadowAngle = 45)
         {
             var script = new StringBuilder();
 
@@ -417,11 +418,14 @@ if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; brea
             var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
             var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
 
+            var shadowDimension = dimensionPercentage * marble.Width;
+            var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
+            var offsetY = -shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
 
             var shadowLineIndex = 0;
             foreach (var shadowLine in shadowLines)
             {
-                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", false, true));
+                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", false, true));
                 shadowLineIndex++;
             }
 
@@ -431,7 +435,7 @@ if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; brea
             var removeShadowLineIndex = 0;
             foreach (var removeShadowLine in removeShadowLines)
             {
-                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", false, true));
+                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", false, true));
                 removeShadowLineIndex++;
             }
 
