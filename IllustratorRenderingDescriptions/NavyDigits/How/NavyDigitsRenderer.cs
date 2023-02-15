@@ -359,14 +359,40 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}{idPostfix}"));
             }
 
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude"));
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            script.AppendLine(@"app.executeMenuCommand(""group"");
+            /*script.AppendLine(@"app.executeMenuCommand(""group"");
 app.executeMenuCommand(""Live Pathfinder Exclude"");
 app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
 
-            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
+            script.AppendLine($"doc.pathItems[0].name = '{Id}'");*/
+
+            //script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
+
+            return script.ToString();
+        }
+
+        private string CreatePathFinderScript(string pathFinderAction)
+        {
+            var script = new StringBuilder();
+
+            var pathsCountVar = $"pathsCount_{Guid.NewGuid().ToString("N")}";
+            var compoundPathsCountVar = $"compoundPathsCount_{Guid.NewGuid().ToString("N")}";
+
+            script.AppendLine($@"var {pathsCountVar} = doc.pathItems.length;
+var {compoundPathsCountVar} = doc.compoundPathItems.length;");
+
+            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
+            script.AppendLine($@"app.executeMenuCommand(""group"");
+app.executeMenuCommand(""{pathFinderAction}"");
+app.executeMenuCommand(""expandStyle"");
+app.executeMenuCommand(""ungroup"");
+app.activeDocument.selection = null;");
+
+            script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{Id}'; }}
+else {{ doc.pathItems[0].name = '{Id}'; }}");
 
             return script.ToString();
         }
@@ -402,6 +428,38 @@ app.executeMenuCommand(""expandStyle"");
 app.executeMenuCommand(""ungroup"");
 app.activeDocument.selection = null;");
 
+            var shadowLinesGroupName = $"{Id}_shadow_lines";
+            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{shadowLinesGroupName}'");
+
+            var removeShadowLineIndex = 0;
+            foreach (var removeShadowLine in removeShadowLines)
+            {
+                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", false, true));
+                removeShadowLineIndex++;
+            }
+
+            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
+            script.AppendLine(@"app.executeMenuCommand(""group"");
+app.executeMenuCommand(""Live Pathfinder Add"");
+app.executeMenuCommand(""expandStyle"");
+app.executeMenuCommand(""ungroup"");
+app.activeDocument.selection = null;");
+
+            var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
+            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{removeShadowLinesGroupName}'");
+
+            script.AppendLine($"doc.compoundPathItems.findByName('{shadowLinesGroupName}').selected = true;");
+            script.AppendLine($"doc.compoundPathItems.findByName('{removeShadowLinesGroupName}').selected = true;");
+
+            //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
+            script.AppendLine(@"app.executeMenuCommand(""group"");
+app.executeMenuCommand(""Live Pathfinder Exclude"");
+app.executeMenuCommand(""expandStyle"");
+app.executeMenuCommand(""ungroup"");
+app.activeDocument.selection = null;");
+
+            script.AppendLine($"doc.compoundPathItems[doc.compoundPathItems.length - 1].name = '{Id}_shadows'");
+
             return script.ToString();
         }
 
@@ -414,7 +472,8 @@ app.activeDocument.selection = null;");
 {variableName}.fillColor = new RGBColor();
 {variableName}.fillColor.red = {(isBlack ? 0 : 255)};
 {variableName}.fillColor.green = 0;
-{variableName}.fillColor.blue = 0;";
+{variableName}.fillColor.blue = 0;
+{variableName}.name = '{variableName}'";
         }
 
         private string CreateJavaScriptArray(PointF[] points)
