@@ -384,14 +384,17 @@ app.executeMenuCommand(""expandStyle"");
 {(ungroup ? "app.executeMenuCommand('ungroup')" : "")};
 app.activeDocument.selection = null;");
 
-            if (ungroup)
+            if (!string.IsNullOrEmpty(resultName))
             {
-                script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
+                if (ungroup)
+                {
+                    script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
 else {{ doc.pathItems[0].name = '{resultName}'; }}");
-            }
-            else
-            {
-                script.AppendLine($"doc.groupItems[0].name = '{resultName}';");
+                }
+                else
+                {
+                    script.AppendLine($"doc.groupItems[0].name = '{resultName}';");
+                }
             }
 
             return script.ToString();
@@ -437,32 +440,31 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
             var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
 
-            
-            var shadowPaths = shadowLines
-                .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
-
-            var shadowPathsName = $"shadows_{idPostfix}";
-            script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
-
-
-            //var shadowLinesGroupName = $"{Id}_shadow_lines";
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
-
             var removeShadowPaths = removeShadowLines
                 .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
 
             var removeShadowPathsName = $"remove_shadows_{idPostfix}";
             script.AppendLine(CreateCompoundPath(removeShadowPaths, "doc.compoundPathItems", removeShadowPathsName, x => $"remove_shadow_line{x}_{idPostfix}", isBlue: true));
 
-            script.AppendLine("app.activeDocument.selection = null;");
-
             //var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
+
+            var shadowPaths = shadowLines
+                .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
+
+            var shadowPathsName = $"shadows_{idPostfix}";
+            script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+            
+            //var shadowLinesGroupName = $"{Id}_shadow_lines";
+            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
 
             //script.AppendLine(SelectNamedItem(shadowPathsName));
             //script.AppendLine(SelectNamedItem(removeShadowPathsName));
 
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", $"{Id}_shadows"));
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", ""));
+            //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Minus Back\");");
+            script.AppendLine("app.activeDocument.selection = null;");
+
             return script.ToString();
         }
 
@@ -511,7 +513,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 index++;
             }
 
-            script.AppendLine($"{compoundPathVar}.selected = true");
+            script.AppendLine($"{compoundPathVar}.selected = true;");
 
             return script.ToString();
         }
