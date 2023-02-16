@@ -204,10 +204,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var leftOverSpace = outerBounds.Width - lineWidth;
             var leftCutout = new RectangleF(outerBounds.TopLeft(), new SizeF(leftOverSpace / 2, outerBounds.Height));
 
-            yield return new DigitChiselResult(leftCutout, RectangleSideName.Left);
+            yield return new DigitChiselResult(leftCutout);
 
             var rightCutout = new RectangleF(outerBounds.Right - leftOverSpace / 2, outerBounds.Top, leftOverSpace / 2, outerBounds.Height);
-            yield return new DigitChiselResult(rightCutout);
+            yield return new DigitChiselResult(rightCutout, RectangleSideName.Left);
         }
     }
 
@@ -461,7 +461,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             //script.AppendLine(SelectNamedItem(shadowPathsName));
             //script.AppendLine(SelectNamedItem(removeShadowPathsName));
 
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", ""));
+            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", ""));
             //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Minus Back\");");
             script.AppendLine("app.activeDocument.selection = null;");
 
