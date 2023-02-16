@@ -365,7 +365,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             return script.ToString();
         }
 
-        private string CreatePathFinderScript(string pathFinderAction, string resultName)
+        private string CreatePathFinderScript(string pathFinderAction, string resultName, bool ungroup = true, bool group = true)
         {
             var script = new StringBuilder();
 
@@ -376,27 +376,40 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 var {compoundPathsCountVar} = doc.compoundPathItems.length;");
 
             //This code was taken from: https://community.adobe.com/t5/illustrator-discussions/looking-for-javascript-commands-for-path-finder-operation/m-p/12355960
-            script.AppendLine($@"app.executeMenuCommand(""group"");
+            script.AppendLine($@"{(group ? "app.executeMenuCommand('group')" : "")};
 app.executeMenuCommand(""{pathFinderAction}"");
 app.executeMenuCommand(""expandStyle"");
-app.executeMenuCommand(""ungroup"");
+{(ungroup ? "app.executeMenuCommand('ungroup')" : "")};
 app.activeDocument.selection = null;");
 
-            script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
+            if (ungroup)
+            {
+                script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
 else {{ doc.pathItems[0].name = '{resultName}'; }}");
+            }
+            else
+            {
+                script.AppendLine($"doc.groupItems[0].name = '{resultName}';");
+            }
 
             return script.ToString();
         }
 
-        private string SelectNamedPathOrCompoundPath(string name)
+        private string SelectNamedItem(string name)
         {
-            return $@"var compoundMatch = null;
+            var matchFoundVar = $"matchFound_{Guid.NewGuid().ToString("N")}";
+            return $@"var {matchFoundVar} = false;
 for (var i = 0; i < doc.compoundPathItems.length; i++) {{
-if (doc.compoundPathItems[i].name == '{name}') {{ doc.compoundPathItems[i].selected = true; break; }}
+if (doc.compoundPathItems[i].name == '{name}') {{ doc.compoundPathItems[i].selected = true; {matchFoundVar} = true; break; }}
 }}
-if (!compoundMatch) {{
+if (!{matchFoundVar}) {{
 for (var i = 0; i < doc.pathItems.length; i++) {{
-if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; break; }}
+if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; {matchFoundVar} = true; break; }}
+}}
+}}
+if (!{matchFoundVar}) {{
+for (var i = 0; i < doc.groupItems.length; i++) {{
+if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {matchFoundVar} = true; break; }}
 }}
 }}";
         }
@@ -420,32 +433,32 @@ if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; brea
 
             var shadowDimension = dimensionPercentage * marble.Width;
             var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
-            var offsetY = -shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
+            var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
 
             var shadowLineIndex = 0;
             foreach (var shadowLine in shadowLines)
             {
-                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", false, true));
+                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", true, true));
                 shadowLineIndex++;
             }
 
             var shadowLinesGroupName = $"{Id}_shadow_lines";
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName));
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
 
             var removeShadowLineIndex = 0;
             foreach (var removeShadowLine in removeShadowLines)
             {
-                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", false, true));
+                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", true, true));
                 removeShadowLineIndex++;
             }
 
             var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName));
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
 
-            script.AppendLine(SelectNamedPathOrCompoundPath(shadowLinesGroupName));
-            script.AppendLine(SelectNamedPathOrCompoundPath(removeShadowLinesGroupName));
+            script.AppendLine(SelectNamedItem(shadowLinesGroupName));
+            script.AppendLine(SelectNamedItem(removeShadowLinesGroupName));
 
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", $"{Id}_shadows"));
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Subtract", $"{Id}_shadows"));
             return script.ToString();
         }
 
@@ -453,7 +466,7 @@ if (doc.pathItems[i].name == '{name}') {{ doc.pathItems[i].selected = true; brea
         {
             return $@"var {variableName} = {pathItems}.add();
 {variableName}.setEntirePath({CreateJavaScriptArray(points)});
-{variableName}.closed = true;
+{variableName}.closed = {isClosed.ToString().ToLower()};
 {variableName}.selected = true;
 {variableName}.fillColor = new RGBColor();
 {variableName}.fillColor.red = {(isBlack ? 0 : 255)};
