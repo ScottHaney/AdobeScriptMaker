@@ -9,10 +9,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Xml.XPath;
 
 namespace IllustratorRenderingDescriptions.NavyDigits.How
 {
@@ -435,32 +437,32 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
             var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
 
-            var shadowLineIndex = 0;
-            foreach (var shadowLine in shadowLines)
-            {
-                script.AppendLine(CreatePath(new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) }, "doc.pathItems", $"shadow_line{shadowLineIndex}_{idPostfix}", true, isBlack: true));
-                shadowLineIndex++;
-            }
+            
+            var shadowPaths = shadowLines
+                .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
+
+            var shadowPathsName = $"shadows_{idPostfix}";
+            script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+
 
             //var shadowLinesGroupName = $"{Id}_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
 
-            var removeShadowLineIndex = 0;
-            foreach (var removeShadowLine in removeShadowLines)
-            {
-                script.AppendLine(CreatePath(new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) }, "doc.pathItems", $"remove_shadow_line{removeShadowLineIndex}_{idPostfix}", true, isBlue: true));
-                removeShadowLineIndex++;
-            }
+            var removeShadowPaths = removeShadowLines
+                .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
+
+            var removeShadowPathsName = $"remove_shadows_{idPostfix}";
+            script.AppendLine(CreateCompoundPath(removeShadowPaths, "doc.compoundPathItems", removeShadowPathsName, x => $"remove_shadow_line{x}_{idPostfix}", isBlue: true));
 
             script.AppendLine("app.activeDocument.selection = null;");
 
             //var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
 
-            //script.AppendLine(SelectNamedItem(shadowLinesGroupName));
-            //script.AppendLine(SelectNamedItem(removeShadowLinesGroupName));
+            //script.AppendLine(SelectNamedItem(shadowPathsName));
+            //script.AppendLine(SelectNamedItem(removeShadowPathsName));
 
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Subtract", $"{Id}_shadows"));
+            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", $"{Id}_shadows"));
             return script.ToString();
         }
 
@@ -479,6 +481,39 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 {variableName}.fillColor.green = {green};
 {variableName}.fillColor.blue = {blue};
 {variableName}.name = '{variableName}'";
+        }
+
+        private string CreateCompoundPath(IEnumerable<PointF[]> paths, string compoundPathItems, string compoundPathName, Func<int, string> pathNameFunc, bool isClosed = true, bool isBlack = false, bool isBlue = false)
+        {
+            var red = isBlack ? 0 : (isBlue ? 0 : 255);
+            var green = 0;
+            var blue = isBlack ? 0 : (isBlue ? 255 : 0);
+
+            var script = new StringBuilder();
+
+            var compoundPathVar = $"compoundPathItem_{Guid.NewGuid().ToString("N")}";
+            script.AppendLine($@"var {compoundPathVar} = {compoundPathItems}.add();
+{compoundPathVar}.name = '{compoundPathName}';");
+
+            var index = 1;
+            foreach (var path in paths)
+            {
+                var pathItemVar = $"pathItem_{Guid.NewGuid().ToString("N")}";
+                script.AppendLine($@"var {pathItemVar} = {compoundPathVar}.pathItems.add()
+{pathItemVar}.setEntirePath({CreateJavaScriptArray(path)});
+{pathItemVar}.closed = {isClosed.ToString().ToLower()};
+{pathItemVar}.fillColor = new RGBColor();
+{pathItemVar}.fillColor.red = {red};
+{pathItemVar}.fillColor.green = {green};
+{pathItemVar}.fillColor.blue = {blue};
+{pathItemVar}.name = '{pathNameFunc(index)}'");
+
+                index++;
+            }
+
+            script.AppendLine($"{compoundPathVar}.selected = true");
+
+            return script.ToString();
         }
 
         private string CreateJavaScriptArray(PointF[] points)
