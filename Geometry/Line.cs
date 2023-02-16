@@ -20,7 +20,7 @@ namespace Geometry
                 return null;
             else
             {
-                return (End.Y - Start.Y) / (Start.X - End.X);
+                return (End.Y - Start.Y) / (End.X - Start.X);
             }
         }
 
