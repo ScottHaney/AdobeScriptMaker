@@ -55,5 +55,32 @@ namespace Geometry.Tests
 
             Assert.AreEqual(-1, actualResult);
         }
+
+        [Test]
+        public void The_Parametric_Value_Of_A_Point_Not_On_A_Vertical_Line_Is_Null()
+        {
+            var line = new Line(new PointF(0, 0), new PointF(0, 1));
+            var actualResult = line.GetParametericValue(new PointF(5, 5));
+
+            Assert.AreEqual(null, actualResult);
+        }
+
+        [Test]
+        public void The_Parametric_Value_Of_A_Point_On_A_Vertical_Line_Above_The_Start_Point_Is_The_Y_Difference_From_The_Start_Point()
+        {
+            var line = new Line(new PointF(0, 0), new PointF(0, 1));
+            var actualResult = line.GetParametericValue(new PointF(0, 2));
+
+            Assert.AreEqual(2, actualResult);
+        }
+
+        [Test]
+        public void The_Parametric_Value_Of_A_Point_On_A_Vertical_Line_Below_The_Start_Point_Is_The_Y_Difference_From_The_Start_Point()
+        {
+            var line = new Line(new PointF(0, 0), new PointF(0, 1));
+            var actualResult = line.GetParametericValue(new PointF(0, -1));
+
+            Assert.AreEqual(-1, actualResult);
+        }
     }
 }
