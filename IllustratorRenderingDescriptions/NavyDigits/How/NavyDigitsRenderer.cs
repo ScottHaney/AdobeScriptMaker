@@ -452,6 +452,8 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 removeShadowLineIndex++;
             }
 
+            script.AppendLine("app.activeDocument.selection = null;");
+
             //var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
 
