@@ -901,7 +901,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY - lineHeight / 2),
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY + lineHeight / 2),
                 new PointF(outerBounds.Left + lineHeight - leftShift, middleY + lineHeight / 2)
-            }, true, false, false, true);
+            }, true, false, false, ExtendLeft ? false : true);
         }
     }
 
