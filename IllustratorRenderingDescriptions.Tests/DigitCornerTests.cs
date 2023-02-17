@@ -49,7 +49,7 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Centered_Top_Left_Corner_Casts_Shadows_Correctly()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var corner = new DigitCorner(DigitCornerName.TopLeft, 0.5f, 45) { MoveToCenter = true };
+            var corner = new DigitCorner(DigitCornerName.TopLeft, 0.1f, 45) { MoveToCenter = true };
 
             var results = corner.GetPoints(digitBoundingBox);
 
@@ -72,6 +72,20 @@ namespace IllustratorRenderingDescriptions.Tests
         }
 
         [Test]
+        public void Top_Right_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.TopRight, 0.5f, 45);
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+        }
+
+        [Test]
         public void Creates_Centered_Top_Right_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
@@ -80,6 +94,21 @@ namespace IllustratorRenderingDescriptions.Tests
             var actualResult = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, actualResult.SelectMany(x => x.Points));
+        }
+
+        [Test]
+        public void Centered_Top_Right_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.TopRight, 0.1f, 45) { MoveToCenter = true };
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            var result = results.First();
+            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[1]) }, shadowLines);
         }
 
         [Test]
@@ -94,6 +123,21 @@ namespace IllustratorRenderingDescriptions.Tests
         }
 
         [Test]
+        public void Bottom_Right_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.BottomRight, 0.5f, 45);
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            var result = results.First();
+            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[2]) }, shadowLines);
+        }
+
+        [Test]
         public void Creates_Centered_Bottom_Right_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
@@ -102,6 +146,21 @@ namespace IllustratorRenderingDescriptions.Tests
             var actualResult = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, actualResult.SelectMany(x => x.Points));
+        }
+
+        [Test]
+        public void Centered_Bottom_Right_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.BottomRight, 0.1f, 45) { MoveToCenter = true };
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            var result = results.First();
+            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[2]) }, shadowLines);
         }
 
         [Test]
@@ -116,6 +175,20 @@ namespace IllustratorRenderingDescriptions.Tests
         }
 
         [Test]
+        public void Bottom_Left_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.5f, 45);
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+        }
+
+        [Test]
         public void Creates_Centered_Bottom_Left_Corner_In_A_Square_At_10_Degrees()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
@@ -124,6 +197,20 @@ namespace IllustratorRenderingDescriptions.Tests
             var actualResult = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, actualResult.SelectMany(x => x.Points));
+        }
+
+        [Test]
+        public void Centered_Bottom_Left_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.BottomLeft, 0.1f, 45) { MoveToCenter = true };
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
         }
     }
 }

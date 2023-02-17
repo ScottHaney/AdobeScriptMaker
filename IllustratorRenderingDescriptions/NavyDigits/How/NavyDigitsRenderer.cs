@@ -982,7 +982,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 
                 var shadowSides = MoveToCenter
                     ? new[] { true, false, false }
-                    : new[] { false, false, true };
+                    : new[] { false, false, false };
 
                 return new DigitChiselResult(new PointF[]
                 {
@@ -1017,7 +1017,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 var intersectionPoint = new PointF(bottomLeft.X, bottomLeft.Y - xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { false, false, true }
+                    ? new[] { false, false, false }
                     : new[] { false, false, false };
 
                 return new DigitChiselResult(new PointF[]
