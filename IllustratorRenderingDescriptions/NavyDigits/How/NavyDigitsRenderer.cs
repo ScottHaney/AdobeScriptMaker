@@ -543,7 +543,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 chiselResults = chiselResults.Concat(new[] { marbleShadowsInfo });
             }
 
-            var allLineInfos = chiseledOutSections
+            var allLineInfos = chiselResults
                 .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
                 .ToList();
 
