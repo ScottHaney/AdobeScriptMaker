@@ -1,4 +1,5 @@
-﻿using IllustratorRenderingDescriptions.NavyDigits.How;
+﻿using Geometry;
+using IllustratorRenderingDescriptions.NavyDigits.How;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,21 @@ namespace IllustratorRenderingDescriptions.Tests
             var actualResult = verticalBar.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(1000, 1010), new PointF(1010, 1010), new PointF(1010, 1045), new PointF(1000, 1045) }, actualResult.SelectMany(x => x.Points));
+        }
+
+        [Test]
+        public void Entire_TopLeft_Vertical_Bar_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(1000, 1000, 100, 100);
+            var verticalBar = new DigitVerticalBar(DigitVerticalBarName.TopLeft, 0.1f);
+
+            var results = verticalBar.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            var result = results.First();
+            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[1]) }, shadowLines);
         }
 
         [Test]
