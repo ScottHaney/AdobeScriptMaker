@@ -428,16 +428,8 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
         {
             var script = new StringBuilder();
 
-            var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
-            var allLineInfos = chiseledOutSections
-                .Concat(new[] { marbleShadowsInfo })
-                .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
-                .ToList();
-
-            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
-            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
-
-            var updatedShadowLines = GetUpdatedShadowLines(shadowLines, removeShadowLines);
+            var shadowsCreator = new DigitShadowLinesCreator();
+            var updatedShadowLines = shadowsCreator.CreateShadows(marble, chiseledOutSections);
 
             var shadowDimension = dimensionPercentage * marble.Width;
             var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
@@ -476,30 +468,6 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             script.AppendLine("app.activeDocument.selection = null;");
 
             return script.ToString();
-        }
-
-        private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<ShadowLineInfo> originalShadowLines, IEnumerable<ShadowLineInfo> removeLines)
-        {
-            var lineDivider = new LineDivider();
-
-            var results = new List<Line>();
-            foreach (var shadowLine in originalShadowLines)
-            {
-                var loopResults = new List<Line>() { new Line(shadowLine.Start, shadowLine.End) };
-                foreach (var removeLine in removeLines)
-                {
-                    if (loopResults.Count == 0)
-                        break;
-
-                    loopResults = loopResults
-                        .SelectMany(x => lineDivider.DivideLine(x, new Line(removeLine.Start, removeLine.End)))
-                        .ToList();
-                }
-
-                results.AddRange(loopResults);
-            }
-
-            return results;
         }
 
         private string CreatePath(PointF[] points, string pathItems, string variableName, bool isClosed = true, bool isBlack = false, bool isBlue = false)
@@ -558,6 +526,48 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             //the top of the screen as y increases rather than the standard programming
             //way of having increasing y render towards the bottom of the screen
             return $"[{string.Join(",", points.Select(x => $"[{x.X}, {-x.Y}]"))}]";
+        }
+    }
+
+    public class DigitShadowLinesCreator
+    {
+        public IEnumerable<Line> CreateShadows(RectangleF marble,
+            List<DigitChiselResult> chiseledOutSections)
+        {
+            var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+            var allLineInfos = chiseledOutSections
+                .Concat(new[] { marbleShadowsInfo })
+                .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
+                .ToList();
+
+            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
+            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
+
+            return GetUpdatedShadowLines(shadowLines, removeShadowLines);
+        }
+
+        private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<ShadowLineInfo> originalShadowLines, IEnumerable<ShadowLineInfo> removeLines)
+        {
+            var lineDivider = new LineDivider();
+
+            var results = new List<Line>();
+            foreach (var shadowLine in originalShadowLines)
+            {
+                var loopResults = new List<Line>() { new Line(shadowLine.Start, shadowLine.End) };
+                foreach (var removeLine in removeLines)
+                {
+                    if (loopResults.Count == 0)
+                        break;
+
+                    loopResults = loopResults
+                        .SelectMany(x => lineDivider.DivideLine(x, new Line(removeLine.Start, removeLine.End)))
+                        .ToList();
+                }
+
+                results.AddRange(loopResults);
+            }
+
+            return results;
         }
     }
 
