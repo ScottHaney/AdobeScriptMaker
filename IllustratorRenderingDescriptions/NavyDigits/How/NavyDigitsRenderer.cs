@@ -604,13 +604,6 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             ShadowsInfo = new ChiselShadowsInfo(items);
         }
 
-        public DigitChiselResult(PointF[] points,
-            ChiselShadowsInfo shadowsInfo)
-        {
-            Points = points;
-            ShadowsInfo = shadowsInfo;
-        }
-
         public DigitChiselResult(RectangleF rect,
             params RectangleSideName[] shadowSides)
         {
@@ -951,7 +944,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 
                 yield return new DigitChiselResult(result.Points
                     .Select(x => new PointF(x.X, x.Y + shift))
-                    .ToArray(), result.ShadowsInfo);
+                    .ToArray(), result.ShadowsInfo.ShadowLineInfos.Select(x => x.CastsShadow).ToArray());
             }
             else
                 yield return result;

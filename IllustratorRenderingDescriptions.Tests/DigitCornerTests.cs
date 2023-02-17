@@ -31,7 +31,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEqual(Array.Empty<Line>(), shadowLines);
+            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
         }
 
         [Test]
@@ -43,6 +43,21 @@ namespace IllustratorRenderingDescriptions.Tests
             var actualResult = corner.GetPoints(digitBoundingBox);
 
             CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, actualResult.SelectMany(x => x.Points));
+        }
+
+        [Test]
+        public void Centered_Top_Left_Corner_Casts_Shadows_Correctly()
+        {
+            var digitBoundingBox = new RectangleF(0, 0, 100, 100);
+            var corner = new DigitCorner(DigitCornerName.TopLeft, 0.5f, 45) { MoveToCenter = true };
+
+            var results = corner.GetPoints(digitBoundingBox);
+
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
+
+            var result = results.First();
+            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[1], result.Points[2]) }, shadowLines);
         }
 
         [Test]
