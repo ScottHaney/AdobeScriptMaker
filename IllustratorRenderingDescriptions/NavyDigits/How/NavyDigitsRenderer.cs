@@ -578,7 +578,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 
             var items = new List<ShadowLineInfo>();
             var sideIndex = 0;
-            foreach (var pair in points.Zip(points.Skip(1), (x, y) => new { Start = x, End = y }))
+            foreach (var pair in points.Zip(points.Skip(1).Concat(new[] {points.First()}), (x, y) => new { Start = x, End = y }))
             {
                 items.Add(new ShadowLineInfo(pair.Start, pair.End, isShadowSide[sideIndex]));
                 sideIndex++;
