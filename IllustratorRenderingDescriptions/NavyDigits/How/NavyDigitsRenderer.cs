@@ -1,5 +1,6 @@
 ﻿using AdobeComponents.Animation;
 using AdobeComponents.Components;
+using Geometry;
 using IllustratorRenderingDescriptions.NavyDigits.What;
 using RenderingDescriptions.How;
 using RenderingDescriptions.Timing;
@@ -468,67 +469,28 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             return script.ToString();
         }
 
-        /*private IEnumerable<ShadowLineInfo> CreateFinalShadowLine(ShadowLineInfo shadowLine, IEnumerable<ShadowLineInfo> removeLines)
+        private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<ShadowLineInfo> originalShadowLines, IEnumerable<ShadowLineInfo> removeLines)
         {
-            var matchingRemoveLines = FindMatchingRemoveLines(shadowLine, removeLines);
+            var lineDivider = new LineDivider();
 
-            //Need to code up how to intersect lines...
-            var results = new List<ShadowLineInfo>() { shadowLine };
-            foreach (var removeLine in removeLines.OrderByDescending(x => Math.Abs(x.End.X - x.Start.X)))
+            var results = new List<Line>();
+            foreach (var shadowLine in originalShadowLines)
             {
-                var equalsStart = removeLine.Start == result
-            }
-        }
-
-        private List<ShadowLineInfo> SplitLines(List<ShadowLineInfo> currentShadows, ShadowLineInfo removeLine)
-        {
-            var result = new List<ShadowLineInfo>();
-            foreach (var shadow in currentShadows)
-            {
-                var shadowSlope = GetSlope(shadow.Start, shadow.End);
-                var shadowStartId = GetLinePositionId(shadow.Start, GetSlope(shadow.Start, shadow.End), shadow.Start);
-                var shadowEndId = GetLinePositionId(shadow.Start, GetSlope(shadow.Start, shadow.End), shadow.End);
-            }
-        }
-
-        private float GetLinePositionId(PointF anchorPoint, float slope, PointF targetPoint)
-        {
-            var changeInX = targetPoint.X - anchorPoint.X;
-            var newY = anchorPoint.Y + slope * changeInX;
-
-            var length = Math.Sqrt(Math.Pow(changeInX, 2) + Math.Pow(newY - anchorPoint.Y, 2));
-            return length;
-        }*/
-
-        private IEnumerable<ShadowLineInfo> FindMatchingRemoveLines(ShadowLineInfo shadowLine, IEnumerable<ShadowLineInfo> removeLines)
-        {
-            if (shadowLine.Start.X == shadowLine.End.X)
-            {
-                foreach (var item in removeLines.Where(x => x.Start.X == x.End.X))
-                    yield return item;
-            }
-            else
-            {
-                var targetSlope = GetSlope(shadowLine.Start, shadowLine.End);
-                var targetIntercept = shadowLine.Start.Y - targetSlope * shadowLine.Start.X;
+                var loopResults = new List<Line>() { new Line(shadowLine.Start, shadowLine.End) };
                 foreach (var removeLine in removeLines)
                 {
-                    var slope = GetSlope(removeLine.Start, removeLine.End);
-                    if (Math.Abs(targetSlope - slope) < 0.01f)
-                    {
-                        var intercept = removeLine.Start.Y - slope * removeLine.Start.X;
-                        if (Math.Abs(intercept - targetIntercept) < 0.01f)
-                        {
-                            yield return removeLine;
-                        }
-                    }
-                }
-            }
-        }
+                    if (loopResults.Count == 0)
+                        break;
 
-        private float GetSlope(PointF start, PointF end)
-        {
-            return (end.Y - start.Y) / (end.X - start.X);
+                    loopResults = loopResults
+                        .SelectMany(x => lineDivider.DivideLine(x, new Line(removeLine.Start, removeLine.End)))
+                        .ToList();
+                }
+
+                results.AddRange(loopResults);
+            }
+
+            return results;
         }
 
         private string CreatePath(PointF[] points, string pathItems, string variableName, bool isClosed = true, bool isBlack = false, bool isBlue = false)
