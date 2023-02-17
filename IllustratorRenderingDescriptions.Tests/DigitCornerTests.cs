@@ -1,5 +1,7 @@
+using Geometry;
 using IllustratorRenderingDescriptions.NavyDigits.How;
 using NUnit.Framework;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -18,18 +20,19 @@ namespace IllustratorRenderingDescriptions.Tests
             CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, actualResult.SelectMany(x => x.Points));
         }
 
-        /*[Test]
+        [Test]
         public void Top_Left_Corner_Casts_Shadows_Correctly()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
             var corner = new DigitCorner(DigitCornerName.TopLeft, 0.5f, 45);
 
-            var actualResult = corner.GetPoints(digitBoundingBox);
+            var results = corner.GetPoints(digitBoundingBox);
 
-            var corner.Get
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEqual(, corner.GetPoints();
-        }*/
+            CollectionAssert.AreEqual(Array.Empty<Line>(), shadowLines);
+        }
 
         [Test]
         public void Creates_Centered_Top_Left_Corner_In_A_Square_At_10_Degrees()

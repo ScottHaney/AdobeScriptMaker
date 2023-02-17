@@ -531,12 +531,19 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 
     public class DigitShadowLinesCreator
     {
+        public bool IncludeMarble { get; set; } = true;
+
         public IEnumerable<Line> CreateShadows(RectangleF marble,
             List<DigitChiselResult> chiseledOutSections)
         {
-            var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+            IEnumerable<DigitChiselResult> chiselResults = chiseledOutSections;
+            if (IncludeMarble)
+            {
+                var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+                chiselResults = chiselResults.Concat(new[] { marbleShadowsInfo });
+            }
+
             var allLineInfos = chiseledOutSections
-                .Concat(new[] { marbleShadowsInfo })
                 .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
                 .ToList();
 
