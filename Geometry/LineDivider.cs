@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -8,6 +9,12 @@ namespace Geometry
     public class LineDivider
     {
         public IEnumerable<Line> DivideLine(Line targetLine, Line lineToDivideWith)
+        {
+            var internalResults = DivideLineInternal(targetLine, lineToDivideWith);
+            return internalResults.Where(x => x.Start != x.End);
+        }
+
+        private IEnumerable<Line> DivideLineInternal(Line targetLine, Line lineToDivideWith)
         {
             //Make sure that both lines are oriented in the same parametric direction For example the line [(0,0), (1,1)] and the line [(1,1), (0,0)] should have
             //the same return value from this method
