@@ -437,24 +437,33 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
             var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
 
+            var updatedShadowLines = GetUpdatedShadowLines(shadowLines, removeShadowLines);
+
             var shadowDimension = dimensionPercentage * marble.Width;
             var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
             var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
 
-            var removeShadowPaths = removeShadowLines
-                .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
+            var updatedShadowPaths = updatedShadowLines
+                .Select(x => new PointF[] { x.Start, x.End, new PointF(x.End.X + offsetX, x.End.Y + offsetY), new PointF(x.Start.X + offsetX, x.Start.Y + offsetY) })
+                .ToList();
 
-            var removeShadowPathsName = $"remove_shadows_{idPostfix}";
-            script.AppendLine(CreateCompoundPath(removeShadowPaths, "doc.compoundPathItems", removeShadowPathsName, x => $"remove_shadow_line{x}_{idPostfix}", isBlue: true));
+            var shadowPathsName = $"shadows_{idPostfix}";
+            script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+
+            //var removeShadowPaths = removeShadowLines
+            //    .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
+
+            //var removeShadowPathsName = $"remove_shadows_{idPostfix}";
+            //script.AppendLine(CreateCompoundPath(removeShadowPaths, "doc.compoundPathItems", removeShadowPathsName, x => $"remove_shadow_line{x}_{idPostfix}", isBlue: true));
 
             //var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
 
-            var shadowPaths = shadowLines
-                .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
+            //var shadowPaths = shadowLines
+            //    .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
 
-            var shadowPathsName = $"shadows_{idPostfix}";
-            script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+            //var shadowPathsName = $"shadows_{idPostfix}";
+            //script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
             
             //var shadowLinesGroupName = $"{Id}_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
