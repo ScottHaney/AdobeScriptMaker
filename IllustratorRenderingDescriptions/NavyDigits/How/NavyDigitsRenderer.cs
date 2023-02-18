@@ -154,8 +154,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
-                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45),
-                    new DigitTriangleInset(DigitTriangleInsetName.Left, 0.25f * widthPaddingPercentage, 45))
+                    new DigitTriangleInset(DigitTriangleInsetName.Left, 0.25f * widthPaddingPercentage, 45),
+                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45))
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
@@ -851,7 +851,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                     new PointF(outerBounds.Left, midpointY + sidesYOffset),
                     new PointF(outerBounds.Left + insetLength, midpointY),
                     new PointF(outerBounds.Left, midpointY - sidesYOffset)
-                }, false, true, false);
+                }, false, false, false);
             }
             else if (_name == DigitTriangleInsetName.Right)
             {
