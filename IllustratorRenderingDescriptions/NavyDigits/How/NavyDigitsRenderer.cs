@@ -422,20 +422,8 @@ var {compoundPathsCountVar} = doc.compoundPathItems.length;");
 app.executeMenuCommand(""{pathFinderAction}"");
 app.executeMenuCommand(""expandStyle"");
 {(ungroup ? "app.executeMenuCommand('ungroup')" : "")};
+app.activeDocument.selection[0].name = '{resultName}';
 app.activeDocument.selection = null;");
-
-            if (!string.IsNullOrEmpty(resultName))
-            {
-                if (ungroup)
-                {
-                    script.AppendLine($@"if (doc.compoundPathItems.length == {compoundPathsCountVar} + 1) {{ doc.compoundPathItems[0].name = '{resultName}'; }}
-else {{ doc.pathItems[0].name = '{resultName}'; }}");
-                }
-                else
-                {
-                    script.AppendLine($"doc.groupItems[0].name = '{resultName}';");
-                }
-            }
 
             return script.ToString();
         }
@@ -519,6 +507,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", itemName));
                 //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Exclude\");");
                 //script.AppendLine("app.activeDocument.selection = null;");
+
+                //Make sure to get rid of the strok that gets added after running the path finder operation
+                var updatedShadowRef = FindItemRefByName(itemName, script);
+                script.AppendLine($@"{updatedShadowRef}.strokeWidth = 0;
+{updatedShadowRef}.strokeColor = new NoColor();");
             }
 
             //script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
