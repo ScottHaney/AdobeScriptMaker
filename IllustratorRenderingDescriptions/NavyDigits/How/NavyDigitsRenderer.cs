@@ -30,13 +30,22 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         public string CreateScript()
         {
+            var digitsPerRow = 5;
+            var xGapPerDigit = 100;
+            var yGapPerDigit = 150;
+
             var result = new StringBuilder();
-            var currentTopLeft = new PointF(0, 0);
 
             for (int i = 0; i <= 9; i++)
             {
-                result.AppendLine(CreateDigitScript(i, new RectangleF(currentTopLeft, _boundingBoxSize)));
-                currentTopLeft = new PointF(currentTopLeft.X + _boundingBoxSize.Width + 100, currentTopLeft.Y);
+                var rowIndex = (i / digitsPerRow);
+                var columnIndex = i % digitsPerRow;
+
+                var xOffset = (columnIndex + 1) * xGapPerDigit + columnIndex * _boundingBoxSize.Width;
+                var yOffset = (rowIndex + 1) * yGapPerDigit + rowIndex * _boundingBoxSize.Height;
+                var topLeft = new PointF(xOffset, yOffset);
+
+                result.AppendLine(CreateDigitScript(i, new RectangleF(topLeft, _boundingBoxSize)));
             }
 
             return result.ToString();
