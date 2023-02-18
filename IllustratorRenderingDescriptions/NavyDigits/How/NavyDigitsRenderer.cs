@@ -378,6 +378,16 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
 
+            var strokeWidth = 1;
+            var strokeColor = new int[] { 0, 0, 0 };
+
+            if (strokeWidth > 0)
+            {
+                var digitVarRef = FindItemRefByName(Id, script);
+                script.AppendLine($@"{digitVarRef}.strokeWidth = {strokeWidth};
+{digitVarRef}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});");
+            }
+
             var digitVariableName = $"digit_{Id}_path";
 
             script.AppendLine(SelectNamedItem(Id));
@@ -439,6 +449,30 @@ for (var i = 0; i < doc.groupItems.length; i++) {{
 if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {matchFoundVar} = true; break; }}
 }}
 }}";
+        }
+
+        private string FindItemRefByName(string name, StringBuilder scriptBuilder)
+        {
+            var variableName = $"pathMatch_{Guid.NewGuid().ToString("N")}";
+            var matchFoundVar = $"matchFound_{Guid.NewGuid().ToString("N")}";
+            var result = $@"var {matchFoundVar} = false;
+var {variableName};
+for (var i = 0; i < doc.compoundPathItems.length; i++) {{
+if (doc.compoundPathItems[i].name == '{name}') {{ {variableName} = doc.compoundPathItems[i]; {matchFoundVar} = true; break; }}
+}}
+if (!{matchFoundVar}) {{
+for (var i = 0; i < doc.pathItems.length; i++) {{
+if (doc.pathItems[i].name == '{name}') {{ {variableName} = doc.pathItems[i]; {matchFoundVar} = true; break; }}
+}}
+}}
+if (!{matchFoundVar}) {{
+for (var i = 0; i < doc.groupItems.length; i++) {{
+if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {matchFoundVar} = true; break; }}
+}}
+}}";
+
+            scriptBuilder.AppendLine(result);
+            return variableName;
         }
 
         private string CreateShadowScript(RectangleF marble,
