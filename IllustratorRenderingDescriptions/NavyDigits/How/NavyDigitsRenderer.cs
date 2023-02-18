@@ -338,6 +338,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private readonly RectangleF _marble;
         private readonly IDigitChisleAction[] _chiselActions;
 
+        public float StrokeWidth { get; set; } = 1;
+
         public string Id { get; set; }
 
         public int[] DigitColor { get; set; } = new int[] { 255, 255, 255 };
@@ -384,18 +386,17 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             script.AppendLine($"var {digitVariableName} = doc.selection[0];");
             script.AppendLine("app.activeDocument.selection = null;");
 
-            var strokeWidth = 1;
             var strokeColor = new int[] { 0, 0, 0 };
 
-            if (strokeWidth > 0)
+            if (StrokeWidth > 0)
             {
                 script.AppendLine($@"if ({digitVariableName}.typename === 'PathItem') {{
-{digitVariableName}.strokeWidth = {strokeWidth};
+{digitVariableName}.strokeWidth = {StrokeWidth};
 {digitVariableName}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
 }}
 else {{
 for (var i = 0; i < {digitVariableName}.pathItems.length; i++) {{
-{digitVariableName}.pathItems[i].strokeWidth = {strokeWidth};
+{digitVariableName}.pathItems[i].strokeWidth = {StrokeWidth};
 {digitVariableName}.pathItems[i].strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
 }}
 }}");
