@@ -378,21 +378,29 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
 
-            var strokeWidth = 1;
-            var strokeColor = new int[] { 0, 0, 0 };
-
-            if (strokeWidth > 0)
-            {
-                var digitVarRef = FindItemRefByName(Id, script);
-                script.AppendLine($@"{digitVarRef}.strokeWidth = {strokeWidth};
-{digitVarRef}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});");
-            }
-
             var digitVariableName = $"digit_{Id}_path";
 
             script.AppendLine(SelectNamedItem(Id));
             script.AppendLine($"var {digitVariableName} = doc.selection[0];");
             script.AppendLine("app.activeDocument.selection = null;");
+
+            var strokeWidth = 1;
+            var strokeColor = new int[] { 0, 0, 0 };
+
+            if (strokeWidth > 0)
+            {
+                script.AppendLine($@"if ({digitVariableName}.typename === 'PathItem') {{
+{digitVariableName}.strokeWidth = {strokeWidth};
+{digitVariableName}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
+}}
+else {{
+for (var i = 0; i < {digitVariableName}.pathItems.length; i++) {{
+{digitVariableName}.pathItems[i].strokeWidth = {strokeWidth};
+{digitVariableName}.pathItems[i].strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
+}}
+}}");
+            
+            }
 
             script.Append(CreateShadowScript(_marble, digitVariableName, 0.15f, idPostfix, chiseledOutSections));
 
