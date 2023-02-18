@@ -361,11 +361,18 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             for (int i = 0; i < chiseledOutSections.Count; i++)
             {
-                script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}{idPostfix}"));
+                script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}_{idPostfix}"));
             }
 
             script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
-            script.Append(CreateShadowScript(_marble, 0.15f, idPostfix, chiseledOutSections));
+
+            var digitVariableName = $"digit_{Id}_path";
+
+            script.AppendLine(SelectNamedItem(Id));
+            script.AppendLine($"var {digitVariableName} = doc.selection[0];");
+            script.AppendLine("app.activeDocument.selection = null;");
+
+            script.Append(CreateShadowScript(_marble, digitVariableName, 0.15f, idPostfix, chiseledOutSections));
 
             return script.ToString();
         }
@@ -423,6 +430,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
         }
 
         private string CreateShadowScript(RectangleF marble,
+            string digitVariableName,
             float dimensionPercentage,
             string idPostfix,
             List<DigitChiselResult> chiseledOutSections,
@@ -442,7 +450,26 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
                 .ToList();
 
             var shadowPathsName = $"shadows_{idPostfix}";
-            script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+
+            for (int i = 0; i < updatedShadowPaths.Count; i++)
+            {
+                var duplicateVar = $"dup_digit_{Guid.NewGuid().ToString("N")}";
+                script.AppendLine($@"var {duplicateVar} = {digitVariableName}.duplicate();
+{duplicateVar}.name = '{duplicateVar}'
+{duplicateVar}.selected = true;");
+
+                var itemName = $"{shadowPathsName}_{i}";
+                script.AppendLine(CreatePath(updatedShadowPaths[i], "doc.pathItems", $"{itemName}_original", isBlack: true));
+
+                //Remove any parts of the shadows that overlap the digit
+                script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", itemName));
+                //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Exclude\");");
+                //script.AppendLine("app.activeDocument.selection = null;");
+            }
+
+            //script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
+
+            
 
             //var removeShadowPaths = removeShadowLines
             //    .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
@@ -458,7 +485,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 
             //var shadowPathsName = $"shadows_{idPostfix}";
             //script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
-            
+
             //var shadowLinesGroupName = $"{Id}_shadow_lines";
             //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
 
