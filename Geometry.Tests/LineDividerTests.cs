@@ -103,5 +103,29 @@ namespace Geometry.Tests
             var actualResult = divider.DivideLine(targetLine, divideLine);
             CollectionAssert.AreEqual(Array.Empty<Line>(), actualResult);
         }
+
+        [Test]
+        public void Dividing_Two_Vertical_Lines_With_Opposite_Orientations_Works_Correctly()
+        {
+            var divider = new LineDivider();
+
+            var targetLine = new Line(new PointF(0, 0), new PointF(0, 10));
+            var divideLine = new Line(new PointF(0, 10), new PointF(0, 8));
+
+            var actualResult = divider.DivideLine(targetLine, divideLine);
+            CollectionAssert.AreEqual(new[] { new Line(new PointF(0, 0), new PointF(0, 8))} , actualResult);
+        }
+
+        [Test]
+        public void Dividing_Two_Horizontal_Lines_With_Opposite_Orientations_Works_Correctly()
+        {
+            var divider = new LineDivider();
+
+            var targetLine = new Line(new PointF(0, 0), new PointF(10, 0));
+            var divideLine = new Line(new PointF(10, 0), new PointF(8, 0));
+
+            var actualResult = divider.DivideLine(targetLine, divideLine);
+            CollectionAssert.AreEqual(new[] { new Line(new PointF(0, 0), new PointF(8, 0)) }, actualResult);
+        }
     }
 }

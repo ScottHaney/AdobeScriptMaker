@@ -552,24 +552,24 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
             var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
 
-            return GetUpdatedShadowLines(shadowLines, removeShadowLines);
+            return GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
         }
 
-        private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<ShadowLineInfo> originalShadowLines, IEnumerable<ShadowLineInfo> removeLines)
+        private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<Line> originalShadowLines, IEnumerable<Line> removeLines)
         {
             var lineDivider = new LineDivider();
 
             var results = new List<Line>();
             foreach (var shadowLine in originalShadowLines)
             {
-                var loopResults = new List<Line>() { new Line(shadowLine.Start, shadowLine.End) };
+                var loopResults = new List<Line>() { shadowLine };
                 foreach (var removeLine in removeLines)
                 {
                     if (loopResults.Count == 0)
                         break;
 
                     loopResults = loopResults
-                        .SelectMany(x => lineDivider.DivideLine(x, new Line(removeLine.Start, removeLine.End)))
+                        .SelectMany(x => lineDivider.DivideLine(x, removeLine))
                         .ToList();
                 }
 
