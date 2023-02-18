@@ -331,6 +331,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         public string Id { get; set; }
 
+        public int[] DigitColor { get; set; } = new int[] { 255, 255, 255 };
+        public int[] ShadowColor { get; set; } = new int[] { 10, 17, 21 };
+
         public DigitSculpture(RectangleF marble,
             params IDigitChisleAction[] chiselActions)
         {
@@ -357,11 +360,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var idPostfix = $"{(string.IsNullOrEmpty(Id) ? "" : $"_{Id}")}";
 
             //Render the paths
-            script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", $"marble{idPostfix}"));
+            script.AppendLine(CreatePath(_marble.ToPathPoints(), "doc.pathItems", $"marble{idPostfix}", DigitColor));
 
             for (int i = 0; i < chiseledOutSections.Count; i++)
             {
-                script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}_{idPostfix}"));
+                script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}_{idPostfix}", DigitColor));
             }
 
             script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
@@ -459,7 +462,7 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
 {duplicateVar}.selected = true;");
 
                 var itemName = $"{shadowPathsName}_{i}";
-                script.AppendLine(CreatePath(updatedShadowPaths[i], "doc.pathItems", $"{itemName}_original", isBlack: true));
+                script.AppendLine(CreatePath(updatedShadowPaths[i], "doc.pathItems", $"{itemName}_original", ShadowColor));
 
                 //Remove any parts of the shadows that overlap the digit
                 script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", itemName));
@@ -499,20 +502,16 @@ if (doc.groupItems[i].name == '{name}') {{ doc.groupItems[i].selected = true; {m
             return script.ToString();
         }
 
-        private string CreatePath(PointF[] points, string pathItems, string variableName, bool isClosed = true, bool isBlack = false, bool isBlue = false)
+        private string CreatePath(PointF[] points, string pathItems, string variableName, int[] color, bool isClosed = true)
         {
-            var red = isBlack ? 0 : (isBlue ? 0 : 255);
-            var green = 0;
-            var blue = isBlack ? 0 : (isBlue ? 255 : 0);
-
             return $@"var {variableName} = {pathItems}.add();
 {variableName}.setEntirePath({CreateJavaScriptArray(points)});
 {variableName}.closed = {isClosed.ToString().ToLower()};
 {variableName}.selected = true;
 {variableName}.fillColor = new RGBColor();
-{variableName}.fillColor.red = {red};
-{variableName}.fillColor.green = {green};
-{variableName}.fillColor.blue = {blue};
+{variableName}.fillColor.red = {color[0]};
+{variableName}.fillColor.green = {color[1]};
+{variableName}.fillColor.blue = {color[2]};
 {variableName}.name = '{variableName}'";
         }
 
