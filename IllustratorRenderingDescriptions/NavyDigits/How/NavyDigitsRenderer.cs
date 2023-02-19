@@ -481,7 +481,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             var script = new StringBuilder();
 
-            var shadowsCreator = new DigitShadowLinesCreator();
+            var shadowsCreator = new DigitShadowLinesCreator() { StrokeWidth = StrokeWidth };
             var updatedShadowLines = shadowsCreator.CreateShadows(marble, chiseledOutSections);
 
             var shadowDimension = dimensionPercentage * marble.Width;
@@ -605,6 +605,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
     public class DigitShadowLinesCreator
     {
         public bool IncludeMarble { get; set; } = true;
+
+        public float StrokeWidth { get; set; } = 0;
 
         public IEnumerable<Line> CreateShadows(RectangleF marble,
             List<DigitChiselResult> chiseledOutSections)
