@@ -639,9 +639,12 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             {
                 var startConnection = FindConnectingLine(shadowLines, line, removeShadowLines, true);
                 var endConnection = FindConnectingLine(shadowLines, line, removeShadowLines, false);
-
-                throw new NotImplementedException("Stopped here for the day. Need to figure out how to shift each point based on the two neighboring points...")
             }
+
+            //I know how to get the shadow shape from a shadow path. The shape for a remove shadow line should just be the same but the opposite direction.
+            //take the outer lines of both of those and find their intersection point. That point should be the updated point. Do that for both the start
+            //and end points to get the update line.
+            throw new NotImplementedException("Stopped here for the day. Need to figure out how to shift each point based on the two neighboring points...");
         }
 
         private Line FindConnectingLine(List<Line> shadowLines, Line targetLine, List<Line> removeShadowLines, bool useStartPoint)
