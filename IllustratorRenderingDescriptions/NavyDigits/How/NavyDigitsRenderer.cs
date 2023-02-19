@@ -625,7 +625,40 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
             var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
 
-            return GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
+            var result = GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
+            return JoinLineSegments(result.ToList());
+        }
+
+        private IEnumerable<Line> JoinLineSegments(List<Line> lines)
+        {
+            var currentIndex = 0;
+            while (currentIndex < lines.Count)
+            {
+                var currentLine = lines[currentIndex];
+                var slope = currentLine.GetSlope();
+                for (int i = lines.Count - 1; i > currentIndex; i--)
+                {
+                    var nextLine = lines[i];
+                    var nextSlope = nextLine.GetSlope();
+
+                    if (slope == nextSlope)
+                    {
+                        var allPoints = currentLine.Points.Concat(nextLine.Points)
+                            .Select(x => new { Point = x, ParametricValue = currentLine.GetParametericValue(x) })
+                            .OrderBy(x => x.ParametricValue)
+                            .ToList();
+
+                        if (allPoints.GroupBy(x => x).Any(x => x.Count() > 1))
+                        {
+                            currentLine = new Line(allPoints.First().Point, allPoints.Last().Point);
+                            lines.RemoveAt(i);
+                        }
+                    }
+                }
+
+                yield return currentLine;
+                currentIndex++;
+            }
         }
 
         private IEnumerable<Line> GetUpdatedShadowLines(IEnumerable<Line> originalShadowLines, IEnumerable<Line> removeLines)

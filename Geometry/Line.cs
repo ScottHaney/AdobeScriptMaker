@@ -10,6 +10,8 @@ namespace Geometry
         public readonly PointF Start;
         public readonly PointF End;
 
+        public PointF[] Points => new[] { Start, End };
+
         public Line(PointF start, PointF end)
         {
             Start = start;
