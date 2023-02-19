@@ -626,7 +626,34 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
 
             var result = GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
-            return JoinLineSegments(result.ToList());
+            result = JoinLineSegments(result.ToList());
+            return AdjustShadowsForStroke(result.ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
+        }
+
+        private IEnumerable<Line> AdjustShadowsForStroke(List<Line> shadowLines, List<Line> removeShadowLines)
+        {
+            if (StrokeWidth == 0)
+                return shadowLines;
+
+            foreach (var line in shadowLines)
+            {
+                var startConnection = FindConnectingLine(shadowLines, line, removeShadowLines, true);
+                var endConnection = FindConnectingLine(shadowLines, line, removeShadowLines, false);
+
+                throw new NotImplementedException("Stopped here for the day. Need to figure out how to shift each point based on the two neighboring points...")
+            }
+        }
+
+        private Line FindConnectingLine(List<Line> shadowLines, Line targetLine, List<Line> removeShadowLines, bool useStartPoint)
+        {
+            var point = useStartPoint ? targetLine.Start : targetLine.End;
+            foreach (var line in shadowLines.Where(x => x != targetLine).Concat(removeShadowLines))
+            {
+                if (line.Points.Contains(point))
+                    return line;
+            }
+
+            throw new Exception("This shouldn't happen");
         }
 
         private IEnumerable<Line> JoinLineSegments(List<Line> lines)
