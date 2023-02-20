@@ -71,7 +71,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
                 return sculpture.Carve();
             }
-            /*else if (digit == 1)
+            else if (digit == 1)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
@@ -185,7 +185,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
-            }*/
+            }
             else
                 return string.Empty;
         }
@@ -644,20 +644,24 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
         public PointD[] CreateAntiShadowPathD(Line removeShadowLine, RectangleF marble, float forceOffsetYAbsValue)
         {
-            var shadowAngle = -1 * _shadowAngle;
+            var shadowPath = CreateShadowPathD(removeShadowLine, marble, forceOffsetYAbsValue);
 
-            double shadowDimension = shadowDimension = forceOffsetYAbsValue / Math.Sin(shadowAngle * (Math.PI / 180));
+            var line1 = new LineD(shadowPath[0], shadowPath[2]);
+            var line2 = new LineD(shadowPath[1], shadowPath[3]);
 
-            var offsetX = shadowDimension * Math.Cos(shadowAngle * (Math.PI / 180));
-            var offsetY = shadowDimension * Math.Sin(shadowAngle * (Math.PI / 180));
+            var slope1 = line1.GetSlope();
 
+            var xDiff1 = line1.End.X - line1.Start.X;
+            var newPoint1 = new PointD(line1.Start.X - xDiff1, line1.Start.Y + (-xDiff1) * slope1.Value);
 
-            return new PointD[] { new PointD(removeShadowLine.Start), new PointD(removeShadowLine.End), new PointD((removeShadowLine.End.X + offsetX), (removeShadowLine.End.Y + offsetY)), new PointD((removeShadowLine.Start.X + offsetX), (removeShadowLine.Start.Y + offsetY)) };
+            var slope2 = line2.GetSlope();
+
+            var xDiff2 = line2.End.X - line2.Start.X;
+            var newPoint2 = new PointD(line2.Start.X - xDiff2, line2.Start.Y + (-xDiff2) * slope2.Value);
+
+            return new PointD[] { line1.Start, line2.Start, newPoint2, newPoint1 };
         }
     }
-
-    
-
 
     public class DigitShadowLinesCreator
     {

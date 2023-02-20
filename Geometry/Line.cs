@@ -288,6 +288,29 @@ namespace Geometry
 
             return Start.Y - slope.Value * Start.X;
         }
+
+        public double? GetParametericValue(PointD targetPoint)
+        {
+            var slope = GetSlope();
+
+            if (slope == null)
+            {
+                if (Start.X == targetPoint.X)
+                    return targetPoint.Y - Start.Y;
+                else
+                    return null;
+            }
+            else
+            {
+                var xDiff = targetPoint.X - Start.X;
+                var expectedYValue = Start.Y + slope * xDiff;
+
+                if (expectedYValue == targetPoint.Y)
+                    return xDiff;
+                else
+                    return null;
+            }
+        }
     }
 
     public class PointD
