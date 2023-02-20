@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -69,7 +70,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
                 return sculpture.Carve();
             }
-            else if (digit == 1)
+            /*else if (digit == 1)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
@@ -183,7 +184,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
-            }
+            }*/
             else
                 return string.Empty;
         }
@@ -605,13 +606,32 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             _shadowAngle = shadowAngle;
         }
 
-        public PointF[] CreateShadowPath(Line shadowLine, RectangleF marble)
+        public PointF[] CreateShadowPath(Line shadowLine, RectangleF marble, float? forceOffsetYAbsValue = null)
         {
             var shadowDimension = (float)(_dimensionPercentage * marble.Width);
+
+            if (forceOffsetYAbsValue != null)
+                shadowDimension = forceOffsetYAbsValue.Value / (float)Math.Sin(_shadowAngle * (Math.PI / 180));
+
             var offsetX = shadowDimension * (float)Math.Cos(_shadowAngle * (Math.PI / 180));
             var offsetY = shadowDimension * (float)Math.Sin(_shadowAngle * (Math.PI / 180));
 
+
             return new PointF[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) };
+        }
+
+        public PointF[] CreateAntiShadowPath(Line removeShadowLine, RectangleF marble, float? forceOffsetYAbsValue = null)
+        {
+            var shadowAngle = -1 * _shadowAngle;
+
+            var shadowDimension = (float)(_dimensionPercentage * marble.Width);
+            if (forceOffsetYAbsValue != null)
+                shadowDimension = forceOffsetYAbsValue.Value / (float)Math.Sin(_shadowAngle * (Math.PI / 180));
+
+            var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
+            var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
+
+            return new PointF[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) };
         }
     }
 
@@ -660,36 +680,84 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
             var result = GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
             result = JoinLineSegments(result.ToList());
-            return AdjustShadowsForStroke(result.ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
+            return AdjustShadowsForStroke(result.ToList(), shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList(), marble);
         }
 
-        private IEnumerable<Line> AdjustShadowsForStroke(List<Line> shadowLines, List<Line> removeShadowLines)
+        private IEnumerable<Line> AdjustShadowsForStroke(List<Line> shadowLines, List<Line> originalShadowLines, List<Line> removeShadowLines, RectangleF marble)
         {
+            var results = new List<Line>();
             if (StrokeWidth == 0)
-                return shadowLines;
+                return results;
 
             foreach (var line in shadowLines)
             {
-                var startConnection = FindConnectingLine(shadowLines, line, removeShadowLines, true);
-                var endConnection = FindConnectingLine(shadowLines, line, removeShadowLines, false);
+                var startConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, true);
+                var endConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, false);
+
+                var updatedStart = ShiftPointForStroke(startConnection, (line, true), marble);
+                var updatedEnd = ShiftPointForStroke((line, true), endConnection, marble);
+
+                results.Add(new Line(updatedStart, updatedEnd));
             }
 
-            //I know how to get the shadow shape from a shadow path. The shape for a remove shadow line should just be the same but the opposite direction.
-            //take the outer lines of both of those and find their intersection point. That point should be the updated point. Do that for both the start
-            //and end points to get the update line.
-            throw new NotImplementedException("Stopped here for the day. Need to figure out how to shift each point based on the two neighboring points...");
+            return results;
         }
 
-        private Line FindConnectingLine(List<Line> shadowLines, Line targetLine, List<Line> removeShadowLines, bool useStartPoint)
+        private PointF ShiftPointForStroke((Line Line, bool IsShadow) startConnection, (Line Line, bool IsShadow) endConnection, RectangleF marble)
         {
+            var startPath = startConnection.IsShadow
+                    ? _shadowCreator.CreateShadowPath(startConnection.Line, marble, StrokeWidth / 2)
+                    : _shadowCreator.CreateAntiShadowPath(startConnection.Line, marble, StrokeWidth / 2);
+
+            var endPath = endConnection.IsShadow
+                ? _shadowCreator.CreateShadowPath(endConnection.Line, marble, StrokeWidth / 2)
+                : _shadowCreator.CreateAntiShadowPath(endConnection.Line, marble, StrokeWidth / 2);
+
+            var outerStartLine = new Line(startPath[2], startPath[3]);
+            var outerEndLine = new Line(endPath[2], endPath[3]);
+
+            var intersection = outerStartLine.GetIntersectionPointWith(outerEndLine);
+            return intersection;
+        }
+
+        private (Line Line, bool IsShadow) FindConnectingLine(List<Line> shadowLines, List<Line> originalShadowLines, Line targetLine, List<Line> removeShadowLines, bool useStartPoint)
+        {
+            removeShadowLines = CleanUpExtraShadowLines(originalShadowLines, removeShadowLines);
+
             var point = useStartPoint ? targetLine.Start : targetLine.End;
-            foreach (var line in shadowLines.Where(x => x != targetLine).Concat(removeShadowLines))
+            var targetSlope = targetLine.GetSlope();
+            foreach (var line in shadowLines.Select(x => new { Line = x, IsShadow = true }).Where(x => x.Line != targetLine).Concat(removeShadowLines.Select(x => new { Line = x, IsShadow = false })))
             {
-                if (line.Points.Contains(point))
-                    return line;
+                if (line.Line.Points.Contains(point) && targetSlope != line.Line.GetSlope())
+                    return (line.Line, line.IsShadow);
             }
 
             throw new Exception("This shouldn't happen");
+        }
+
+        private List<Line> CleanUpExtraShadowLines(List<Line> originalShadowLines, List<Line> removeShadowLines)
+        {
+            originalShadowLines = originalShadowLines.Distinct().ToList();
+            removeShadowLines = removeShadowLines.Distinct().ToList();
+
+            var results = new List<Line>();
+            foreach (var removeShadowLine in removeShadowLines)
+            {
+                var subResults = new List<Line>();
+                foreach (var originalShadowLine in originalShadowLines)
+                {
+                    if (removeShadowLine.TryGetLeftoverPart(originalShadowLine, out var partial))
+                    {
+                        subResults.Add(partial);
+                    }
+                }
+
+                results.AddRange(subResults);
+                if (!subResults.Any())
+                    results.Add(removeShadowLine);
+            }
+
+            return results;
         }
 
         private IEnumerable<Line> JoinLineSegments(List<Line> lines)
