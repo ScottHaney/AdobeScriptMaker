@@ -481,16 +481,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             var script = new StringBuilder();
 
-            var shadowsCreator = new DigitShadowLinesCreator() { StrokeWidth = StrokeWidth };
-            var updatedShadowLines = shadowsCreator.CreateShadows(marble, chiseledOutSections);
-
-            var shadowDimension = dimensionPercentage * marble.Width;
-            var offsetX = shadowDimension * (float)Math.Cos(shadowAngle * (Math.PI / 180));
-            var offsetY = shadowDimension * (float)Math.Sin(shadowAngle * (Math.PI / 180));
-
-            var updatedShadowPaths = updatedShadowLines
-                .Select(x => new PointF[] { x.Start, x.End, new PointF(x.End.X + offsetX, x.End.Y + offsetY), new PointF(x.Start.X + offsetX, x.Start.Y + offsetY) })
-                .ToList();
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(dimensionPercentage, shadowAngle)) { StrokeWidth = StrokeWidth };
+            var updatedShadowPaths = shadowsCreator.CreateShadowPaths(marble, chiseledOutSections).ToList();
 
             var shadowPathsName = $"shadows_{idPostfix}";
 
@@ -602,11 +594,52 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         }
     }
 
+    public class ShadowCreator
+    {
+        private readonly float _dimensionPercentage;
+        private readonly float _shadowAngle;
+
+        public ShadowCreator(float dimensionPercentage, float shadowAngle)
+        {
+            _dimensionPercentage = dimensionPercentage;
+            _shadowAngle = shadowAngle;
+        }
+
+        public PointF[] CreateShadowPath(Line shadowLine, RectangleF marble)
+        {
+            var shadowDimension = (float)(_dimensionPercentage * marble.Width);
+            var offsetX = shadowDimension * (float)Math.Cos(_shadowAngle * (Math.PI / 180));
+            var offsetY = shadowDimension * (float)Math.Sin(_shadowAngle * (Math.PI / 180));
+
+            return new PointF[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) };
+        }
+    }
+
+
     public class DigitShadowLinesCreator
     {
         public bool IncludeMarble { get; set; } = true;
 
         public float StrokeWidth { get; set; } = 0;
+
+        private readonly ShadowCreator _shadowCreator;
+
+        public DigitShadowLinesCreator(ShadowCreator shadowCreator)
+        {
+            _shadowCreator = shadowCreator;
+        }
+
+        public DigitShadowLinesCreator()
+        {
+            _shadowCreator = new ShadowCreator(0.1f, 45f);
+        }
+
+        public IEnumerable<PointF[]> CreateShadowPaths(RectangleF marble,
+            List<DigitChiselResult> chiseledOutSections)
+        {
+            return CreateShadows(marble, chiseledOutSections)
+                .Select(x => _shadowCreator.CreateShadowPath(x, marble));
+        }
 
         public IEnumerable<Line> CreateShadows(RectangleF marble,
             List<DigitChiselResult> chiseledOutSections)
