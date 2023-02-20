@@ -166,7 +166,7 @@ namespace Geometry
             return $"[({Start.X},{Start.Y}), ({End.X},{End.Y})]";
         }
 
-        public static bool operator==(Line line1, Line line2)
+        public static bool operator ==(Line line1, Line line2)
         {
             if (ReferenceEquals(line1, null))
                 return ReferenceEquals(line2, null);
@@ -174,7 +174,7 @@ namespace Geometry
             return line1.Equals(line2);
         }
 
-        public static bool operator!=(Line line1, Line line2)
+        public static bool operator !=(Line line1, Line line2)
             => !(line1 == line2);
 
         public bool Equals([AllowNull] Line other)
@@ -199,6 +199,112 @@ namespace Geometry
             {
                 return Start.GetHashCode() + End.GetHashCode();
             }
+        }
+    }
+
+    public class LineD
+    {
+        public readonly PointD Start;
+        public readonly PointD End;
+
+        public PointD[] Points => new[] { Start, End };
+
+        public LineD(PointD start, PointD end)
+        {
+            Start = start;
+            End = end;
+        }
+
+        public PointD GetIntersectionPointWith(LineD otherLine)
+        {
+            var slope = GetSlope();
+            var otherSlope = otherLine.GetSlope();
+
+            if (slope == otherSlope)
+                throw new NotSupportedException();
+            else if (slope == null)
+            {
+                return new PointD(Start.X, otherLine.GetYValue(Start.X));
+            }
+            else if (otherSlope == null)
+            {
+                return new PointD(otherLine.Start.X, GetYValue(otherLine.Start.X));
+            }
+            else
+            {
+                var b = GetB();
+                var otherB = otherLine.GetB();
+
+                if (b == null || otherB == null)
+                    throw new NotSupportedException();
+
+                if (slope.Value != 0 && otherSlope.Value != 0)
+                {
+                    var intersectionY = (otherB.Value - b.Value) / (slope.Value - otherSlope.Value);
+                    var intersectionX = (intersectionY - b.Value) / slope.Value;
+                    return new PointD(intersectionX, intersectionY);
+                }
+                else if (slope.Value == 0)
+                {
+                    var intersectionY = Start.Y;
+                    var intersectionX = (intersectionY - otherB.Value) / otherSlope.Value;
+                    return new PointD(intersectionX, intersectionY);
+                }
+                else
+                {
+                    var intersectionY = otherLine.Start.Y;
+                    var intersectionX = (intersectionY - b.Value) / slope.Value;
+                    return new PointD(intersectionX, intersectionY);
+                }
+            }
+        }
+
+        public double GetYValue(double xValue)
+        {
+            var slope = GetSlope();
+            if (slope == null)
+                throw new NotSupportedException();
+
+            var xDiff = (xValue - Start.X);
+            return Start.Y + slope.Value * xDiff;
+        }
+
+        public double? GetSlope()
+        {
+            if (Start.X == End.X)
+                return null;
+            else
+            {
+                return (End.Y - Start.Y) / (End.X - Start.X);
+            }
+        }
+
+        public double? GetB()
+        {
+            var slope = GetSlope();
+
+            if (slope == null)
+                return null;
+
+            return Start.Y - slope.Value * Start.X;
+        }
+    }
+
+    public class PointD
+    {
+        public readonly double X;
+        public readonly double Y;
+
+        public PointD(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public PointD(PointF pointF)
+        {
+            X = pointF.X;
+            Y = pointF.Y;
         }
     }
 }
