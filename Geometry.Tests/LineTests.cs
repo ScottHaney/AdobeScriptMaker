@@ -82,5 +82,17 @@ namespace Geometry.Tests
 
             Assert.AreEqual(-1, actualResult);
         }
+
+        [Test]
+        public void The_Intersection_Of_Two_Perpendicular_Lines_Is_Calculated_Correctly()
+        {
+            var line1 = new LineD(new PointD(0, 1), new PointD(1, 2));
+            var line2 = new LineD(new PointD(0, 1), new PointD(-1, 2));
+
+            var intersectionPoint = line1.GetIntersectionPointWith(line2);
+
+            Assert.AreEqual(0, intersectionPoint.X);
+            Assert.AreEqual(1, intersectionPoint.Y);
+        }
     }
 }

@@ -21,6 +21,56 @@ namespace Geometry
             End = end;
         }
 
+        public static Line CreateFromPoints(params PointF[] points)
+        {
+            if (points.Length < 2)
+                throw new NotSupportedException();
+
+            PointF[] sortedPoints;
+            if (points.Select(x => x.X).Distinct().Count() == 1)
+                sortedPoints = points.OrderBy(x => x.Y).ToArray();
+            else
+                sortedPoints = points.OrderBy(x => x.X).ToArray();
+
+            return new Line(sortedPoints.First(), sortedPoints.Last());
+        }
+
+        public bool IntersectsAsLineSegment(Line otherLine)
+        {
+            var intersectionPoint = GetIntersectionPointWith(otherLine);
+
+            var slope = GetSlope();
+            var otherSlope = otherLine.GetSlope();
+
+            if (slope != null && otherSlope != null)
+            {
+                var otherMinX = otherLine.Points.Select(x => x.X).Min();
+                var otherMaxX = otherLine.Points.Select(x => x.X).Max();
+                var currentMinX = Points.Select(x => x.X).Min();
+                var currentMaxX = Points.Select(x => x.X).Max();
+
+                return (intersectionPoint.X >= otherMinX && intersectionPoint.X <= otherMaxX) && (intersectionPoint.X >= currentMinX && intersectionPoint.X <= currentMaxX);
+            }
+            else if (slope == null)
+            {
+                var otherMinX = otherLine.Points.Select(x => x.X).Min();
+                var otherMaxX = otherLine.Points.Select(x => x.X).Max();
+                var currentMinY = Points.Select(x => x.Y).Min();
+                var currentMaxY = Points.Select(x => x.Y).Max();
+
+                return (intersectionPoint.X >= otherMinX && intersectionPoint.X <= otherMaxX) && (intersectionPoint.Y >= currentMinY && intersectionPoint.Y <= currentMaxY);
+            }
+            else
+            {
+                var otherMinY = otherLine.Points.Select(x => x.Y).Min();
+                var otherMaxY = otherLine.Points.Select(x => x.Y).Max();
+                var currentMinX = Points.Select(x => x.X).Min();
+                var currentMaxX = Points.Select(x => x.X).Max();
+
+                return (intersectionPoint.Y >= otherMinY && intersectionPoint.Y <= otherMaxY) && (intersectionPoint.X >= currentMinX && intersectionPoint.X <= currentMaxX);
+            }
+        }
+
         public bool TryGetLeftoverPart(Line otherLine, out Line result)
         {
             var slope = GetSlope();
@@ -240,8 +290,8 @@ namespace Geometry
 
                 if (slope.Value != 0 && otherSlope.Value != 0)
                 {
-                    var intersectionY = (otherB.Value - b.Value) / (slope.Value - otherSlope.Value);
-                    var intersectionX = (intersectionY - b.Value) / slope.Value;
+                    var intersectionX = (otherB.Value - b.Value) / (slope.Value - otherSlope.Value);
+                    var intersectionY = intersectionX * slope.Value + b.Value;
                     return new PointD(intersectionX, intersectionY);
                 }
                 else if (slope.Value == 0)
@@ -328,6 +378,11 @@ namespace Geometry
         {
             X = pointF.X;
             Y = pointF.Y;
+        }
+
+        public double GetLength()
+        {
+            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
         }
     }
 }

@@ -10,6 +10,22 @@ namespace IllustratorRenderingDescriptions.Tests
 {
     public class DigitShadowLinesCreatorTests
     {
+        [Test]
+        public void Test()
+        {
+            var bottomRightCorner = new DigitChiselResult(new PointF[]
+            {
+                new PointF(100, 75),
+                new PointF(100, 100),
+                new PointF(75, 100)
+            }, false, false, true);
+
+            var marble = new RectangleF(0, 0, 100, 100);
+
+            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 10 };
+            var shadows = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>() { bottomRightCorner });
+        }
+
         /*[Test]
         public void Removing_The_Lower_Left_Vertical_Bar_And_Digit_Hole_Leaves_Only_A_Top_Shadow()
         {

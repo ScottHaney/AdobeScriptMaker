@@ -67,11 +67,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
                     new DigitCrossBar(widthPaddingPercentage))
-                { Id = digit.ToString() };
+                { Id = digit.ToString(), StrokeWidth = 20 };
 
                 return sculpture.Carve();
             }
-            else if (digit == 1)
+            /*else if (digit == 1)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
@@ -185,7 +185,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
-            }
+            }*/
             else
                 return string.Empty;
         }
@@ -642,6 +642,17 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             return new PointD[] { new PointD(shadowLine.Start), new PointD(shadowLine.End), new PointD((shadowLine.End.X + offsetX), (shadowLine.End.Y + offsetY)), new PointD((shadowLine.Start.X + offsetX), (shadowLine.Start.Y + offsetY)) };
         }
 
+        public PointF[] CreateShadowPathF(Line shadowLine, RectangleF marble, float forceOffsetYAbsValue)
+        {
+            double shadowDimension = forceOffsetYAbsValue / Math.Sin(_shadowAngle * (Math.PI / 180));
+
+            var offsetX = shadowDimension * Math.Cos(_shadowAngle * (Math.PI / 180));
+            var offsetY = shadowDimension * Math.Sin(_shadowAngle * (Math.PI / 180));
+
+
+            return new PointF[] { shadowLine.Start, shadowLine.End, new PointF((float)(shadowLine.End.X + offsetX), (float)(shadowLine.End.Y + offsetY)), new PointF((float)(shadowLine.Start.X + offsetX), (float)(shadowLine.Start.Y + offsetY)) };
+        }
+
         public PointD[] CreateAntiShadowPathD(Line removeShadowLine, RectangleF marble, float forceOffsetYAbsValue)
         {
             var shadowPath = CreateShadowPathD(removeShadowLine, marble, forceOffsetYAbsValue);
@@ -712,39 +723,118 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
         private IEnumerable<Line> AdjustShadowsForStroke(List<Line> shadowLines, List<Line> originalShadowLines, List<Line> removeShadowLines, RectangleF marble)
         {
-            var results = new List<Line>();
             if (StrokeWidth == 0)
-                return results;
+                return shadowLines;
 
+            var results = new List<Line>();
+            var cache = new Dictionary<PointF, PointF>();
             foreach (var line in shadowLines)
             {
                 var startConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, true);
                 var endConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, false);
 
-                var updatedStart = ShiftPointForStroke(startConnection, (line, true), marble);
-                var updatedEnd = ShiftPointForStroke((line, true), endConnection, marble);
+                PointF updatedStart;
+                if (cache.ContainsKey(line.Start))
+                    updatedStart = cache[line.Start];
+                else
+                {
+                    cache[line.Start] = ShiftPointForStroke(startConnection, (line, true), line.Start, marble);
+                    updatedStart = cache[line.Start];
+                }
 
+                PointF updatedEnd;
+                if (cache.ContainsKey(line.End))
+                    updatedEnd = cache[line.End];
+                else
+                {
+                    cache[line.End] = ShiftPointForStroke((line, true), endConnection, line.End, marble);
+                    updatedEnd = cache[line.End];
+                }
+                
                 results.Add(new Line(updatedStart, updatedEnd));
             }
 
             return results;
         }
 
-        private PointF ShiftPointForStroke((Line Line, bool IsShadow) startConnection, (Line Line, bool IsShadow) endConnection, RectangleF marble)
+        private PointF ShiftPointForStroke((Line Line, bool IsShadow) startConnection, (Line Line, bool IsShadow) endConnection, PointF intersectionPoint, RectangleF marble)
         {
-            var startPath = startConnection.IsShadow
-                    ? _shadowCreator.CreateShadowPathD(startConnection.Line, marble, StrokeWidth / 2)
-                    : _shadowCreator.CreateAntiShadowPathD(startConnection.Line, marble, StrokeWidth / 2);
+            var lineWithKnownShadow = startConnection.IsShadow
+                ? startConnection.Line
+                : endConnection.Line;
 
-            var endPath = endConnection.IsShadow
-                ? _shadowCreator.CreateShadowPathD(endConnection.Line, marble, StrokeWidth / 2)
-                : _shadowCreator.CreateAntiShadowPathD(endConnection.Line, marble, StrokeWidth / 2);
+            var otherConnection = startConnection.IsShadow
+                ? endConnection
+                : startConnection;
 
-            var outerStartLine = new LineD(startPath[2], startPath[3]);
-            var outerEndLine = new LineD(endPath[2], endPath[3]);
+            var otherLine = otherConnection.Line;
 
-            var intersection = outerStartLine.GetIntersectionPointWith(outerEndLine);
-            return new PointF((float)intersection.X, (float)intersection.Y);
+            var shadowPath = _shadowCreator.CreateShadowPathF(lineWithKnownShadow, marble, StrokeWidth / 2);
+            var shadowOutline = new Line(shadowPath[2], shadowPath[3]);
+
+            var lines = GetLines(otherLine, StrokeWidth / 2);
+
+            if (IsValidLine(lines.Line1, shadowOutline, lineWithKnownShadow, otherLine))
+                return lines.Line1.GetIntersectionPointWith(shadowOutline);
+            else
+                return lines.Line2.GetIntersectionPointWith(shadowOutline);
+        }
+
+        private bool IsValidLine(Line lineToTest, Line shadowOutline, Line knownShadowLine, Line otherLine)
+        {
+            var junction = lineToTest.GetIntersectionPointWith(shadowOutline);
+
+            var lineToTestSegment = Line.CreateFromPoints(lineToTest.Points.Concat(new[] { junction }).ToArray());
+            var shadowOutlineSegment = Line.CreateFromPoints(shadowOutline.Points.Concat(new[] { junction }).ToArray());
+
+            return !lineToTestSegment.IntersectsAsLineSegment(knownShadowLine) && !shadowOutlineSegment.IntersectsAsLineSegment(otherLine);
+        }
+
+        private bool IsGreaterThanLine(Line line, Line lineToCheck)
+        {
+            var slope = line.GetSlope();
+            if (slope == null)
+                return lineToCheck.Start.X > line.Start.X;
+            else if (slope == 0)
+                return lineToCheck.Start.Y > line.Start.Y;
+            else
+            {
+                var b = line.GetB();
+                if (b == null)
+                    throw new NotSupportedException("This shouldn't happen");
+
+                var lineY = slope.Value * lineToCheck.Start.X + b.Value;
+                var result = lineToCheck.Start.Y > lineY;
+                return slope.Value >= 0 ? result : (!result);
+            }
+        }
+
+        private (Line Line1, Line Line2) GetLines(Line line, float distance)
+        {
+            var slope = line.GetSlope();
+            var inverseSlope = slope == null ? 0 : (-1 / slope.Value);
+
+            var inverseAngle = Math.Atan(inverseSlope);
+            var xDiff = distance * Math.Cos(inverseAngle);
+            var yDiff = distance * Math.Sin(inverseAngle);
+
+            var diff1 = new Line(new PointF((float)(line.Start.X + xDiff), (float)(line.Start.Y + yDiff)), new PointF((float)(line.End.X + xDiff), (float)(line.End.Y + yDiff)));
+            var diff2 = new Line(new PointF((float)(line.Start.X - xDiff), (float)(line.Start.Y - yDiff)), new PointF((float)(line.End.X - xDiff), (float)(line.End.Y - yDiff)));
+
+            return (diff1, diff2);
+        }
+
+        private Line GetShadowLine(Line line, float distance)
+        {
+            var slope = line.GetSlope();
+            var inverseSlope = slope == null ? 0 : (-1 / slope.Value);
+
+            var inverseAngle = Math.Atan(inverseSlope);
+            var xDiff = distance * Math.Cos(inverseAngle);
+            var yDiff = distance * Math.Sin(inverseAngle);
+
+            var diff1 = new Line(new PointF((float)(line.Start.X + xDiff), (float)(line.Start.Y + yDiff)), new PointF((float)(line.End.X + xDiff), (float)(line.End.Y + yDiff)));
+            return diff1;
         }
 
         private (Line Line, bool IsShadow) FindConnectingLine(List<Line> shadowLines, List<Line> originalShadowLines, Line targetLine, List<Line> removeShadowLines, bool useStartPoint)
