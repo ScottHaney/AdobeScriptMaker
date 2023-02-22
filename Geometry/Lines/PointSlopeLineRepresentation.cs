@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class PointSlopeLineRepresentation : ILineRepresentation, ICanonicalLineFormCapable
+    public class PointSlopeLineRepresentation : ILineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>
     {
         private readonly PointD _point;
         private readonly ISlope _slope;
@@ -68,6 +68,24 @@ namespace Geometry.Lines
             var maxX = xValues.Max();
 
             return targetPoint.X >= minX && targetPoint.X <= maxX;
+        }
+
+        public bool Equals(ICanonicalLineFormCapable other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return GetCanonicalLineForm() == other.GetCanonicalLineForm();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ICanonicalLineFormCapable);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetCanonicalLineForm().GetHashCode();
         }
     }
 }

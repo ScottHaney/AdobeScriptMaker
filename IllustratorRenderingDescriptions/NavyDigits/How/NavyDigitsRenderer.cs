@@ -1,6 +1,7 @@
 ﻿using AdobeComponents.Animation;
 using AdobeComponents.Components;
 using Geometry;
+using Geometry.Lines;
 using IllustratorRenderingDescriptions.NavyDigits.What;
 using RenderingDescriptions.How;
 using RenderingDescriptions.Timing;
@@ -672,6 +673,129 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var newPoint2 = new PointD(line2.Start.X - xDiff2, line2.Start.Y + (-xDiff2) * slope2.Value);
 
             return new PointD[] { line1.Start, line2.Start, newPoint2, newPoint1 };
+        }
+    }
+
+    public class DigitShadowLinesCreator2
+    {
+        private readonly ShadowCreator _shadowCreator;
+
+        public bool IncludeMarble { get; set; } = true;
+        public float StrokeWidth { get; set; } = 1;
+
+        public DigitShadowLinesCreator2(ShadowCreator shadowCreator)
+        {
+            _shadowCreator = shadowCreator;
+        }
+
+        public IEnumerable<PointF[]> CreateShadowPaths(RectangleF marble,
+            List<DigitChiselResult> chiseledOutSections)
+        {
+            return CreateShadows(marble, chiseledOutSections)
+                .Select(x => _shadowCreator.CreateShadowPath(x.ToLegacyLine(), marble));
+        }
+
+        public IEnumerable<LineSegment> CreateShadows(RectangleF marble,
+            List<DigitChiselResult> chiseledOutSections)
+        {
+            IEnumerable<DigitChiselResult> chiselResults = chiseledOutSections;
+            if (IncludeMarble)
+            {
+                var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+                chiselResults = chiselResults.Concat(new[] { marbleShadowsInfo });
+            }
+
+            var allLineInfos = chiselResults
+                .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
+                .ToList();
+
+            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
+            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
+
+            var shadowLinesD = shadowLines.Select(x => new LineSegment(x.Start, x.End)).ToList();
+            var removeShadowLinesD = removeShadowLines.Select(x => new LineSegment(x.Start, x.End)).ToList();
+
+            var result = GetUpdatedShadowLines(shadowLinesD, removeShadowLinesD);
+            result = JoinLineSegments(result.ToList());
+            return AdjustShadowsForStroke(result.ToList(), shadowLinesD, removeShadowLinesD, marble);
+        }
+
+        private IEnumerable<LineSegment> GetUpdatedShadowLines(IEnumerable<LineSegment> originalShadowLines, IEnumerable<LineSegment> removeLines)
+        {
+            var lineDivider = new LineDivider2();
+            return originalShadowLines.SelectMany(x => lineDivider.DivideLines(x, removeLines));
+        }
+
+        private IEnumerable<LineSegment> JoinLineSegments(List<LineSegment> segments)
+        {
+            if (!segments.Any())
+                yield break;
+
+            var groups = segments.GroupBy(x => x, new LineSegmentLineEqualityComparer()).ToList();
+            foreach (var group in groups)
+            {
+                var ranges = group
+                    .Select(x => new { Segment = x, Range = x.GetParametricRange() })
+                    .OrderBy(x => x.Range.Start.ParametricValue)
+                    .ToList();
+
+                var commonLineRep = group.First().ToLine();
+
+                var currentRange = ranges.First().Range;
+                for (int i = 1; i < ranges.Count; i++)
+                {
+                    var range = ranges[i].Range;
+                    if (currentRange.OverlapsOrConnectsWith(range))
+                        currentRange = new ParametricRange(currentRange.Start, range.End.ParametricValue > currentRange.End.ParametricValue ? range.End : currentRange.End);
+                    else
+                    {
+                        yield return new LineSegment(commonLineRep, currentRange.Start.Point, currentRange.End.Point);
+                        currentRange = range;
+                    }
+                }
+
+                yield return new LineSegment(commonLineRep, currentRange.Start.Point, currentRange.End.Point);
+            }
+        }
+
+        private IEnumerable<LineSegment> AdjustShadowsForStroke(List<LineSegment> shadowLines, List<LineSegment> originalShadowLines, List<LineSegment> removeShadowLines, RectangleF marble)
+        {
+            if (StrokeWidth == 0)
+                return shadowLines;
+
+            throw new NotImplementedException();
+
+            /*removeShadowLines = FixUpMarbleEdgeShadowLinesForStrokeAdjustments(removeShadowLines, marble);
+
+            var results = new List<Line>();
+            var cache = new Dictionary<PointF, PointF>();
+            foreach (var line in shadowLines)
+            {
+                var startConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, true);
+                var endConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, false);
+
+                PointF updatedStart;
+                if (cache.ContainsKey(line.Start))
+                    updatedStart = cache[line.Start];
+                else
+                {
+                    cache[line.Start] = ShiftPointForStroke(startConnection, (line, true), line.Start, marble);
+                    updatedStart = cache[line.Start];
+                }
+
+                PointF updatedEnd;
+                if (cache.ContainsKey(line.End))
+                    updatedEnd = cache[line.End];
+                else
+                {
+                    cache[line.End] = ShiftPointForStroke((line, true), endConnection, line.End, marble);
+                    updatedEnd = cache[line.End];
+                }
+
+                results.Add(new Line(updatedStart, updatedEnd));
+            }
+
+            return results;*/
         }
     }
 

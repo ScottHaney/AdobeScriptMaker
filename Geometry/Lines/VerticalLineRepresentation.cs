@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class VerticalLineRepresentation : ILineRepresentation
+    public class VerticalLineRepresentation : ILineRepresentation, IEquatable<VerticalLineRepresentation>
     {
         private readonly double _xValue;
 
@@ -62,5 +62,34 @@ namespace Geometry.Lines
 
         public PointD GetIntersectionPoint(PointD point, ISlope slope)
             => new PointD(_xValue, slope.GetYValue(point, _xValue));
+
+        public static bool operator ==(VerticalLineRepresentation line1, VerticalLineRepresentation line2)
+        {
+            if (ReferenceEquals(line1, null))
+                return ReferenceEquals(line2, null);
+
+            return line1._xValue == line2._xValue;
+        }
+
+        public static bool operator !=(VerticalLineRepresentation line1, VerticalLineRepresentation line2)
+            => !(line1 == line2);
+
+        public bool Equals(VerticalLineRepresentation other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return _xValue == other._xValue;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as VerticalLineRepresentation);
+        }
+
+        public override int GetHashCode()
+        {
+            return _xValue.GetHashCode();
+        }
     }
 }

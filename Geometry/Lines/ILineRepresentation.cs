@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Geometry.Lines
@@ -12,6 +13,23 @@ namespace Geometry.Lines
         ParametricRange GetParametricRange(PointD point1, PointD point2);
     }
 
+    public class IsTheSameLineEqualityComparer : IEqualityComparer<ILineRepresentation>
+    {
+        public bool Equals([AllowNull] ILineRepresentation x, [AllowNull] ILineRepresentation y)
+        {
+            if (ReferenceEquals(x, null))
+                return ReferenceEquals(y, null);
+
+            var intersectionResult = x.GetIntersectionWith(y);
+            return intersectionResult.IsTheSameLine;
+        }
+
+        public int GetHashCode([DisallowNull] ILineRepresentation obj)
+        {
+            return obj?.GetHashCode() ?? 19;
+        }
+    }
+
     public class ParametricRange
     {
         public readonly ParametricPoint Start;
@@ -21,6 +39,40 @@ namespace Geometry.Lines
         {
             Start = start;
             End = end;
+        }
+
+        public bool OverlapsOrConnectsWith(ParametricRange other)
+        {
+            if (other.Start.ParametricValue >= Start.ParametricValue && other.Start.ParametricValue <= End.ParametricValue)
+                return true;
+            else if (other.End.ParametricValue <= End.ParametricValue && other.End.ParametricValue >= Start.ParametricValue)
+                return true;
+            else
+                return false;
+        }
+
+        public bool TryConnectOtherRange(ParametricRange other, out ParametricRange combinedRange)
+        {
+            if (other.Start.ParametricValue == Start.ParametricValue && other.End.ParametricValue == End.ParametricValue)
+            {
+                combinedRange = new ParametricRange(Start, End);
+                return true;
+            }
+            else if (other.Start.ParametricValue == End.ParametricValue)
+            {
+                combinedRange = new ParametricRange(Start, other.End);
+                return true;
+            }
+            else if (other.End.ParametricValue == Start.ParametricValue)
+            {
+                combinedRange = new ParametricRange(other.Start, End);
+                return true;
+            }
+            else
+            {
+                combinedRange = null;
+                return false;
+            }
         }
     }
 

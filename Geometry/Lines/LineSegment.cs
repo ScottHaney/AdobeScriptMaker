@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -17,6 +19,10 @@ namespace Geometry.Lines
             _bounds = new[] { point1, point2 };
         }
 
+        public LineSegment(PointF point1, PointF point2)
+            : this(new PointD(point1), new PointD(point2))
+        { }
+
         public LineSegment(ILineRepresentation line, params PointD[] bounds)
         {
             _line = line;
@@ -26,6 +32,25 @@ namespace Geometry.Lines
         public ParametricRange GetParametricRange()
         {
             return _line.GetParametricRange(_bounds[0], _bounds[1]);
+        }
+
+        public bool TryConnectWith(LineSegment other, out LineSegment combinedSegment)
+        {
+            var intersectionResult = ToLine().GetIntersectionWith(other.ToLine());
+            if (intersectionResult.IsTheSameLine)
+            {
+                var thisParametricRange = GetParametricRange();
+                var otherParametricRange = other.GetParametricRange();
+
+                if (thisParametricRange.TryConnectOtherRange(otherParametricRange, out var combinedRange))
+                {
+                    combinedSegment = new LineSegment(_line, combinedRange.Start.Point, combinedRange.End.Point);
+                    return true;
+                }
+            }
+
+            combinedSegment = null;
+            return false;
         }
 
         public bool IntersectsWith(LineSegment other)
@@ -55,6 +80,27 @@ namespace Geometry.Lines
         public ILineRepresentation ToLine()
         {
             return _line;
+        }
+
+        public Line ToLegacyLine()
+        {
+            return new Line(new PointF((float)_bounds[0].X, (float)_bounds[0].Y), new PointF((float)_bounds[1].X, (float)_bounds[1].Y));
+        }
+    }
+
+    public class LineSegmentLineEqualityComparer : IEqualityComparer<LineSegment>
+    {
+        public bool Equals([AllowNull] LineSegment x, [AllowNull] LineSegment y)
+        {
+            if (ReferenceEquals(x, null))
+                return ReferenceEquals(y, null);
+
+            return x.ToLine().Equals(y.ToLine());
+        }
+
+        public int GetHashCode([DisallowNull] LineSegment obj)
+        {
+            return obj?.ToLine().GetHashCode() ?? 19;
         }
     }
 }

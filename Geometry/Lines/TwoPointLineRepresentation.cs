@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace Geometry.Lines
 {
-    public class TwoPointLineRepresentation : ILineRepresentation, ICanonicalLineFormCapable
+    public class TwoPointLineRepresentation : ILineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>
     {
         private readonly PointD _point1;
         private readonly PointD _point2;
@@ -66,6 +67,24 @@ namespace Geometry.Lines
             var maxX = xValues.Max();
 
             return targetPoint.X >= minX && targetPoint.X <= maxX;
+        }
+
+        public bool Equals(ICanonicalLineFormCapable other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+            
+            return GetCanonicalLineForm() == other.GetCanonicalLineForm();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ICanonicalLineFormCapable);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetCanonicalLineForm().GetHashCode();
         }
     }
 }

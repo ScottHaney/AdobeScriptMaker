@@ -271,6 +271,12 @@ namespace Geometry
             End = end;
         }
 
+        public LineD(PointF start, PointF end)
+        {
+            Start = new PointD(start);
+            End = new PointD(end);
+        }
+
         public PointD GetIntersectionPointWith(LineD otherLine)
         {
             var slope = GetSlope();

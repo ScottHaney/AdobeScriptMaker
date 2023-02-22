@@ -9,6 +9,20 @@ namespace Geometry
 {
     public class LineDivider2
     {
+        public IEnumerable<LineSegment> DivideLines(LineSegment targetLineSegment, IEnumerable<LineSegment> lineSegementsToDivide)
+        {
+            var results = new List<LineSegment>() { targetLineSegment };
+            foreach (var item in lineSegementsToDivide)
+            {
+                if (!results.Any())
+                    break;
+
+                results = results.SelectMany(x => DivideLine(x, item)).ToList();
+            }
+
+            return results;
+        }
+
         public IEnumerable<LineSegment> DivideLine(LineSegment targetLineSegment, LineSegment lineSegmentToDivideWith)
         {
             var targetLine = targetLineSegment.ToLine();
