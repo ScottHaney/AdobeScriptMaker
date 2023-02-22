@@ -139,8 +139,8 @@ namespace Geometry
 
                 if (slope.Value != 0 && otherSlope.Value != 0)
                 {
-                    var intersectionY = (otherB.Value - b.Value) / (slope.Value - otherSlope.Value);
-                    var intersectionX = (intersectionY - b.Value) / slope.Value;
+                    var intersectionX = (otherB.Value - b.Value) / (slope.Value - otherSlope.Value);
+                    var intersectionY = slope.Value * intersectionX + b.Value;// (intersectionY - b.Value) / slope.Value;
                     return new PointF(intersectionX, intersectionY);
                 }
                 else if (slope.Value == 0)

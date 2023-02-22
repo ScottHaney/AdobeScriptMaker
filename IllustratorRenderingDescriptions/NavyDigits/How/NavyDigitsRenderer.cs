@@ -67,11 +67,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
                     new DigitCrossBar(widthPaddingPercentage))
-                { Id = digit.ToString(), StrokeWidth = 20 };
+                { Id = digit.ToString() };
 
                 return sculpture.Carve();
             }
-            /*else if (digit == 1)
+            else if (digit == 1)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
@@ -185,7 +185,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString() };
 
                 return sculpture.Carve();
-            }*/
+            }
             else
                 return string.Empty;
         }
@@ -725,11 +725,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             if (StrokeWidth == 0)
                 return shadowLines;
-
+            
             var results = new List<Line>();
             var cache = new Dictionary<PointF, PointF>();
             foreach (var line in shadowLines)
-            {
+            {                                                                                                                               
                 var startConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, true);
                 var endConnection = FindConnectingLine(shadowLines, originalShadowLines, line, removeShadowLines, false);
 
@@ -809,7 +809,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             }
         }
 
-        private (Line Line1, Line Line2) GetLines(Line line, float distance)
+        public (Line Line1, Line Line2) GetLines(Line line, float distance)
         {
             var slope = line.GetSlope();
             var inverseSlope = slope == null ? 0 : (-1 / slope.Value);

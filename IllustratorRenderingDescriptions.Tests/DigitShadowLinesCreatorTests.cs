@@ -5,25 +5,39 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Geometry;
 
 namespace IllustratorRenderingDescriptions.Tests
 {
     public class DigitShadowLinesCreatorTests
     {
         [Test]
-        public void Test()
+        public void Creates_Correct_Shadows_For_An_Unaltered_Piece_Of_Marble_With_A_Stroke()
         {
-            var bottomRightCorner = new DigitChiselResult(new PointF[]
-            {
-                new PointF(100, 75),
-                new PointF(100, 100),
-                new PointF(75, 100)
-            }, false, false, true);
-
             var marble = new RectangleF(0, 0, 100, 100);
 
+            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 1 };
+            var shadows = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>());
+        }
+
+        [Test]
+        public void Creates_Correct_Shadows_For_The_Digit_One()
+        {
+            var marble = new RectangleF(0, 0, 100, 100);
+
+            var chisler = new DigitOneChisler(0.2f);
+            var chislerResults = chisler.GetPoints(marble);
+
+            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 1 };
+            var shadows = shadowLinesCreator.CreateShadows(marble, chislerResults.ToList());
+        }
+
+        [Test]
+        public void GetLinesTest()
+        {
+            
             var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 10 };
-            var shadows = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>() { bottomRightCorner });
+            var lines = shadowLinesCreator.GetLines(new Line(new PointF(-1, 1), new PointF(0, 2)), (float)Math.Sqrt(2));
         }
 
         /*[Test]
