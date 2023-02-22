@@ -56,7 +56,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
             var widthPaddingPercentage = 0.2f;
-            var strokeWidth = 1;
+            var strokeWidth = 10;
 
             if (digit == 0)
             {
@@ -760,7 +760,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             if (StrokeWidth == 0)
                 return shadowLines;
 
-            FixUpMarbleEdgeShadowLinesForStrokeAdjustments(removeShadowLines, marble);
+            removeShadowLines = FixUpMarbleEdgeShadowLinesForStrokeAdjustments(removeShadowLines, marble);
             
             var results = new List<Line>();
             var cache = new Dictionary<PointF, PointF>();
