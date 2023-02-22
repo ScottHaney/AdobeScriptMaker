@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Geometry.Lines;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
@@ -19,6 +20,11 @@ namespace Geometry
         {
             Start = start;
             End = end;
+        }
+
+        public LineSegment ToLineSegment()
+        {
+            return new LineSegment(new TwoPointLineRepresentation(new PointD(Start), new PointD(End)), new PointD(Start), new PointD(End));
         }
 
         public static Line CreateFromPoints(params PointF[] points)

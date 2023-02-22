@@ -721,10 +721,45 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             return AdjustShadowsForStroke(result.ToList(), shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList(), marble);
         }
 
+        private List<Line> FixUpMarbleEdgeShadowLinesForStrokeAdjustments(List<Line> removeShadowLines, RectangleF marble)
+        {
+            var updatedResults = new List<Line>(removeShadowLines);
+            var lineDivider = new LineDivider();
+
+            var topMarbleLine = new Line(marble.TopLeft(), marble.TopRight());
+            updatedResults.Remove(topMarbleLine);
+
+            var topLines = updatedResults.Where(x => x.Start.Y == marble.Top && x.End.Y == marble.Top).ToList();
+            foreach (var topLine in topLines)
+                updatedResults.Remove(topLine);
+
+            if (topLines.Count == 0)
+                updatedResults.Add(topMarbleLine);
+            else
+            {
+                var loopResults = new List<Line>() { topMarbleLine };
+                foreach (var topLine in topLines)
+                {
+                    if (loopResults.Count == 0)
+                        break;
+
+                    loopResults = loopResults
+                        .SelectMany(x => lineDivider.DivideLine(x, topLine))
+                        .ToList();
+                }
+
+                updatedResults.AddRange(loopResults);
+            }
+
+            return updatedResults;
+        }
+
         private IEnumerable<Line> AdjustShadowsForStroke(List<Line> shadowLines, List<Line> originalShadowLines, List<Line> removeShadowLines, RectangleF marble)
         {
             if (StrokeWidth == 0)
                 return shadowLines;
+
+            FixUpMarbleEdgeShadowLinesForStrokeAdjustments(removeShadowLines, marble);
             
             var results = new List<Line>();
             var cache = new Dictionary<PointF, PointF>();
