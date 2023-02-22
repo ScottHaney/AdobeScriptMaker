@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Geometry.Lines;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,45 @@ using System.Threading;
 
 namespace Geometry
 {
+    public class LineDivider2
+    {
+        public IEnumerable<LineSegment> DivideLine(LineSegment targetLineSegment, LineSegment lineSegmentToDivideWith)
+        {
+            var targetLine = targetLineSegment.ToLine();
+            var lineToDivideWith = lineSegmentToDivideWith.ToLine();
+
+            var intersectionResult = targetLine.GetIntersectionWith(lineToDivideWith);
+
+            var results = new List<LineSegment>();
+            if (intersectionResult.IsTheSameLine)
+            {
+                var targetValues = targetLineSegment.GetParametricRange();
+                var divideWithValues = lineSegmentToDivideWith.GetParametricRange();
+
+                if (divideWithValues.End.ParametricValue > targetValues.End.ParametricValue)
+                {
+                    if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
+                        results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
+                }
+                else if (divideWithValues.End.ParametricValue > targetValues.Start.ParametricValue)
+                {
+                    results.AddRange(CreateLineSegment(targetLine, divideWithValues.End, targetValues.End));
+                    if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
+                        results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
+                }
+            }
+
+            return results;
+        }
+
+        private IEnumerable<LineSegment> CreateLineSegment(ILineRepresentation line, ParametricPoint p1, ParametricPoint p2)
+        {
+            //Make sure to avoid adding any empty line segments
+            if (p1.ParametricValue != p2.ParametricValue)
+                yield return new LineSegment(line, p1.Point, p2.Point);
+        }
+    }
+
     public class LineDivider
     {
         public IEnumerable<Line> DivideLine(Line targetLine, Line lineToDivideWith)

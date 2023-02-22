@@ -14,6 +14,15 @@ namespace Geometry.Lines
             _yValue = yValue;
         }
 
+        public ParametricRange GetParametricRange(PointD point1, PointD point2)
+        {
+            var sorted = new[] { point1, point2 }
+                .OrderBy(x => x.X)
+                .ToArray();
+
+            return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].X), new ParametricPoint(sorted[1], sorted[1].X));
+        }
+
         public ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine)
         {
             if (otherLine is HorizontalLineRepresentation horizontalLineRep)

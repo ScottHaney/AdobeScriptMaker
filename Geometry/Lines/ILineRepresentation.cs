@@ -8,6 +8,33 @@ namespace Geometry.Lines
     {
         ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine);
         bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2);
+
+        ParametricRange GetParametricRange(PointD point1, PointD point2);
+    }
+
+    public class ParametricRange
+    {
+        public readonly ParametricPoint Start;
+        public readonly ParametricPoint End;
+
+        public ParametricRange(ParametricPoint start, ParametricPoint end)
+        {
+            Start = start;
+            End = end;
+        }
+    }
+
+    public class ParametricPoint
+    {
+        public readonly PointD Point;
+        public readonly double ParametricValue;
+
+        public ParametricPoint(PointD point,
+            double parametricValue)
+        {
+            Point = point;
+            ParametricValue = parametricValue;
+        }
     }
 
     public interface ICanonicalLineFormCapable
