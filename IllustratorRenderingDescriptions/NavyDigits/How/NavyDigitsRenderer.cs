@@ -61,7 +61,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             if (digit == 0)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
