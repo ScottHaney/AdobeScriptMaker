@@ -9,6 +9,7 @@ namespace Geometry.Lines
         double GetXValue(PointD startPoint, double targetY);
         double GetYValue(PointD startPoint, double targetX);
         double GetValue();
+        double GetAngle();
         ISlope GetPerpendicularSlope();
         ArcLengthInfo GetDistanceInfoForArcLength(PointD startPoint, double arcLength);
     }

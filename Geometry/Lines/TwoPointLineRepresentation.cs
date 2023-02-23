@@ -20,6 +20,15 @@ namespace Geometry.Lines
             _slope = new TwoValueSlope(point1, point2);
         }
 
+        public double DistanceToPoint(PointD point)
+        {
+            //Taken from wikipedia
+            var numerator = Math.Abs((_point2.X - _point1.X) * (_point1.Y - point.Y) - (_point1.X - point.X) * (_point2.Y - _point1.Y));
+            var denominator = Math.Sqrt(Math.Pow(_point2.X - _point1.X, 2) + Math.Pow(_point2.Y - _point1.Y, 2));
+
+            return numerator / denominator;
+        }
+
         public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
         {
             var perpendicularSlope = _slope.GetPerpendicularSlope();

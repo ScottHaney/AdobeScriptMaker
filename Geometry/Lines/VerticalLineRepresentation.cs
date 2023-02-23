@@ -14,6 +14,11 @@ namespace Geometry.Lines
             _xValue = xValue;
         }
 
+        public double DistanceToPoint(PointD point)
+        {
+            return Math.Abs(point.X - _xValue);
+        }
+
         public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
         {
             return new[]

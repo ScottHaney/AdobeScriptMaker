@@ -12,6 +12,7 @@ namespace Geometry.Lines
 
         ParametricRange GetParametricRange(PointD point1, PointD point2);
         ParallelBoundingLine[] GetParallelBoundingLines(double distance);
+        double DistanceToPoint(PointD point);
     }
 
     public class ParallelBoundingLine

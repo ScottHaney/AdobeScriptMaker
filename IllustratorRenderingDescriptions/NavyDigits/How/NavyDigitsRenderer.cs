@@ -783,20 +783,10 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 var lineBars = line.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 var shadowBar = lineBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
+                var otherBar = lineBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
 
-                var startConnectionBars = startConnection.Line.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                ParallelBoundingLine startBar;
-                if (startConnection.IsShadow)
-                    startBar = startConnectionBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
-                else
-                    startBar = startConnectionBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
-
-                var endConnectionBars = endConnection.Line.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                ParallelBoundingLine endBar;
-                if (endConnection.IsShadow)
-                    endBar = endConnectionBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
-                else
-                    endBar = endConnectionBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
+                var startBar = GetMatchingLine(shadowBar, otherBar, line, startConnection.Line);
+                var endBar = GetMatchingLine(shadowBar, otherBar, line, endConnection.Line);
 
                 var newStartPoint = shadowBar.Line.GetIntersectionWith(startBar.Line).GetStart().Value;
                 var newEndPoint = shadowBar.Line.GetIntersectionWith(endBar.Line).GetStart().Value;
@@ -805,6 +795,54 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             }
 
             return results;
+        }
+
+        private ParallelBoundingLine GetMatchingLine(ParallelBoundingLine shadowBar, ParallelBoundingLine otherBar, LineSegment shadowLine, LineSegment connectingLine)
+        {
+            var uniquePoints = new[] { shadowLine.StartPoint, shadowLine.EndPoint }.Concat(new[] { connectingLine.StartPoint, connectingLine.EndPoint }).Distinct().ToList();
+
+            if (uniquePoints.Count != 3)
+                throw new Exception("This shouldn't happen");
+
+            var centerOfMass = new PointD(uniquePoints.Sum(x => x.X) / uniquePoints.Count, uniquePoints.Sum(x => x.Y) / uniquePoints.Count);
+
+            var connectingLineBars = connectingLine.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+            var bar1 = connectingLineBars.First();
+            var bar2 = connectingLineBars.Last();
+
+            var shadowBarDist = shadowBar.Line.DistanceToPoint(centerOfMass);
+            var otherBarDist = otherBar.Line.DistanceToPoint(centerOfMass);
+            var bar1Dist = bar1.Line.DistanceToPoint(centerOfMass);
+            var bar2Dist = bar2.Line.DistanceToPoint(centerOfMass);
+
+            var returnCloserBar = shadowBarDist < otherBarDist;
+            if (bar1Dist < bar2Dist)
+                return returnCloserBar ? bar1 : bar2;
+            else
+                return returnCloserBar ? bar2 : bar1;
+        }
+
+        private ParallelBoundingLine GetBoundingLine(LineSegment connection, PointD targetPoint)
+        {
+            var otherPoint = connection.StartPoint == targetPoint
+                ? connection.EndPoint
+                : connection.StartPoint;
+
+            var bars = connection.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+            bool useShadowBar;
+            if (otherPoint.X <= targetPoint.X && otherPoint.Y <= targetPoint.Y)
+                useShadowBar = true;
+            else if (otherPoint.X >= targetPoint.X && otherPoint.Y <= targetPoint.Y)
+                useShadowBar = false;
+            else if (otherPoint.X >= targetPoint.X && otherPoint.Y >= targetPoint.Y)
+                useShadowBar = false;
+            else
+                useShadowBar = false;
+
+            if (useShadowBar)
+                return bars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
+            else
+                return bars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
         }
 
         private (LineSegment Line, bool IsShadow) FindConnectingLine(LineSegment targetLine, PointD targetPoint, List<LineSegment> shadowLines, List<LineSegment> removeShadowLines)

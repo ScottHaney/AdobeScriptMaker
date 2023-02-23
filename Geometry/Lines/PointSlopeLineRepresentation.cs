@@ -17,6 +17,13 @@ namespace Geometry.Lines
             _slope = slope;
         }
 
+        public double DistanceToPoint(PointD point)
+        {
+            //Taken from wikipedia
+            var angle = _slope.GetAngle();
+            return Math.Abs(Math.Cos(angle) * (_point.Y - point.Y) - Math.Sin(angle) * (_point.X - point.X));
+        }
+
         public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
         {
             var perpendicularSlope = _slope.GetPerpendicularSlope();

@@ -16,8 +16,13 @@ namespace Geometry.Lines
 
         public ArcLengthInfo GetDistanceInfoForArcLength(PointD startPoint, double arcLength)
         {
-            var angle = Math.Atan(_value);
+            var angle = GetAngle();
             return new ArcLengthInfo(arcLength * Math.Cos(angle), arcLength * Math.Sin(angle));
+        }
+
+        public double GetAngle()
+        {
+            return Math.Atan(_value);
         }
 
         public ISlope GetPerpendicularSlope()
