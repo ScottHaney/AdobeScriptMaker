@@ -11,10 +11,28 @@ namespace Geometry.Lines
         private readonly PointD _point;
         private readonly ISlope _slope;
 
-        public PointSlopeLineRepresentation(PointD point, ISlope slope)
+        internal PointSlopeLineRepresentation(PointD point, ISlope slope)
         {
             _point = point;
             _slope = slope;
+        }
+
+        public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
+        {
+            var perpendicularSlope = _slope.GetPerpendicularSlope();
+            var diffInfo = perpendicularSlope.GetDistanceInfoForArcLength(_point, distance);
+
+            return new[]
+            {
+                new ParallelBoundingLine(
+                    new PointSlopeLineRepresentation(
+                        new PointD(_point.X + diffInfo.XDiff, _point.Y + diffInfo.YDiff),
+                        _slope), RelativeLineDirection.GreaterThan),
+                new ParallelBoundingLine(
+                    new PointSlopeLineRepresentation(
+                        new PointD(_point.X - diffInfo.XDiff, _point.Y - diffInfo.YDiff),
+                        _slope), RelativeLineDirection.LessThan)
+            };
         }
 
         public ParametricRange GetParametricRange(PointD point1, PointD point2)

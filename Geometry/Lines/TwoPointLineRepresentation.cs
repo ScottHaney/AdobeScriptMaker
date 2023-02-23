@@ -12,12 +12,33 @@ namespace Geometry.Lines
         private readonly PointD _point2;
         private readonly ISlope _slope;
 
-        public TwoPointLineRepresentation(PointD point1, PointD point2)
+        internal TwoPointLineRepresentation(PointD point1, PointD point2)
         {
             _point1 = point1;
             _point2 = point2;
 
             _slope = new TwoValueSlope(point1, point2);
+        }
+
+        public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
+        {
+            var perpendicularSlope = _slope.GetPerpendicularSlope();
+            var diffInfoP1 = perpendicularSlope.GetDistanceInfoForArcLength(_point1, distance);
+            var diffInfoP2 = perpendicularSlope.GetDistanceInfoForArcLength(_point2, distance);
+
+            return new[]
+            {
+                new ParallelBoundingLine(
+                    new TwoPointLineRepresentation(
+                        new PointD(_point1.X + diffInfoP1.XDiff, _point1.Y + diffInfoP1.YDiff),
+                        new PointD(_point2.X + diffInfoP2.XDiff, _point2.Y + diffInfoP2.YDiff)),
+                    RelativeLineDirection.GreaterThan),
+                new ParallelBoundingLine(
+                    new TwoPointLineRepresentation(
+                        new PointD(_point1.X - diffInfoP1.XDiff, _point1.Y - diffInfoP1.YDiff),
+                        new PointD(_point2.X - diffInfoP2.XDiff, _point2.Y - diffInfoP2.YDiff)),
+                    RelativeLineDirection.LessThan)
+            };
         }
 
         public ParametricRange GetParametricRange(PointD point1, PointD point2)

@@ -14,6 +14,17 @@ namespace Geometry.Lines
             _value = value;
         }
 
+        public ArcLengthInfo GetDistanceInfoForArcLength(PointD startPoint, double arcLength)
+        {
+            var angle = Math.Atan(_value);
+            return new ArcLengthInfo(arcLength * Math.Cos(angle), arcLength * Math.Sin(angle));
+        }
+
+        public ISlope GetPerpendicularSlope()
+        {
+            return new SingleValueSlope(-1 / _value);
+        }
+
         public double GetXValue(PointD startPoint, double targetY)
         {
             var requiredRise = targetY - startPoint.Y;

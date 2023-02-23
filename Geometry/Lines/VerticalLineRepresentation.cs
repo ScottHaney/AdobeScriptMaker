@@ -9,9 +9,18 @@ namespace Geometry.Lines
     {
         private readonly double _xValue;
 
-        public VerticalLineRepresentation(double xValue)
+        internal VerticalLineRepresentation(double xValue)
         {
             _xValue = xValue;
+        }
+
+        public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
+        {
+            return new[]
+            {
+                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue + distance), RelativeLineDirection.Right),
+                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue - distance), RelativeLineDirection.Left)
+            };
         }
 
         public ParametricRange GetParametricRange(PointD point1, PointD point2)

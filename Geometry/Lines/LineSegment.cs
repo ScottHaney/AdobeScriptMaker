@@ -8,30 +8,36 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class LineSegment
+    public class LineSegment : IEquatable<LineSegment>
     {
         private readonly ILineRepresentation _line;
         private readonly PointD[] _bounds;
 
-        public LineSegment(PointD point1, PointD point2)
-        {
-            _line = new TwoPointLineRepresentation(point1, point2);
-            _bounds = new[] { point1, point2 };
-        }
+        public PointD StartPoint => _bounds[0];
+        public PointD EndPoint => _bounds[1];
 
-        public LineSegment(PointF point1, PointF point2)
-            : this(new PointD(point1), new PointD(point2))
-        { }
+        private static readonly ILineRepresentationFactory _factory = new LineRepresentationFactory();
 
-        public LineSegment(ILineRepresentation line, params PointD[] bounds)
+        internal LineSegment(ILineRepresentation line, params PointD[] bounds)
         {
             _line = line;
             _bounds = bounds;
         }
 
+        public double GetLength()
+        {
+            return Math.Sqrt(Math.Pow(_bounds[0].X - _bounds[1].X, 2) + Math.Pow(_bounds[0].Y - _bounds[1].Y, 2));
+        }
+
         public ParametricRange GetParametricRange()
         {
             return _line.GetParametricRange(_bounds[0], _bounds[1]);
+        }
+
+        public bool TryJoinWith(LineSegment other, out PointD[] matchingPoints)
+        {
+            matchingPoints = _bounds.Where(x => other._bounds.Contains(x)).ToArray();
+            return matchingPoints.Length > 0;
         }
 
         public bool TryConnectWith(LineSegment other, out LineSegment combinedSegment)
@@ -65,7 +71,7 @@ namespace Geometry.Lines
             else
             {
                 var intersectionPoint = intersectionResult.GetStart();
-                return PointIsInRangeOfBothSegments(intersectionPoint, this, other);
+                return PointIsInRangeOfBothSegments(intersectionPoint.Value, this, other);
             }
         }
 
@@ -85,6 +91,42 @@ namespace Geometry.Lines
         public Line ToLegacyLine()
         {
             return new Line(new PointF((float)_bounds[0].X, (float)_bounds[0].Y), new PointF((float)_bounds[1].X, (float)_bounds[1].Y));
+        }
+
+        public static bool operator==(LineSegment lineSegment1, LineSegment lineSegment2)
+        {
+            if (ReferenceEquals(lineSegment1, null))
+                return ReferenceEquals(lineSegment2, null);
+
+            return lineSegment1.Equals(lineSegment2);
+        }
+
+        public static bool operator!=(LineSegment lineSegment1, LineSegment lineSegment2)
+            => !(lineSegment1 == lineSegment2);
+
+        public bool Equals(LineSegment other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return _bounds.SequenceEqual(other._bounds);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as LineSegment);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var result = 0;
+                foreach (var bound in _bounds)
+                    result += bound.GetHashCode();
+
+                return result;
+            }
         }
     }
 

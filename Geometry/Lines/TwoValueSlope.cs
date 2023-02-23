@@ -19,6 +19,17 @@ namespace Geometry.Lines
             : this(point1.Y - point2.Y, point1.X - point2.X)
         { }
 
+        public ArcLengthInfo GetDistanceInfoForArcLength(PointD startPoint, double arcLength)
+        {
+            var angle = Math.Atan2(_rise, _run);
+            return new ArcLengthInfo(arcLength * Math.Cos(angle), arcLength * Math.Sin(angle));
+        }
+
+        public ISlope GetPerpendicularSlope()
+        {
+            return new SingleValueSlope(-_run / _rise);
+        }
+
         public double GetXValue(PointD startPoint, double targetY)
         {
             var requiredRise = targetY - startPoint.Y;

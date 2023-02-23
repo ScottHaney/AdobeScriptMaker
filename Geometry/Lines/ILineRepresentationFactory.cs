@@ -9,4 +9,9 @@ namespace Geometry.Lines
         ILineRepresentation CreateLine(PointD point1, PointD point2);
         ILineRepresentation CreateLine(PointD point1, double? slope);
     }
+
+    public interface ILineSegmentRepresentationFactory
+    {
+        LineSegment Create(PointD point1, PointD point2);
+    }
 }

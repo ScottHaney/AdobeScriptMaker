@@ -11,6 +11,29 @@ namespace Geometry.Lines
         bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2);
 
         ParametricRange GetParametricRange(PointD point1, PointD point2);
+        ParallelBoundingLine[] GetParallelBoundingLines(double distance);
+    }
+
+    public class ParallelBoundingLine
+    {
+        public readonly ILineRepresentation Line;
+        public readonly RelativeLineDirection Direction;
+
+        public ParallelBoundingLine(ILineRepresentation line, RelativeLineDirection direction)
+        {
+            Line = line;
+            Direction = direction;
+        }
+    }
+
+    public enum RelativeLineDirection
+    {
+        Above,
+        Below,
+        Right,
+        Left,
+        GreaterThan,
+        LessThan
     }
 
     public class IsTheSameLineEqualityComparer : IEqualityComparer<ILineRepresentation>
@@ -99,8 +122,8 @@ namespace Geometry.Lines
         bool HasSinglePointIntersection { get; }
         bool HasNoPointsInCommonWith { get; }
         bool IsTheSameLine { get; }
-        PointD GetStart();
-        PointD GetEnd();
+        PointD? GetStart();
+        PointD? GetEnd();
     }
 
     public class SinglePointLineIntersectionResult : ILineIntersectionResult
@@ -118,10 +141,10 @@ namespace Geometry.Lines
             _intersectionPoint = intersectionPoint;
         }
 
-        public PointD GetStart()
+        public PointD? GetStart()
             => _intersectionPoint;
 
-        public PointD GetEnd()
+        public PointD? GetEnd()
             => _intersectionPoint;
     }
 
@@ -131,10 +154,10 @@ namespace Geometry.Lines
         public bool HasNoPointsInCommonWith => true;
         public bool IsTheSameLine => false;
 
-        public PointD GetStart()
+        public PointD? GetStart()
             => null;
 
-        public PointD GetEnd()
+        public PointD? GetEnd()
             => null;
     }
 
@@ -144,10 +167,10 @@ namespace Geometry.Lines
         public bool HasNoPointsInCommonWith => false;
         public bool IsTheSameLine => true;
 
-        public PointD GetStart()
+        public PointD? GetStart()
             => null;
 
-        public PointD GetEnd()
+        public PointD? GetEnd()
             => null;
     }
 }

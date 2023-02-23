@@ -23,31 +23,40 @@ namespace Geometry
             return results;
         }
 
-        public IEnumerable<LineSegment> DivideLine(LineSegment targetLineSegment, LineSegment lineSegmentToDivideWith)
+        public List<LineSegment> DivideLine(LineSegment targetLineSegment, LineSegment lineSegmentToDivideWith)
         {
             var targetLine = targetLineSegment.ToLine();
             var lineToDivideWith = lineSegmentToDivideWith.ToLine();
 
             var intersectionResult = targetLine.GetIntersectionWith(lineToDivideWith);
 
-            var results = new List<LineSegment>();
             if (intersectionResult.IsTheSameLine)
-            {
-                var targetValues = targetLineSegment.GetParametricRange();
-                var divideWithValues = lineSegmentToDivideWith.GetParametricRange();
+                return GetSameLineResults(targetLineSegment, lineSegmentToDivideWith);
+            else
+                return new List<LineSegment>() { targetLineSegment };
+        }
 
-                if (divideWithValues.End.ParametricValue > targetValues.End.ParametricValue)
-                {
-                    if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
-                        results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
-                }
-                else if (divideWithValues.End.ParametricValue > targetValues.Start.ParametricValue)
-                {
-                    results.AddRange(CreateLineSegment(targetLine, divideWithValues.End, targetValues.End));
-                    if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
-                        results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
-                }
+        private List<LineSegment> GetSameLineResults(LineSegment targetLineSegment, LineSegment lineSegmentToDivideWith)
+        {
+            var targetLine = targetLineSegment.ToLine();
+
+            var targetValues = targetLineSegment.GetParametricRange();
+            var divideWithValues = lineSegmentToDivideWith.GetParametricRange();
+            
+            var results = new List<LineSegment>();
+            if (divideWithValues.End.ParametricValue > targetValues.End.ParametricValue)
+            {
+                if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
+                    results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
             }
+            else if (divideWithValues.End.ParametricValue > targetValues.Start.ParametricValue)
+            {
+                results.AddRange(CreateLineSegment(targetLine, divideWithValues.End, targetValues.End));
+                if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
+                    results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
+            }
+            else
+                results.Add(targetLineSegment);
 
             return results;
         }

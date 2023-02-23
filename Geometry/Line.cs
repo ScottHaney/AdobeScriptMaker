@@ -375,7 +375,7 @@ namespace Geometry
         }
     }
 
-    public class PointD
+    public struct PointD : IEquatable<PointD>
     {
         public readonly double X;
         public readonly double Y;
@@ -395,6 +395,46 @@ namespace Geometry
         public double GetLength()
         {
             return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
+        }
+
+        public static bool operator !=(PointD point1, PointD point2)
+            => !(point1 == point2);
+
+        public static bool operator==(PointD point1, PointD point2)
+        {
+            if (ReferenceEquals(point1, null))
+                return ReferenceEquals(point2, null);
+
+            return point1.Equals(point2);
+        }
+
+        public bool Equals(PointD other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PointD pointD)
+                return Equals(pointD);
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return X.GetHashCode() + Y.GetHashCode();
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"[{X}, {Y}]";
         }
     }
 }
