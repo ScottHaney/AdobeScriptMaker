@@ -96,8 +96,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
                 return sculpture.Carve();
             }
-            /*else if (digit == 3)
+            else if (digit == 3)
             {
+                return string.Empty;
+
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -123,6 +125,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 5)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
@@ -137,6 +140,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 6)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -187,7 +191,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
-            }*/
+            }
             else
                 return string.Empty;
         }
