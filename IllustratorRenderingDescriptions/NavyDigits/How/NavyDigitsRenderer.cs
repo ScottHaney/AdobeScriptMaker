@@ -57,10 +57,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
             var widthPaddingPercentage = 0.2f;
-            var strokeWidth = 10;
+            var strokeWidth = 2;
 
             if (digit == 0)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -773,13 +774,20 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             if (StrokeWidth == 0)
                 return shadowLines;
 
-            var sortedRemoveShadowLines = removeShadowLines.OrderBy(x => x.GetLength()).ToList();
+            var sortedRemoveShadowLines = removeShadowLines.OrderByDescending(x => x.GetLength()).ToList();
+            var fixedShadowLines = new List<LineSegment>();
+            var divider = new LineDivider2();
+            for (int i = 0; i < sortedRemoveShadowLines.Count; i++)
+            {
+                var target = sortedRemoveShadowLines[i];
+                fixedShadowLines.AddRange(divider.DivideLines(target, sortedRemoveShadowLines.Skip(i + 1)));
+            }
 
             var results = new List<LineSegment>();
             foreach (var line in shadowLines)
             {
-                var startConnection = FindConnectingLine(line, line.StartPoint, shadowLines, sortedRemoveShadowLines);
-                var endConnection = FindConnectingLine(line, line.EndPoint, shadowLines, sortedRemoveShadowLines);
+                var startConnection = FindConnectingLine(line, line.StartPoint, shadowLines, fixedShadowLines);
+                var endConnection = FindConnectingLine(line, line.EndPoint, shadowLines, fixedShadowLines);
 
                 var lineBars = line.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 var shadowBar = lineBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
@@ -816,10 +824,10 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var bar2Dist = bar2.Line.DistanceToPoint(centerOfMass);
 
             var returnCloserBar = shadowBarDist < otherBarDist;
-            if (bar1Dist < bar2Dist)
-                return returnCloserBar ? bar1 : bar2;
+            if (returnCloserBar)
+                return bar1Dist < bar2Dist ? bar1 : bar2;
             else
-                return returnCloserBar ? bar2 : bar1;
+                return bar1Dist > bar2Dist ? bar1 : bar2;
         }
 
         private ParallelBoundingLine GetBoundingLine(LineSegment connection, PointD targetPoint)
