@@ -96,7 +96,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
                 return sculpture.Carve();
             }
-            else if (digit == 3)
+            /*else if (digit == 3)
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
@@ -187,7 +187,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
-            }
+            }*/
             else
                 return string.Empty;
         }
@@ -814,7 +814,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             foreach (var option in removeShadowLines)
             {
                 if (targetLine.TryJoinWith(option, out var matchingPoints) && matchingPoints.Length == 1 && matchingPoints.First() == targetPoint)
-                    return (option, false);
+                {
+                    //Make sure to avoid a co-linear line
+                    if (!option.ToLine().GetIntersectionWith(targetLine.ToLine()).IsTheSameLine)
+                        return (option, false);
+                }
             }
 
             throw new Exception("This shouldn't happen");
