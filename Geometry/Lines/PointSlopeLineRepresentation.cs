@@ -34,11 +34,11 @@ namespace Geometry.Lines
                 new ParallelBoundingLine(
                     new PointSlopeLineRepresentation(
                         new PointD(_point.X + diffInfo.XDiff, _point.Y + diffInfo.YDiff),
-                        _slope), RelativeLineDirection.GreaterThan),
+                        _slope), RelativeLineDirection.AddTo),
                 new ParallelBoundingLine(
                     new PointSlopeLineRepresentation(
                         new PointD(_point.X - diffInfo.XDiff, _point.Y - diffInfo.YDiff),
-                        _slope), RelativeLineDirection.LessThan)
+                        _slope), RelativeLineDirection.SubtractedFrom)
             };
         }
 
@@ -50,6 +50,9 @@ namespace Geometry.Lines
 
             return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].X), new ParametricPoint(sorted[1], sorted[1].X));
         }
+
+        public double GetAngle()
+            => _slope.GetAngle();
 
         public double GetXValue(double yValue)
         {

@@ -13,6 +13,7 @@ namespace Geometry.Lines
         ParametricRange GetParametricRange(PointD point1, PointD point2);
         ParallelBoundingLine[] GetParallelBoundingLines(double distance);
         double DistanceToPoint(PointD point);
+        double GetAngle();
     }
 
     public class ParallelBoundingLine
@@ -29,12 +30,8 @@ namespace Geometry.Lines
 
     public enum RelativeLineDirection
     {
-        Above,
-        Below,
-        Right,
-        Left,
-        GreaterThan,
-        LessThan
+        AddTo,
+        SubtractedFrom
     }
 
     public class IsTheSameLineEqualityComparer : IEqualityComparer<ILineRepresentation>

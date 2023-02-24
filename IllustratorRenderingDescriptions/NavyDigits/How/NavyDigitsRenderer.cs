@@ -57,7 +57,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
             var widthPaddingPercentage = 0.2f;
-            var strokeWidth = 2;
+            var strokeWidth = 20;
 
             if (digit == 0)
             {
@@ -844,21 +844,25 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     .Single(x => marbleLineInfo.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.EndPoint == x.LineSegment.EndPoint);
 
                 var lineBars = marbleLineInfo.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                var shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
-                
+                ILineRepresentation shadowLine;
+                if (marbleLineInfo.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
+                    shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
+                else
+                    shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.SubtractedFrom).Line;
+
                 var startBars = startConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 ILineRepresentation startConnectionLine;
-                if (startConnection.EdgeInfo.CastsShadow)
-                    startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                if (startConnection.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
+                    startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
                 else
-                    startConnectionLine = startBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
+                    startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.SubtractedFrom).Line;
 
                 var endBars = endConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 ILineRepresentation endConnectionLine;
-                if (endConnection.EdgeInfo.CastsShadow)
-                    endConnectionLine = endBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                if (endConnection.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
+                    endConnectionLine = endBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
                 else
-                    endConnectionLine = endBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
+                    endConnectionLine = endBars.First(x => x.Direction == RelativeLineDirection.SubtractedFrom).Line;
 
                 var point1 = shadowLine.GetIntersectionWith(startConnectionLine).GetStart().Value;
                 var point2 = shadowLine.GetIntersectionWith(endConnectionLine).GetStart().Value;
@@ -915,7 +919,9 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 fixedShadowLines.AddRange(divider.DivideLines(target, sortedRemoveShadowLines.Skip(i + 1)));
             }
 
-            var results = new List<LineSegment>();
+            throw new NotImplementedException();
+
+            /*var results = new List<LineSegment>();
             foreach (var line in shadowLines)
             {
                 var startConnection = FindConnectingLine(line, line.StartPoint, shadowLines, fixedShadowLines);
@@ -934,7 +940,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 results.Add(lineSegmentFactory.Create(newStartPoint, newEndPoint));
             }
 
-            return results;
+            return results;*/
         }
 
         private ParallelBoundingLine GetMatchingLine(ParallelBoundingLine shadowBar, ParallelBoundingLine otherBar, LineSegment shadowLine, LineSegment connectingLine)
@@ -979,10 +985,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             else
                 useShadowBar = false;
 
-            if (useShadowBar)
+            throw new NotImplementedException();
+            /*if (useShadowBar)
                 return bars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
             else
-                return bars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
+                return bars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();*/
         }
 
         private (LineSegment Line, bool IsShadow) FindConnectingLine(LineSegment targetLine, PointD targetPoint, List<LineSegment> shadowLines, List<LineSegment> removeShadowLines)
@@ -1399,6 +1406,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
     {
         public readonly bool CastsShadow;
         public readonly bool CreatesMarbleEdge;
+        public readonly MarbleOrientations? MarbleOrientation;
 
         public ChiselEdgeInfo(bool castsShadow,
             bool createsMarbleEdge)
@@ -1408,7 +1416,24 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
             CastsShadow = castsShadow;
             CreatesMarbleEdge = createsMarbleEdge;
+
+            if (createsMarbleEdge)
+                MarbleOrientation = CastsShadow ? MarbleOrientations.Negative : MarbleOrientations.Positive;
         }
+
+        public ChiselEdgeInfo(bool castsShadow,
+            MarbleOrientations? marbleOrientation)
+        {
+            CastsShadow = castsShadow;
+            CreatesMarbleEdge = true;
+            MarbleOrientation = marbleOrientation;
+        }
+    }
+
+    public enum MarbleOrientations
+    {
+        Positive,
+        Negative
     }
 
     public enum DigitChiselLocation
@@ -1717,7 +1742,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 var shadowSides = MoveToCenter
                     ? new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) }
-                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) };
+                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, MarbleOrientations.Negative) };
 
                 return new DigitChiselResult(new PointF[]
                 {

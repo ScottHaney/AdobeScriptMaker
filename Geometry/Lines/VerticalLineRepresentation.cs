@@ -23,8 +23,8 @@ namespace Geometry.Lines
         {
             return new[]
             {
-                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue + distance), RelativeLineDirection.Right),
-                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue - distance), RelativeLineDirection.Left)
+                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue + distance), RelativeLineDirection.AddTo),
+                new ParallelBoundingLine(new VerticalLineRepresentation(_xValue - distance), RelativeLineDirection.SubtractedFrom)
             };
         }
 
@@ -36,6 +36,9 @@ namespace Geometry.Lines
 
             return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].Y), new ParametricPoint(sorted[1], sorted[1].Y));
         }
+
+        public double GetAngle()
+            => 90;
 
         public ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine)
         {

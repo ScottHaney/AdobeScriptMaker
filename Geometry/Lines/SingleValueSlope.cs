@@ -23,6 +23,11 @@ namespace Geometry.Lines
         public double GetAngle()
         {
             return Math.Atan(_value);
+            var value = Math.Atan(_value);
+            if (value < 0)
+                value += Math.PI;
+
+            return value;
         }
 
         public ISlope GetPerpendicularSlope()

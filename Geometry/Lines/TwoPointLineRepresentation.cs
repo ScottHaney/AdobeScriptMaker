@@ -41,12 +41,12 @@ namespace Geometry.Lines
                     new TwoPointLineRepresentation(
                         new PointD(_point1.X + diffInfoP1.XDiff, _point1.Y + diffInfoP1.YDiff),
                         new PointD(_point2.X + diffInfoP2.XDiff, _point2.Y + diffInfoP2.YDiff)),
-                    RelativeLineDirection.GreaterThan),
+                    RelativeLineDirection.AddTo),
                 new ParallelBoundingLine(
                     new TwoPointLineRepresentation(
                         new PointD(_point1.X - diffInfoP1.XDiff, _point1.Y - diffInfoP1.YDiff),
                         new PointD(_point2.X - diffInfoP2.XDiff, _point2.Y - diffInfoP2.YDiff)),
-                    RelativeLineDirection.LessThan)
+                    RelativeLineDirection.SubtractedFrom)
             };
         }
 
@@ -58,6 +58,9 @@ namespace Geometry.Lines
 
             return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].X), new ParametricPoint(sorted[1], sorted[1].X));
         }
+
+        public double GetAngle()
+            => _slope.GetAngle();
 
         public double GetXValue(double yValue)
             => _slope.GetXValue(_point1, yValue);
