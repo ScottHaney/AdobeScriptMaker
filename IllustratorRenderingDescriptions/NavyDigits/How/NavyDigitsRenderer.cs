@@ -83,6 +83,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 2)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -117,6 +118,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 4)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitFourChisler(widthPaddingPercentage, widthPaddingPercentage, 0.65f, 0.65f, 0.25f))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -164,6 +166,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 8)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -179,6 +182,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 9)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -745,17 +749,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
             marbleBoundaryLines = JoinLineSegments2(marbleBoundaryLines, lineSegmentFactory).ToList();
 
-            var shadowLines = marbleEdges.Where(x => x.EdgeInfo.CastsShadow).ToList();
-            var removeShadowLines = marbleEdges.Where(x => !x.EdgeInfo.CastsShadow).ToList();
-
-
-            var shadowLinesD = shadowLines.Select(x => lineSegmentFactory.Create(x.Start, x.End)).ToList();
-            var removeShadowLinesD = removeShadowLines.Select(x => lineSegmentFactory.Create(x.Start, x.End)).ToList();
-
-            var result = GetUpdatedShadowLines(shadowLinesD, removeShadowLinesD);
-            result = JoinLineSegments(result, lineSegmentFactory).ToList();
-
-            return AdjustShadowsForStroke(result.ToList(), removeShadowLinesD, marble, lineSegmentFactory);
+            return AdjustShadowsForStroke2(marbleBoundaryLines, lineSegmentFactory);
         }
 
 
@@ -831,6 +825,80 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 yield return new ShadowLineInfo(currentRange.Start.Point.ToPointF(), currentRange.End.Point.ToPointF(), group.First().EdgeInfo);
             }
+        }
+
+        private IEnumerable<LineSegment> AdjustShadowsForStroke2(List<ShadowLineInfo> marbleLines, LineSegmentRepresentationFactory lineSegmentFactory)
+        {
+            var marbleLinesInfo = marbleLines
+                .Select(x => new { EdgeInfo = x.EdgeInfo, LineSegment = lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End)) })
+                .ToList();
+
+            foreach (var marbleLineInfo in marbleLinesInfo.Where(x => x.EdgeInfo.CastsShadow))
+            {
+                var startConnection = marbleLinesInfo
+                    .Where(x => x.LineSegment != marbleLineInfo.LineSegment)
+                    .Single(x => marbleLineInfo.LineSegment.StartPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.StartPoint == x.LineSegment.EndPoint);
+
+                var endConnection = marbleLinesInfo
+                    .Where(x => x.LineSegment != marbleLineInfo.LineSegment)
+                    .Single(x => marbleLineInfo.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.EndPoint == x.LineSegment.EndPoint);
+
+                var lineBars = marbleLineInfo.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+                var shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                
+                var startBars = startConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+                ILineRepresentation startConnectionLine;
+                if (startConnection.EdgeInfo.CastsShadow)
+                    startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                else
+                    startConnectionLine = startBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
+
+                var endBars = endConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+                ILineRepresentation endConnectionLine;
+                if (endConnection.EdgeInfo.CastsShadow)
+                    endConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                else
+                    endConnectionLine = startBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
+
+                var point1 = shadowLine.GetIntersectionWith(startConnectionLine).GetStart().Value;
+                var point2 = shadowLine.GetIntersectionWith(endConnectionLine).GetStart().Value;
+
+                yield return lineSegmentFactory.Create(point1, point2);
+            }
+
+
+            /*if (StrokeWidth == 0)
+                return shadowLines;
+
+            var sortedRemoveShadowLines = removeShadowLines.OrderByDescending(x => x.GetLength()).ToList();
+            var fixedShadowLines = new List<LineSegment>();
+            var divider = new LineDivider2();
+            for (int i = 0; i < sortedRemoveShadowLines.Count; i++)
+            {
+                var target = sortedRemoveShadowLines[i];
+                fixedShadowLines.AddRange(divider.DivideLines(target, sortedRemoveShadowLines.Skip(i + 1)));
+            }
+
+            var results = new List<LineSegment>();
+            foreach (var line in shadowLines)
+            {
+                var startConnection = FindConnectingLine(line, line.StartPoint, shadowLines, fixedShadowLines);
+                var endConnection = FindConnectingLine(line, line.EndPoint, shadowLines, fixedShadowLines);
+
+                var lineBars = line.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
+                var shadowBar = lineBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan);
+                var otherBar = lineBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First();
+
+                var startBar = GetMatchingLine(shadowBar, otherBar, line, startConnection.Line);
+                var endBar = GetMatchingLine(shadowBar, otherBar, line, endConnection.Line);
+
+                var newStartPoint = shadowBar.Line.GetIntersectionWith(startBar.Line).GetStart().Value;
+                var newEndPoint = shadowBar.Line.GetIntersectionWith(endBar.Line).GetStart().Value;
+
+                results.Add(lineSegmentFactory.Create(newStartPoint, newEndPoint));
+            }
+
+            return results;*/
         }
 
         private IEnumerable<LineSegment> AdjustShadowsForStroke(List<LineSegment> shadowLines, List<LineSegment> removeShadowLines, RectangleF marble, LineSegmentRepresentationFactory lineSegmentFactory)
