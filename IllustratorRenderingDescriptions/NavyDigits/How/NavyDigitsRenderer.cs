@@ -224,10 +224,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var leftOverSpace = outerBounds.Width - lineWidth;
             var leftCutout = new RectangleF(outerBounds.TopLeft(), new SizeF(leftOverSpace / 2, outerBounds.Height));
 
-            yield return new DigitChiselResult(leftCutout);
+            yield return new DigitChiselResult(leftCutout, new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false));
 
             var rightCutout = new RectangleF(outerBounds.Right - leftOverSpace / 2, outerBounds.Top, leftOverSpace / 2, outerBounds.Height);
-            yield return new DigitChiselResult(rightCutout, RectangleSideName.Left);
+            yield return new DigitChiselResult(rightCutout, new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(true, true));
         }
     }
 
@@ -268,17 +268,17 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 horizontalLineHeight);
 
             var bottomLeftRect = new RectangleF(marble.Left, innerRect.Bottom, innerRect.Left - marble.Left, marble.Bottom - innerRect.Bottom);
-            yield return new DigitChiselResult(bottomLeftRect, RectangleSideName.Top);
+            yield return new DigitChiselResult(bottomLeftRect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false));
 
             var bottomRightRect = new RectangleF(innerRect.Right, innerRect.Bottom, marble.Right - innerRect.Right, marble.Bottom - innerRect.Bottom);
-            yield return new DigitChiselResult(bottomRightRect, RectangleSideName.Left, RectangleSideName.Top);
+            yield return new DigitChiselResult(bottomRightRect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(true, true));
 
             var topRightRect = new RectangleF(innerRect.Right, marble.Top, marble.Right - innerRect.Right, innerRect.Top - marble.Top);
-            yield return new DigitChiselResult(topRightRect, RectangleSideName.Left);
+            yield return new DigitChiselResult(topRightRect, new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true));
 
             var topLeftRect = new RectangleF(marble.Left, marble.Top, innerRect.Left - marble.Left, innerRect.Top - marble.Top);
             var topLeftTriangle = new PointF[] { topLeftRect.BottomLeft(), topLeftRect.TopLeft(), topLeftRect.TopRight() };
-            yield return new DigitChiselResult(topLeftTriangle, false, false, false);
+            yield return new DigitChiselResult(topLeftTriangle, new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true));
 
             var slope = (topLeftRect.Bottom - topLeftRect.Top) / (topLeftRect.Right - topLeftRect.Left);
             var topLeftCutoutBottomLeftPoint = new PointF(topLeftRect.Left + slantBarWidth, topLeftRect.Bottom);
@@ -293,7 +293,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 topLeftCutoutBottomRightPoint
             };
 
-            yield return new DigitChiselResult(topLeftCutout, true, false, false);
+            yield return new DigitChiselResult(topLeftCutout, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true));
         }
     }
 
@@ -328,7 +328,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 leftSlantLineTopPoint,
                 leftSlantLineBottomPoint
             };
-            yield return new DigitChiselResult(bottomLeftCutout, true, false, false);
+            yield return new DigitChiselResult(bottomLeftCutout, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));
 
             var bottomRightCutout = new[]
             {
@@ -336,7 +336,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 rightSlantLineTopPoint,
                 bottomBox.BottomRight()
             };
-            yield return new DigitChiselResult(bottomRightCutout, true, false, false);
+            yield return new DigitChiselResult(bottomRightCutout, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false));
 
         }
     }
@@ -705,21 +705,49 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         public IEnumerable<LineSegment> CreateShadows(RectangleF marble,
             List<DigitChiselResult> chiseledOutSections)
         {
-            IEnumerable<DigitChiselResult> chiselResults = chiseledOutSections;
+            var chiselResults = chiseledOutSections;
             if (IncludeMarble)
             {
-                var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
-                chiselResults = chiselResults.Concat(new[] { marbleShadowsInfo });
+                var marbleShadowsInfo = new DigitChiselResult(marble, new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true));
+                chiselResults = new[] { marbleShadowsInfo }.Concat(chiselResults).ToList();
             }
 
-            var allLineInfos = chiselResults
-                .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
-                .ToList();
-
-            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
-            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
-
+            var lineDivider = new LineDivider2();
             var lineSegmentFactory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+
+            var marbleEdges = chiselResults.First().ShadowsInfo.ShadowLineInfos.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
+            foreach (var chiselResult in chiselResults.Skip(1))
+            {
+                var chiselLines = chiselResult.ShadowsInfo.ShadowLineInfos.Select(x => new { LineSegment = lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End)), EdgeInfo = x.EdgeInfo }).ToList();
+                var results = new List<ShadowLineInfo>();
+                foreach (var marbleEdge in marbleEdges)
+                {
+                    var marbleEdgeSegment = lineSegmentFactory.Create(new PointD(marbleEdge.Start), new PointD(marbleEdge.End));
+
+                    //Remove the newly chiseled sections and update the results
+                    var divisionResults = lineDivider.DivideLines(marbleEdgeSegment, chiselLines.Select(x => x.LineSegment).ToList());
+                    results.AddRange(divisionResults.Select(x => new ShadowLineInfo(x.StartPoint.ToPointF(), x.EndPoint.ToPointF(), marbleEdge.EdgeInfo)));
+                }
+
+                //Add in any new marble edges from the chisel
+                var marbleEdgeSegments = marbleEdges.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).ToList();
+                var possibleNewMarbleEdges = chiselLines.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
+
+                var newMarbleEdges = possibleNewMarbleEdges
+                    .Where(x => marbleEdgeSegments.All(y => !x.LineSegment.OverlapsWith(y)))
+                    .Select(x => new ShadowLineInfo(x.LineSegment.StartPoint.ToPointF(), x.LineSegment.EndPoint.ToPointF(), x.EdgeInfo))
+                    .ToList();
+
+                results.AddRange(newMarbleEdges);
+                marbleEdges = results;
+            }
+
+            var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
+            var marbleBoundaryLinesSegments = JoinLineSegments(marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).ToList(), lineSegmentFactory).ToList();
+
+            var shadowLines = marbleEdges.Where(x => x.EdgeInfo.CastsShadow).ToList();
+            var removeShadowLines = marbleEdges.Where(x => !x.EdgeInfo.CastsShadow).ToList();
+
 
             var shadowLinesD = shadowLines.Select(x => lineSegmentFactory.Create(x.Start, x.End)).ToList();
             var removeShadowLinesD = removeShadowLines.Select(x => lineSegmentFactory.Create(x.Start, x.End)).ToList();
@@ -729,6 +757,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
             return AdjustShadowsForStroke(result.ToList(), removeShadowLinesD, marble, lineSegmentFactory);
         }
+
+
 
         private List<LineSegment> GetUpdatedShadowLines(IEnumerable<LineSegment> originalShadowLines, IEnumerable<LineSegment> removeLines)
         {
@@ -905,7 +935,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             IEnumerable<DigitChiselResult> chiselResults = chiseledOutSections;
             if (IncludeMarble)
             {
-                var marbleShadowsInfo = new DigitChiselResult(marble, RectangleSideName.Right, RectangleSideName.Bottom);
+                var marbleShadowsInfo = new DigitChiselResult(marble, new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true));
                 chiselResults = chiselResults.Concat(new[] { marbleShadowsInfo });
             }
 
@@ -913,8 +943,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 .SelectMany(x => x.ShadowsInfo.ShadowLineInfos)
                 .ToList();
 
-            var shadowLines = allLineInfos.Where(x => x.CastsShadow).ToList();
-            var removeShadowLines = allLineInfos.Where(x => !x.CastsShadow).ToList();
+            var shadowLines = allLineInfos.Where(x => x.EdgeInfo.CastsShadow).ToList();
+            var removeShadowLines = allLineInfos.Where(x => !x.EdgeInfo.CastsShadow).ToList();
 
             var result = GetUpdatedShadowLines(shadowLines.Select(x => new Line(x.Start, x.End)).ToList(), removeShadowLines.Select(x => new Line(x.Start, x.End)).ToList());
             result = JoinLineSegments(result.ToList());
@@ -1180,7 +1210,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         public readonly ChiselShadowsInfo ShadowsInfo;
 
         public DigitChiselResult(PointF[] points,
-            params bool[] isShadowSide)
+            params ChiselEdgeInfo[] edgesInfo)
         {
             Points = points;
 
@@ -1188,7 +1218,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var sideIndex = 0;
             foreach (var pair in points.Zip(points.Skip(1).Concat(new[] {points.First()}), (x, y) => new { Start = x, End = y }))
             {
-                items.Add(new ShadowLineInfo(pair.Start, pair.End, isShadowSide[sideIndex]));
+                items.Add(new ShadowLineInfo(pair.Start, pair.End, edgesInfo[sideIndex]));
                 sideIndex++;
             }
 
@@ -1196,15 +1226,9 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         }
 
         public DigitChiselResult(RectangleF rect,
-            params RectangleSideName[] shadowSides)
-        {
-            Points = rect.ToPathPoints();
-
-            ShadowsInfo = new ChiselShadowsInfo(
-                GetSides(rect)
-                    .Select(x => new ShadowLineInfo(x.Start, x.End, shadowSides.Contains(x.Name)))
-                    .ToList());
-        }
+            params ChiselEdgeInfo[] edgesInfo)
+            : this(rect.ToPathPoints(), edgesInfo)
+        { }
 
         private IEnumerable<RectangleSide> GetSides(RectangleF rect)
         {
@@ -1256,15 +1280,31 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         public readonly PointF Start;
         public readonly PointF End;
 
-        public readonly bool CastsShadow;
+        public readonly ChiselEdgeInfo EdgeInfo;
 
         public ShadowLineInfo(PointF start,
             PointF end,
-            bool castsShadow)
+            ChiselEdgeInfo edgeInfo)
         {
             Start = start;
             End = end;
+            EdgeInfo = edgeInfo;
+        }
+    }
+
+    public class ChiselEdgeInfo
+    {
+        public readonly bool CastsShadow;
+        public readonly bool CreatesMarbleEdge;
+
+        public ChiselEdgeInfo(bool castsShadow,
+            bool createsMarbleEdge)
+        {
+            if (castsShadow && !createsMarbleEdge)
+                throw new Exception("This can't happen. Only a marble edge can cast a shadow!");
+
             CastsShadow = castsShadow;
+            CreatesMarbleEdge = createsMarbleEdge;
         }
     }
 
@@ -1305,7 +1345,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect, RectangleSideName.Top);
+                yield return new DigitChiselResult(rect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));
             }
             else if (_name == DigitVerticalBarName.TopRight)
             {
@@ -1318,7 +1358,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect, RectangleSideName.Top, RectangleSideName.Left);
+                yield return new DigitChiselResult(rect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true));
             }
             else if (_name == DigitVerticalBarName.BottomRight)
             {
@@ -1331,7 +1371,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect, RectangleSideName.Top, RectangleSideName.Left);
+                yield return new DigitChiselResult(rect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true));
             }
             else if (_name == DigitVerticalBarName.BottomLeft)
             {
@@ -1344,7 +1384,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
-                yield return new DigitChiselResult(rect, RectangleSideName.Top);
+                yield return new DigitChiselResult(rect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));
             }
             else
                 throw new NotSupportedException();
@@ -1375,6 +1415,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
 
+            var edgesInfo = new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true) };
             if (_name == DigitHoleName.Top)
             {
                 var upperRect = new RectangleF(outerBounds.TopLeft(), new SizeF(outerBounds.Width, outerBounds.Height / 2));
@@ -1385,7 +1426,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     new PointF(outerBounds.Right - digitLineWidth, outerBounds.Top + digitLineWidth),
                     new PointF(outerBounds.Right - digitLineWidth, upperRect.Bottom - digitLineWidth / 2),
                     new PointF(outerBounds.Left + digitLineWidth, upperRect.Bottom - digitLineWidth / 2)
-                }, true, false, false, true);
+                }, edgesInfo);
             }
             else if (_name == DigitHoleName.Bottom)
             {
@@ -1397,7 +1438,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     new PointF(outerBounds.Right - digitLineWidth, lowerRect.Top + digitLineWidth / 2),
                     new PointF(outerBounds.Right - digitLineWidth, lowerRect.Bottom - digitLineWidth),
                     new PointF(outerBounds.Left + digitLineWidth, lowerRect.Bottom - digitLineWidth)
-                }, true, false, false, true);
+                }, edgesInfo);
             }
             else
                 throw new NotSupportedException();
@@ -1440,7 +1481,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     new PointF(outerBounds.Left, midpointY + sidesYOffset),
                     new PointF(outerBounds.Left + insetLength, midpointY),
                     new PointF(outerBounds.Left, midpointY - sidesYOffset)
-                }, false, false, false);
+                }, new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));
             }
             else if (_name == DigitTriangleInsetName.Right)
             {
@@ -1449,7 +1490,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     new PointF(outerBounds.Right, midpointY - sidesYOffset),
                     new PointF(outerBounds.Right - insetLength, midpointY),
                     new PointF(outerBounds.Right, midpointY + sidesYOffset)
-                }, true, false, false);
+                }, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));
             }
             else
                 throw new NotSupportedException();
@@ -1490,7 +1531,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY - lineHeight / 2),
                 new PointF(outerBounds.Right - lineHeight - rightShift, middleY + lineHeight / 2),
                 new PointF(outerBounds.Left + lineHeight - leftShift, middleY + lineHeight / 2)
-            }, true, false, false, ExtendLeft ? false : true);
+            }, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(ExtendLeft ? false : true, ExtendLeft ? false : true));
         }
     }
 
@@ -1535,7 +1576,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 yield return new DigitChiselResult(result.Points
                     .Select(x => new PointF(x.X, x.Y + shift))
-                    .ToArray(), result.ShadowsInfo.ShadowLineInfos.Select(x => x.CastsShadow).ToArray());
+                    .ToArray(), result.ShadowsInfo.ShadowLineInfos.Select(x => x.EdgeInfo).ToArray());
             }
             else
                 yield return result;
@@ -1554,8 +1595,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var intersectionPoint = new PointF(topLeft.X, topLeft.Y + xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { false, true, false }
-                    : new[] { false, false, false };
+                    ? new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true) }
+                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) };
 
                 return new DigitChiselResult(new PointF[]
                 {
@@ -1572,8 +1613,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var intersectionPoint = new PointF(topRight.X, topRight.Y + xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { true, false, false }
-                    : new[] { false, false, false };
+                    ? new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) }
+                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) };
 
                 return new DigitChiselResult(new PointF[]
                 {
@@ -1590,8 +1631,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var intersectionPoint = new PointF(bottomRight.X, bottomRight.Y - xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { false, false, true }
-                    : new[] { false, false, true };
+                    ? new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true) }
+                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(true, true) };
 
                 return new DigitChiselResult(new PointF[]
                 {
@@ -1608,8 +1649,8 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var intersectionPoint = new PointF(bottomLeft.X, bottomLeft.Y - xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { false, false, false }
-                    : new[] { false, false, false };
+                    ? new[] { new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) }
+                    : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) };
 
                 return new DigitChiselResult(new PointF[]
                 {

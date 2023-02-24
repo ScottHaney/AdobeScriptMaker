@@ -75,6 +75,22 @@ namespace Geometry.Lines
             }
         }
 
+        public bool OverlapsWith(LineSegment other)
+        {
+            var intersectionResult = _line.GetIntersectionWith(other._line);
+            if (intersectionResult.HasNoPointsInCommonWith)
+                return false;
+            else if (intersectionResult.IsTheSameLine)
+            {
+                var range1 = _line.GetParametricRange(_bounds[0], _bounds[1]);
+                var range2 = other._line.GetParametricRange(other._bounds[0], other._bounds[1]);
+
+                return range1.OverlapsWith(range2);
+            }
+            else
+                return false;
+        }
+
         private bool PointIsInRangeOfBothSegments(PointD point, LineSegment segment1, LineSegment segment2)
         {
             var touchesThisLineSegment = segment1._line.IsInRange(point, segment1._bounds[0], segment1._bounds[1]);

@@ -75,6 +75,18 @@ namespace Geometry.Lines
                 return false;
         }
 
+        public bool OverlapsWith(ParametricRange other)
+        {
+            if (other.Start.ParametricValue > Start.ParametricValue && other.Start.ParametricValue < End.ParametricValue)
+                return true;
+            else if (other.End.ParametricValue < End.ParametricValue && other.End.ParametricValue > Start.ParametricValue)
+                return true;
+            else if (other.Start.ParametricValue == Start.ParametricValue && other.End.ParametricValue == End.ParametricValue)
+                return true;
+            else
+                return false;
+        }
+
         public bool TryConnectOtherRange(ParametricRange other, out ParametricRange combinedRange)
         {
             if (other.Start.ParametricValue == Start.ParametricValue && other.End.ParametricValue == End.ParametricValue)

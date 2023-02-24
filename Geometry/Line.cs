@@ -392,6 +392,9 @@ namespace Geometry
             Y = pointF.Y;
         }
 
+        public PointF ToPointF()
+            => new PointF((float)X, (float)Y);
+
         public double GetLength()
         {
             return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2));
