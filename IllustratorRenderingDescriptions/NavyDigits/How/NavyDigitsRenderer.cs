@@ -743,7 +743,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             }
 
             var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
-            var marbleBoundaryLinesSegments = JoinLineSegments(marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).ToList(), lineSegmentFactory).ToList();
+            marbleBoundaryLines = JoinLineSegments2(marbleBoundaryLines, lineSegmentFactory).ToList();
 
             var shadowLines = marbleEdges.Where(x => x.EdgeInfo.CastsShadow).ToList();
             var removeShadowLines = marbleEdges.Where(x => !x.EdgeInfo.CastsShadow).ToList();
@@ -795,6 +795,41 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 }
 
                 yield return lineSegmentFactory.Create(commonLineRep, currentRange.Start.Point, currentRange.End.Point);
+            }
+        }
+
+        private IEnumerable<ShadowLineInfo> JoinLineSegments2(List<ShadowLineInfo> segments, LineSegmentRepresentationFactory lineSegmentFactory)
+        {
+            if (!segments.Any())
+                yield break;
+
+            var groups = segments
+                .Select(x => new { EdgeInfo = x.EdgeInfo, Segment = lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End)) })
+                .GroupBy(x => x.Segment, new LineSegmentLineEqualityComparer()).ToList();
+
+            foreach (var group in groups)
+            {
+                var ranges = group
+                    .Select(x => new { Segment = x.Segment, Range = x.Segment.GetParametricRange() })
+                    .OrderBy(x => x.Range.Start.ParametricValue)
+                    .ToList();
+
+                var commonLineRep = group.First().Segment.ToLine();
+
+                var currentRange = ranges.First().Range;
+                for (int i = 1; i < ranges.Count; i++)
+                {
+                    var range = ranges[i].Range;
+                    if (currentRange.OverlapsOrConnectsWith(range))
+                        currentRange = new ParametricRange(currentRange.Start, range.End.ParametricValue > currentRange.End.ParametricValue ? range.End : currentRange.End);
+                    else
+                    {
+                        yield return new ShadowLineInfo(currentRange.Start.Point.ToPointF(), currentRange.End.Point.ToPointF(), group.First().EdgeInfo);
+                        currentRange = range;
+                    }
+                }
+
+                yield return new ShadowLineInfo(currentRange.Start.Point.ToPointF(), currentRange.End.Point.ToPointF(), group.First().EdgeInfo);
             }
         }
 
