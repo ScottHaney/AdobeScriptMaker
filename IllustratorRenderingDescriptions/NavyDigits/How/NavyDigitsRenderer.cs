@@ -516,7 +516,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Exclude\");");
                 //script.AppendLine("app.activeDocument.selection = null;");
 
-                //Make sure to get rid of the strok that gets added after running the path finder operation
+                //Make sure to get rid of the stroke that gets added after running the path finder operation
                 var updatedShadowRef = FindItemRefByName(itemName, script);
                 script.AppendLine($@"{updatedShadowRef}.strokeWidth = 0;
 {updatedShadowRef}.strokeColor = new NoColor();");
@@ -856,9 +856,9 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var endBars = endConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 ILineRepresentation endConnectionLine;
                 if (endConnection.EdgeInfo.CastsShadow)
-                    endConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
+                    endConnectionLine = endBars.First(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).Line;
                 else
-                    endConnectionLine = startBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
+                    endConnectionLine = endBars.SkipWhile(x => x.Direction == RelativeLineDirection.Above || x.Direction == RelativeLineDirection.Right || x.Direction == RelativeLineDirection.GreaterThan).First().Line;
 
                 var point1 = shadowLine.GetIntersectionWith(startConnectionLine).GetStart().Value;
                 var point2 = shadowLine.GetIntersectionWith(endConnectionLine).GetStart().Value;
