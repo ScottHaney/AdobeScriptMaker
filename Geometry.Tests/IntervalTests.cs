@@ -273,6 +273,52 @@ namespace Geometry.Tests
                 new Interval(new ClosedIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
         }
 
+        [Test]
+        public void Excluding_A_Non_Overlapping_Interval_Returns_The_Original_Interval()
+        {
+            //[10, 15] exclude [0, 5] = [10, 15]
+            TestExclusionResultsForNonOverlappingIntervals(
+                Interval.CreateClosedInterval(10, 15),
+                Interval.CreateClosedInterval(0, 5));
+
+            //[10, 15] exclude [20, 25] = [10, 15]
+            TestExclusionResultsForNonOverlappingIntervals(
+                Interval.CreateClosedInterval(10, 15),
+                Interval.CreateClosedInterval(20, 25));
+
+            //[10, 15] exclude [0, 10) = [10, 15]
+            TestExclusionResultsForNonOverlappingIntervals(
+                Interval.CreateClosedInterval(10, 15),
+                new Interval(new ClosedIntervalEndPoint(0), new OpenIntervalEndPoint(10)));
+
+            //[10, 15] exclude (15, 25] = [10, 15]
+            TestExclusionResultsForNonOverlappingIntervals(
+                Interval.CreateClosedInterval(10, 15),
+                new Interval(new OpenIntervalEndPoint(15), new ClosedIntervalEndPoint(25)));
+        }
+
+        [Test]
+        public void Excluding_An_Interval_That_Overlaps_By_A_Single_EndPoint_Works_Correctly()
+        {
+            //[10, 15] exclude [0, 10] = (10, 15]
+            var interval1 = Interval.CreateClosedInterval(10, 15);
+            var interval2 = Interval.CreateClosedInterval(0, 10);
+            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(15)) }, interval1.Exclude(interval2).Intervals);
+
+            //[10, 15] exclude [15, 20] = [10, 15)
+            var interval1B = Interval.CreateClosedInterval(10, 15);
+            var interval2B = Interval.CreateClosedInterval(15, 20);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).Intervals);
+        }
+
+
+
+        private void TestExclusionResultsForNonOverlappingIntervals(Interval interval1, Interval interval2)
+        {
+            var exclusionResult = interval1.Exclude(interval2);
+            CollectionAssert.AreEqual(new[] { interval1 }, exclusionResult.Intervals);
+        }
+
         private void TestSinglePointIntersectionResult(Interval interval1, Interval interval2)
         {
             Assert.IsTrue(interval1.IntersectionWith(interval2).ContainsSinglePoint());

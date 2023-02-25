@@ -33,6 +33,23 @@ namespace Geometry.Intervals
 
         public static readonly Interval Empty = Interval.CreateOpenInterval(0, 0);
 
+        public IntervalExclusionResult Exclude(Interval otherInterval)
+        {
+            var intersection = IntersectionWith(otherInterval);
+            if (!intersection.IsEmpty())
+            {
+                var results = new List<Interval>();
+                if (_start.Value <= intersection._start.Value)
+                    results.Add(new Interval(_start, intersection._start.GetOppositePoint()));
+                if (intersection._end.Value <= _end.Value)
+                    results.Add(new Interval(intersection._end.GetOppositePoint(), _end));
+
+                return new IntervalExclusionResult(results.ToArray());
+            }
+            else
+                return this;
+        }
+
         public Interval IntersectionWith(Interval otherInterval)
         {
             Interval left;
@@ -82,6 +99,11 @@ namespace Geometry.Intervals
                 return p1;
             else
                 return new OpenIntervalEndPoint(p1.Value);
+        }
+
+        public bool ContainsMoreThanOnePoint()
+        {
+            return !IsEmpty() && !ContainsSinglePoint();
         }
 
         public bool IsEmpty()
@@ -154,19 +176,21 @@ namespace Geometry.Intervals
 
             return $"{startSymbol}{_start.Value}, {_end.Value}{endSymbol}";
         }
+
+        public static implicit operator IntervalExclusionResult(Interval interval) => new IntervalExclusionResult(interval);
     }
 
-    public class IntervalsIntersectionResult
+    public class IntervalExclusionResult
     {
         private readonly Interval[] _resultingIntervals;
 
-        public static readonly IntervalsIntersectionResult Empty = new IntervalsIntersectionResult();
+        public static readonly IntervalExclusionResult Empty = new IntervalExclusionResult();
 
         public bool IsEmpty => _resultingIntervals.Length == 0 || _resultingIntervals.All(x => x.IsEmpty());
 
         public IEnumerable<Interval> Intervals => _resultingIntervals.Where(x => !x.IsEmpty());
 
-        public IntervalsIntersectionResult(params Interval[] resultingIntervals)
+        public IntervalExclusionResult(params Interval[] resultingIntervals)
         {
             _resultingIntervals = resultingIntervals ?? Array.Empty<Interval>();
         }
@@ -182,6 +206,8 @@ namespace Geometry.Intervals
         {
             Value = value;
         }
+
+        public abstract IntervalEndPoint GetOppositePoint();
 
         public static bool operator ==(IntervalEndPoint point1, IntervalEndPoint point2)
         {
@@ -224,6 +250,11 @@ namespace Geometry.Intervals
             : base(value)
         { }
 
+        public override IntervalEndPoint GetOppositePoint()
+        {
+            return new ClosedIntervalEndPoint(Value);
+        }
+
         public static bool operator==(OpenIntervalEndPoint point1, OpenIntervalEndPoint point2)
         {
             if (ReferenceEquals(point1, null))
@@ -242,6 +273,16 @@ namespace Geometry.Intervals
 
             return Value == other.Value;
         }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class ClosedIntervalEndPoint : IntervalEndPoint, IEquatable<ClosedIntervalEndPoint>
@@ -251,6 +292,11 @@ namespace Geometry.Intervals
         public ClosedIntervalEndPoint(double value)
             : base(value)
         { }
+
+        public override IntervalEndPoint GetOppositePoint()
+        {
+            return new OpenIntervalEndPoint(Value);
+        }
 
         public static bool operator ==(ClosedIntervalEndPoint point1, ClosedIntervalEndPoint point2)
         {
@@ -269,6 +315,16 @@ namespace Geometry.Intervals
                 return false;
 
             return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
