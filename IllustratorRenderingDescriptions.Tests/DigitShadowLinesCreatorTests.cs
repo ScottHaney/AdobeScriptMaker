@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Geometry;
+using Geometry.Lines;
 
 namespace IllustratorRenderingDescriptions.Tests
 {
@@ -16,71 +17,126 @@ namespace IllustratorRenderingDescriptions.Tests
         {
             var marble = new RectangleF(0, 0, 100, 100);
 
-            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 1 };
-            var shadows = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>());
+            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.2f, 45)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>());
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            var expectedResult = new[]
+            {
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 0), new PointD(100, 100))
+            };
+
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);
         }
 
         [Test]
-        public void Creates_Correct_Shadows_For_The_Digit_One()
+        public void Creates_Correct_Shadows_For_Marble_With_The_Bottom_Right_Corner_Removed()
         {
             var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
 
-            var chisler = new DigitOneChisler(0.2f);
-            var chislerResults = chisler.GetPoints(marble);
+            var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle);
+            var result = bottomRightCornerChisler.GetPoints(marble);
 
-            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 1 };
-            var shadows = shadowLinesCreator.CreateShadows(marble, chislerResults.ToList());
+            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, result.ToList());
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            var expectedResult = new[]
+            {
+                factory.Create(new PointD(0, 100), new PointD(80, 100)),
+                factory.Create(new PointD(100, 0), new PointD(100, 80)),
+                factory.Create(new PointD(80, 100), new PointD(100, 80))
+            };
+
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);
         }
 
         [Test]
-        public void GetLinesTest()
+        public void Creates_Correct_Shadows_For_Marble_With_The_Centered_Bottom_Right_Corner_Removed()
         {
-            
-            var shadowLinesCreator = new DigitShadowLinesCreator() { StrokeWidth = 10 };
-            var lines = shadowLinesCreator.GetLines(new Line(new PointF(-1, 1), new PointF(0, 2)), (float)Math.Sqrt(2));
-        }
+            var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
 
-        /*[Test]
-        public void Removing_The_Lower_Left_Vertical_Bar_And_Digit_Hole_Leaves_Only_A_Top_Shadow()
-        {
-            var withOverhang = GetResultsWithOverhang().ToList();
-            var withoutOverhang = GetResultsWithoutOverhang().ToList();
+            var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle) { MoveToCenter = true };
+            var result = bottomRightCornerChisler.GetPoints(marble);
 
-            Assert.AreEqual(1, withOverhang.Count);
-        }
+            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, result.ToList());
 
-        private IEnumerable<Geometry.Line> GetResultsWithoutOverhang()
-        {
-            var widthPaddingPercentage = 0.2f;
-            var marble = new RectangleF(0, 0, 1000, 1000);
-
-            var chiselActions = new IDigitChisleAction[]
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            var expectedResult = new[]
             {
-                new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0 },
-                new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage)
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 100), new PointD(100, 60)),
+                factory.Create(new PointD(100, 40), new PointD(80, 60)),
+                factory.Create(new PointD(100, 0), new PointD(100, 40))
             };
 
-            var chiselResults = chiselActions.SelectMany(x => x.GetPoints(marble));
-
-            var linesCreator = new DigitShadowLinesCreator();
-            return linesCreator.CreateShadows(marble, chiselResults.ToList()).ToList();
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);
         }
 
-        private IEnumerable<Geometry.Line> GetResultsWithOverhang()
+        [Test]
+        public void Creates_Correct_Shadows_For_Marble_With_The_Bottom_Hole_Removed()
         {
-            var widthPaddingPercentage = 0.2f;
-            var marble = new RectangleF(0, 0, 1000, 1000);
+            var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
 
-            var chiselActions = new IDigitChisleAction[]
+            var results = new List<DigitChiselResult>();
+            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage);
+            results.AddRange(bottomHoleChisler.GetPoints(marble));
+
+            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            var expectedResult = new[]
             {
-                new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.1f },
-                new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage)
+                factory.Create(new PointD(20, 60), new PointD(80, 60)),
+                factory.Create(new PointD(20, 60), new PointD(20, 80)),
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 0), new PointD(100, 100))
             };
 
-            var chiselResults = chiselActions.SelectMany(x => x.GetPoints(marble));
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);
+        }
 
-            var linesCreator = new DigitShadowLinesCreator();
-            return linesCreator.CreateShadows(marble, chiselResults.ToList()).ToList();
-        }*/
+        [Test]
+        public void Creates_Correct_Shadows_For_Marble_With_The_Centered_Bottom_Right_Corner_Removed_And_Bottom_Hole_Removed()
+        {
+            var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
+
+            var results = new List<DigitChiselResult>();
+            var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle) { MoveToCenter = true };
+            results.AddRange(bottomRightCornerChisler.GetPoints(marble));
+
+            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage);
+            results.AddRange(bottomHoleChisler.GetPoints(marble));
+
+            var bottomBarChisler = new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPercentage);
+            results.AddRange(bottomBarChisler.GetPoints(marble));
+
+            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            var expectedResult = new[]
+            {
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 100), new PointD(100, 80)),
+                factory.Create(new PointD(100, 40), new PointD(80, 60)),
+                factory.Create(new PointD(100, 0), new PointD(100, 40)),
+                factory.Create(new PointD(20, 60), new PointD(80, 60)),
+                factory.Create(new PointD(20, 60), new PointD(20, 80))
+            };
+
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);
+        }
     }
 }

@@ -125,7 +125,12 @@ namespace Geometry.Lines
             if (ReferenceEquals(other, null))
                 return false;
 
-            return _bounds.SequenceEqual(other._bounds);
+            if (StartPoint == other.StartPoint && EndPoint == other.EndPoint)
+                return true;
+            else if (EndPoint == other.StartPoint && StartPoint == other.EndPoint)
+                return true;
+            else
+                return false;
         }
 
         public override bool Equals(object obj)
@@ -143,6 +148,11 @@ namespace Geometry.Lines
 
                 return result;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"[({_bounds[0].X}, {_bounds[0].Y}), ({_bounds[1].X}, {_bounds[1].Y})]";
         }
     }
 

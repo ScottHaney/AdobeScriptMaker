@@ -44,19 +44,21 @@ namespace Geometry
             var divideWithValues = lineSegmentToDivideWith.GetParametricRange();
             
             var results = new List<LineSegment>();
-            if (divideWithValues.End.ParametricValue > targetValues.End.ParametricValue)
-            {
-                if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
-                    results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
-            }
-            else if (divideWithValues.End.ParametricValue > targetValues.Start.ParametricValue)
+            if (divideWithValues.End.ParametricValue <= targetValues.Start.ParametricValue)
+                results.Add(targetLineSegment);
+            else if (divideWithValues.End.ParametricValue > targetValues.Start.ParametricValue && divideWithValues.End.ParametricValue <= targetValues.End.ParametricValue)
             {
                 results.AddRange(CreateLineSegment(targetLine, divideWithValues.End, targetValues.End));
                 if (divideWithValues.Start.ParametricValue > targetValues.Start.ParametricValue)
                     results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
             }
             else
-                results.Add(targetLineSegment);
+            {
+                if (divideWithValues.Start.ParametricValue < targetValues.End.ParametricValue)
+                    results.AddRange(CreateLineSegment(targetLine, targetValues.Start, divideWithValues.Start));
+                else
+                    results.Add(targetLineSegment);
+            }
 
             return results;
         }

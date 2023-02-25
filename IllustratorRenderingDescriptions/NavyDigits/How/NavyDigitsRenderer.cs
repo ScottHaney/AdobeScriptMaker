@@ -39,10 +39,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             var result = new StringBuilder();
 
-            for (int i = 0; i <= 9; i++)
+            for (int i = 2; i <= 9; i++)
             {
-                var rowIndex = (i / digitsPerRow);
-                var columnIndex = i % digitsPerRow;
+                var rowIndex = ((i - 2) / digitsPerRow);
+                var columnIndex = (i - 2) % digitsPerRow;
 
                 var xOffset = (columnIndex + 1) * xGapPerDigit + columnIndex * _boundingBoxSize.Width;
                 var yOffset = (rowIndex + 1) * yGapPerDigit + rowIndex * _boundingBoxSize.Height;
@@ -61,6 +61,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             if (digit == 0)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -75,6 +76,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 1)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -83,12 +85,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 2)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage),
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPaddingPercentage),
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45) { MoveToCenter = true },
@@ -100,7 +101,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             else if (digit == 3)
             {
                 return string.Empty;
-
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -158,6 +158,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 7)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitSevenChisler(0.85f, widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -724,6 +725,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             {
                 var chiselLines = chiselResult.ShadowsInfo.ShadowLineInfos.Select(x => new { LineSegment = lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End)), EdgeInfo = x.EdgeInfo }).ToList();
                 var results = new List<ShadowLineInfo>();
+                var marbleEdgesDebug = marbleEdges.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).ToList();
                 foreach (var marbleEdge in marbleEdges)
                 {
                     var marbleEdgeSegment = lineSegmentFactory.Create(new PointD(marbleEdge.Start), new PointD(marbleEdge.End));
@@ -743,13 +745,17 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     .ToList();
 
                 results.AddRange(newMarbleEdges);
+                var resultsDebug = results.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).ToList();
                 marbleEdges = results;
             }
 
             var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
-            marbleBoundaryLines = JoinLineSegments2(marbleBoundaryLines, lineSegmentFactory).ToList();
+            var marbleBoundaryLinesDebug = marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).OrderBy(x => x.StartPoint.X).ToList();
 
-            return AdjustShadowsForStroke2(marbleBoundaryLines, lineSegmentFactory);
+            marbleBoundaryLines = JoinLineSegments2(marbleBoundaryLines, lineSegmentFactory).ToList();
+            var marbleBoundaryLinesDebug2 = marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).OrderBy(x => x.StartPoint.X).ToList();
+
+            return AdjustShadowsForStroke2(marbleBoundaryLines, lineSegmentFactory).ToList();
         }
 
 
@@ -814,8 +820,26 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 for (int i = 1; i < ranges.Count; i++)
                 {
                     var range = ranges[i].Range;
-                    if (currentRange.OverlapsOrConnectsWith(range))
+                    if (currentRange.TryConnectOtherRange(range, out var combinedRange))
+                    {
+                        var rangePoints = new[] { combinedRange.Start.Point, combinedRange.End.Point };
+
+                        var mergePoint = new[] { range.Start.Point, range.End.Point }.Where(x => !rangePoints.Contains(x)).Single();
+                        var appearanceCount = segments.Count(x => new PointD(x.Start) == mergePoint || new PointD(x.End) == mergePoint);
+                        if (appearanceCount == 2)
+                        {
+                            currentRange = new ParametricRange(currentRange.Start, range.End.ParametricValue > currentRange.End.ParametricValue ? range.End : currentRange.End);
+                        }
+                        else
+                        {
+                            yield return new ShadowLineInfo(currentRange.Start.Point.ToPointF(), currentRange.End.Point.ToPointF(), group.First().EdgeInfo);
+                            currentRange = range;
+                        }
+                    }
+                    else if (currentRange.OverlapsOrConnectsWith(range))
+                    {
                         currentRange = new ParametricRange(currentRange.Start, range.End.ParametricValue > currentRange.End.ParametricValue ? range.End : currentRange.End);
+                    }
                     else
                     {
                         yield return new ShadowLineInfo(currentRange.Start.Point.ToPointF(), currentRange.End.Point.ToPointF(), group.First().EdgeInfo);
@@ -839,9 +863,15 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                     .Where(x => x.LineSegment != marbleLineInfo.LineSegment)
                     .Single(x => marbleLineInfo.LineSegment.StartPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.StartPoint == x.LineSegment.EndPoint);
 
-                var endConnection = marbleLinesInfo
+                var endConnections = marbleLinesInfo
                     .Where(x => x.LineSegment != marbleLineInfo.LineSegment)
-                    .Single(x => marbleLineInfo.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.EndPoint == x.LineSegment.EndPoint);
+                    .Where(x => marbleLineInfo.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLineInfo.LineSegment.EndPoint == x.LineSegment.EndPoint)
+                    .ToList();
+
+                if (endConnections.Count > 1)
+                { }
+                    
+                var endConnection = endConnections.Single();
 
                 var lineBars = marbleLineInfo.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 ILineRepresentation shadowLine;
@@ -869,7 +899,6 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 yield return lineSegmentFactory.Create(point1, point2);
             }
-
 
             /*if (StrokeWidth == 0)
                 return shadowLines;
