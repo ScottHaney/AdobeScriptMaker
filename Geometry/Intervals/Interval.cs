@@ -1,6 +1,7 @@
 ﻿using Geometry.Lines;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Net;
@@ -16,7 +17,7 @@ namespace Geometry.Intervals
 
         public Interval(IntervalEndPoint startPoint, IntervalEndPoint endPoint)
         {
-            if (startPoint > endPoint)
+            if (startPoint.Value > endPoint.Value)
                 throw new InvalidIntervalException(startPoint, endPoint);
 
             _start = startPoint;
@@ -29,31 +30,106 @@ namespace Geometry.Intervals
         public static Interval CreateOpenInterval(double start, double end)
             => new Interval(new OpenIntervalEndPoint(start), new OpenIntervalEndPoint(end));
 
+        public static readonly Interval Empty = Interval.CreateOpenInterval(0, 0);
+
+        public Interval IntersectionWith(Interval otherInterval)
+        {
+            //Move the current interval from left to right starting across the otherInterval starting with the current
+            //interval being fully to the left of the otherInterval and ending with the current interval being
+            //fully to the right of the otherInterval
+
+            if (_end.Value < otherInterval._start.Value)
+                return Empty;
+            else if (_end.Value == otherInterval._start.Value)
+                return new Interval(_end, otherInterval._start);
+            else if (_end.Value <= otherInterval._end.Value)
+            {
+                IntervalEndPoint endPointToUse;
+                if (_end.Value < otherInterval._end.Value)
+                    endPointToUse = _end;
+                else
+                    endPointToUse = OverlapIdenticallyValuedPoints(_end, otherInterval._end);
+
+                if (_start.Value < otherInterval._start.Value)
+                    return new Interval(otherInterval._start, endPointToUse);
+                else if (_start.Value == otherInterval._start.Value)
+                    return new Interval(OverlapIdenticallyValuedPoints(_start, otherInterval._start), endPointToUse);
+                else
+                    return new Interval(_start, endPointToUse);
+            }
+            else
+            {
+                if (_start.Value < otherInterval._end.Value)
+                    return new Interval(_start, otherInterval._end);
+                else if (_start.Value == otherInterval._end.Value)
+                    return new Interval(_start, otherInterval._end);
+                else
+                    return Empty;
+            }
+        }
+
+        private IntervalEndPoint OverlapIdenticallyValuedPoints(IntervalEndPoint p1, IntervalEndPoint p2)
+        {
+            if (p1.Value != p2.Value)
+                throw new InvalidOperationException("Both points must have the same value to run this operation!");
+
+            if (p1.IncludesPoint && p2.IncludesPoint)
+                return p1;
+            else
+                return new OpenIntervalEndPoint(p1.Value);
+        }
+
         public bool IsEmpty()
         {
-            if (_end > _start)
+            if (_end.Value > _start.Value)
                 return false;
             else
                 return !IncludesValue(_end.Value);
         }
 
+        public bool ContainsSinglePoint()
+        {
+            if (_end.Value != _start.Value)
+                return false;
+            else
+                return _end.IncludesPoint && _start.IncludesPoint;
+        }
+
         private bool IncludesValue(double value)
         {
-            if (value > _start && value < _end)
+            if (value > _start.Value && value < _end.Value)
                 return true;
-            else if (value < _start || value > _end)
+            else if (value < _start.Value || value > _end.Value)
                 return false;
             else
             {
                 //Make sure that each end point that matches the value (could be both end points in an interval like [9,9]) includes the point
                 return new[] { _start, _end }
-                    .Where(x => x == value)
+                    .Where(x => x.Value == value)
                     .All(x => x.IncludesPoint);
             }
         }
+
+        public static implicit operator IntervalsIntersectionResult(Interval interval) => new IntervalsIntersectionResult(interval);
     }
 
-    public abstract class IntervalEndPoint
+    public class IntervalsIntersectionResult
+    {
+        private readonly Interval[] _resultingIntervals;
+
+        public static readonly IntervalsIntersectionResult Empty = new IntervalsIntersectionResult();
+
+        public bool IsEmpty => _resultingIntervals.Length == 0 || _resultingIntervals.All(x => x.IsEmpty());
+
+        public IEnumerable<Interval> Intervals => _resultingIntervals.Where(x => !x.IsEmpty());
+
+        public IntervalsIntersectionResult(params Interval[] resultingIntervals)
+        {
+            _resultingIntervals = resultingIntervals ?? Array.Empty<Interval>();
+        }
+    }
+
+    public abstract class IntervalEndPoint : IEquatable<IntervalEndPoint>
     {
         public readonly double Value;
 
@@ -64,50 +140,36 @@ namespace Geometry.Intervals
             Value = value;
         }
 
-        public static bool operator ==(IntervalEndPoint point, double otherValue)
+        public static bool operator ==(IntervalEndPoint point1, IntervalEndPoint point2)
         {
-            return point.Value == otherValue;
+            if (ReferenceEquals(point1, null))
+                return ReferenceEquals(point2, null);
+
+            return point1.Equals(point2);
         }
 
-        public static bool operator !=(IntervalEndPoint point, double otherValue)
-            => !(point == otherValue);
+        public static bool operator !=(IntervalEndPoint point1, IntervalEndPoint point2)
+            => !(point1 == point2);
 
-        public static bool operator ==(double value, IntervalEndPoint otherPoint)
+        public bool Equals(IntervalEndPoint other)
         {
-            return value == otherPoint.Value;
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return Value == other.Value && IncludesPoint == other.IncludesPoint;
         }
 
-        public static bool operator !=(double value, IntervalEndPoint otherPoint)
-            => !(value == otherPoint.Value);
-
-        public static bool operator>(IntervalEndPoint point, IntervalEndPoint otherPoint)
+        public override bool Equals(object obj)
         {
-            return point.Value > otherPoint.Value;
+            return Equals(obj as IntervalEndPoint);
         }
 
-        public static bool operator >(IntervalEndPoint point, double otherValue)
+        public override int GetHashCode()
         {
-            return point.Value > otherValue;
-        }
-
-        public static bool operator >(double value, IntervalEndPoint otherPoint)
-        {
-            return value > otherPoint.Value;
-        }
-
-        public static bool operator <(IntervalEndPoint point, IntervalEndPoint otherPoint)
-        {
-            return point.Value < otherPoint.Value;
-        }
-
-        public static bool operator <(IntervalEndPoint point, double otherValue)
-        {
-            return point.Value < otherValue;
-        }
-
-        public static bool operator <(double value, IntervalEndPoint otherPoint)
-        {
-            return value < otherPoint.Value;
+            unchecked
+            {
+                return Value.GetHashCode() + IncludesPoint.GetHashCode();
+            }
         }
     }
 
@@ -145,62 +207,4 @@ namespace Geometry.Intervals
             return $"The interval [{start.Value}, {end.Value}] is invalid because the end points were given in the wrong order";
         }
     }
-
-    /*public class ParametricRange
-    {
-        public readonly ParametricPoint Start;
-        public readonly ParametricPoint End;
-
-        public ParametricRange(ParametricPoint start, ParametricPoint end)
-        {
-            Start = start;
-            End = end;
-        }
-
-        public bool OverlapsOrConnectsWith(ParametricRange other)
-        {
-            if (other.Start.ParametricValue >= Start.ParametricValue && other.Start.ParametricValue <= End.ParametricValue)
-                return true;
-            else if (other.End.ParametricValue <= End.ParametricValue && other.End.ParametricValue >= Start.ParametricValue)
-                return true;
-            else
-                return false;
-        }
-
-        public bool OverlapsWith(ParametricRange other)
-        {
-            if (other.Start.ParametricValue > Start.ParametricValue && other.Start.ParametricValue < End.ParametricValue)
-                return true;
-            else if (other.End.ParametricValue < End.ParametricValue && other.End.ParametricValue > Start.ParametricValue)
-                return true;
-            else if (other.Start.ParametricValue == Start.ParametricValue && other.End.ParametricValue == End.ParametricValue)
-                return true;
-            else
-                return false;
-        }
-
-        public bool TryConnectOtherRange(ParametricRange other, out ParametricRange combinedRange)
-        {
-            if (other.Start.ParametricValue == Start.ParametricValue && other.End.ParametricValue == End.ParametricValue)
-            {
-                combinedRange = new ParametricRange(Start, End);
-                return true;
-            }
-            else if (other.Start.ParametricValue == End.ParametricValue)
-            {
-                combinedRange = new ParametricRange(Start, other.End);
-                return true;
-            }
-            else if (other.End.ParametricValue == Start.ParametricValue)
-            {
-                combinedRange = new ParametricRange(other.Start, End);
-                return true;
-            }
-            else
-            {
-                combinedRange = null;
-                return false;
-            }
-        }
-    }*/
 }
