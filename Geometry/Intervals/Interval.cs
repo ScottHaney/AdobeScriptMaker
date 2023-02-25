@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Transactions;
 
 namespace Geometry.Intervals
 {
@@ -12,8 +13,28 @@ namespace Geometry.Intervals
 
         public Interval(double start, double end)
         {
+            if (start > end)
+                throw new InvalidIntervalException(start, end);
+
             Start = start;
             End = end;
+        }
+    }
+
+
+    [Serializable]
+    public class InvalidIntervalException : Exception
+    {
+        public InvalidIntervalException() { }
+        public InvalidIntervalException(double start, double end) : base(GetMessage(start, end)) { }
+        public InvalidIntervalException(double start, double end, Exception inner) : base(GetMessage(start, end), inner) { }
+        protected InvalidIntervalException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+
+        private static string GetMessage(double start, double end)
+        {
+            return $"The interval [{start},{end}] is invalid because the end points were given in the wrong order";
         }
     }
 
