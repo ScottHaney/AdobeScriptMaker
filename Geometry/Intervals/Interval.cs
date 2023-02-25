@@ -11,7 +11,7 @@ using System.Transactions;
 
 namespace Geometry.Intervals
 {
-    public class Interval
+    public class Interval : IEquatable<Interval>
     {
         private readonly IntervalEndPoint _start;
         private readonly IntervalEndPoint _end;
@@ -111,7 +111,37 @@ namespace Geometry.Intervals
             }
         }
 
-        public static implicit operator IntervalsIntersectionResult(Interval interval) => new IntervalsIntersectionResult(interval);
+        public static bool operator==(Interval interval1, Interval interval2)
+        {
+            if (ReferenceEquals(interval1, null))
+                return ReferenceEquals(interval2, null);
+
+            return interval1.Equals(interval2);
+        }
+
+        public static bool operator !=(Interval interval1, Interval interval2)
+            => !(interval1 == interval2);
+
+        public bool Equals(Interval other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return _start == other._start && _end == other._end;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Interval);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return _start.GetHashCode() + _end.GetHashCode();
+            }
+        }
     }
 
     public class IntervalsIntersectionResult
