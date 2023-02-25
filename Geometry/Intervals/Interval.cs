@@ -13,16 +13,16 @@ namespace Geometry.Intervals
 {
     public class Interval : IEquatable<Interval>
     {
-        private readonly IntervalEndPoint _start;
-        private readonly IntervalEndPoint _end;
+        public readonly IntervalEndPoint Start;
+        public readonly IntervalEndPoint End;
 
         public Interval(IntervalEndPoint startPoint, IntervalEndPoint endPoint)
         {
             if (startPoint.Value > endPoint.Value)
                 throw new InvalidIntervalException(startPoint, endPoint);
 
-            _start = startPoint;
-            _end = endPoint;
+            Start = startPoint;
+            End = endPoint;
         }
 
         public static Interval CreateClosedInterval(double start, double end)
@@ -33,16 +33,32 @@ namespace Geometry.Intervals
 
         public static readonly Interval Empty = Interval.CreateOpenInterval(0, 0);
 
+        public IntervalExclusionResult Exclude(IEnumerable<Interval> otherIntervals)
+        {
+            IntervalExclusionResult result = this;
+            foreach (var otherInterval in otherIntervals)
+            {
+                if (result.IsEmpty)
+                    break;
+
+                result = new IntervalExclusionResult(result.NonEmptyIntervals
+                    .SelectMany(x => x.Exclude(otherInterval).NonEmptyIntervals)
+                    .ToArray());
+            }
+
+            return result;
+        }
+
         public IntervalExclusionResult Exclude(Interval otherInterval)
         {
             var intersection = IntersectionWith(otherInterval);
             if (!intersection.IsEmpty())
             {
                 var results = new List<Interval>();
-                if (_start.Value <= intersection._start.Value)
-                    results.Add(new Interval(_start, intersection._start.GetOppositePoint()));
-                if (intersection._end.Value <= _end.Value)
-                    results.Add(new Interval(intersection._end.GetOppositePoint(), _end));
+                if (Start.Value <= intersection.Start.Value)
+                    results.Add(new Interval(Start, intersection.Start.GetOppositePoint()));
+                if (intersection.End.Value <= End.Value)
+                    results.Add(new Interval(intersection.End.GetOppositePoint(), End));
 
                 return new IntervalExclusionResult(results.ToArray());
             }
@@ -54,7 +70,7 @@ namespace Geometry.Intervals
         {
             Interval left;
             Interval right;
-            if (_start.Value < otherInterval._start.Value)
+            if (Start.Value < otherInterval.Start.Value)
             {
                 left = this;
                 right = otherInterval;
@@ -66,18 +82,18 @@ namespace Geometry.Intervals
             }
 
             //Cases where the intervals have no overlap
-            if (left._end.Value < right._start.Value)
+            if (left.End.Value < right.Start.Value)
                 return Empty;
-            if (left._start.Value > right._end.Value)
+            if (left.Start.Value > right.End.Value)
                 return Empty;
 
             //Case where the intervals overlap at a single point
-            if (left._end.Value == right._start.Value)
-                return new Interval(left._end, right._start);
+            if (left.End.Value == right.Start.Value)
+                return new Interval(left.End, right.Start);
 
             //Cases where the intervals overlap to form a new interval
-            var newStartPoint = GetPointByValue(Math.Max(left._start.Value, right._start.Value), left._start, right._start);
-            var newEndPoint = GetPointByValue(Math.Min(left._end.Value, right._end.Value), left._end, right._end);
+            var newStartPoint = GetPointByValue(Math.Max(left.Start.Value, right.Start.Value), left.Start, right.Start);
+            var newEndPoint = GetPointByValue(Math.Min(left.End.Value, right.End.Value), left.End, right.End);
 
             return new Interval(newStartPoint, newEndPoint);
         }
@@ -108,30 +124,30 @@ namespace Geometry.Intervals
 
         public bool IsEmpty()
         {
-            if (_end.Value > _start.Value)
+            if (End.Value > Start.Value)
                 return false;
             else
-                return !IncludesValue(_end.Value);
+                return !IncludesValue(End.Value);
         }
 
         public bool ContainsSinglePoint()
         {
-            if (_end.Value != _start.Value)
+            if (End.Value != Start.Value)
                 return false;
             else
-                return _end.IncludesPoint && _start.IncludesPoint;
+                return End.IncludesPoint && Start.IncludesPoint;
         }
 
         private bool IncludesValue(double value)
         {
-            if (value > _start.Value && value < _end.Value)
+            if (value > Start.Value && value < End.Value)
                 return true;
-            else if (value < _start.Value || value > _end.Value)
+            else if (value < Start.Value || value > End.Value)
                 return false;
             else
             {
                 //Make sure that each end point that matches the value (could be both end points in an interval like [9,9]) includes the point
-                return new[] { _start, _end }
+                return new[] { Start, End }
                     .Where(x => x.Value == value)
                     .All(x => x.IncludesPoint);
             }
@@ -153,7 +169,7 @@ namespace Geometry.Intervals
             if (ReferenceEquals(other, null))
                 return false;
 
-            return _start == other._start && _end == other._end;
+            return Start == other.Start && End == other.End;
         }
 
         public override bool Equals(object obj)
@@ -165,16 +181,16 @@ namespace Geometry.Intervals
         {
             unchecked
             {
-                return _start.GetHashCode() + _end.GetHashCode();
+                return Start.GetHashCode() + End.GetHashCode();
             }
         }
 
         public override string ToString()
         {
-            var startSymbol = _start.IncludesPoint ? "[" : "(";
-            var endSymbol = _end.IncludesPoint ? "]" : ")";
+            var startSymbol = Start.IncludesPoint ? "[" : "(";
+            var endSymbol = End.IncludesPoint ? "]" : ")";
 
-            return $"{startSymbol}{_start.Value}, {_end.Value}{endSymbol}";
+            return $"{startSymbol}{Start.Value}, {End.Value}{endSymbol}";
         }
 
         public static implicit operator IntervalExclusionResult(Interval interval) => new IntervalExclusionResult(interval);

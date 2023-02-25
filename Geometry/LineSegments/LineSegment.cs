@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Geometry.Intervals;
 using Geometry.Lines;
 
 namespace Geometry.LineSegments
@@ -23,6 +24,31 @@ namespace Geometry.LineSegments
         {
             _line = line;
             _bounds = bounds;
+        }
+
+        public IEnumerable<LineSegment> Exclude(params LineSegment[] otherSegments)
+        {
+            var pointsMap = new Dictionary<double, PointD>();
+            var currentRange = ToInterval(pointsMap);
+
+            var otherRanges = otherSegments
+                .Where(x => _line == x._line)
+                .Select(x => x.ToInterval(pointsMap)).ToArray();
+
+            var finalResult = currentRange.Exclude(otherRanges);
+            foreach (var item in finalResult.PositiveLengthIntervals)
+            {
+                yield return new LineSegment(_line, pointsMap[item.Start.Value], pointsMap[item.End.Value]);
+            }
+        }
+
+        private Interval ToInterval(Dictionary<double, PointD> pointsMap)
+        {
+            var range = GetParametricRange();
+            pointsMap[range.Start.ParametricValue] = range.Start.Point;
+            pointsMap[range.End.ParametricValue] = range.End.Point;
+
+            return Interval.CreateClosedInterval(range.Start.ParametricValue, range.End.ParametricValue);
         }
 
         public double GetLength()
