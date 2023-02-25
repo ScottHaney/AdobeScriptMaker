@@ -98,6 +98,18 @@ namespace Geometry.Tests
         }
 
         [Test]
+        public void A_Non_Trivial_Line_Intersection_Is_Calculated_Correctly()
+        {
+            var line1 = new LineD(new PointD(0, 130), new PointD(130, 0));
+            var line2 = new LineD(new PointD(0, -30), new PointD(30, 0));
+
+            var intersectionPoint = line1.GetIntersectionPointWith(line2);
+
+            Assert.AreEqual(80, intersectionPoint.X);
+            Assert.AreEqual(50, intersectionPoint.Y);
+        }
+
+        [Test]
         public void Two_Identical_Horizontal_Lines_Are_Equal()
         {
             var factory = new LineRepresentationFactory();
