@@ -311,7 +311,28 @@ namespace Geometry.Tests
             CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).Intervals);
         }
 
+        [Test]
+        public void Excluding_A_Fully_Contained_Interval_Works_Correctly()
+        {
+            //[0, 20] exclude [5, 10] = [0, 5) and (10, 20]
+            var interval1 = Interval.CreateClosedInterval(0, 20);
+            var interval2 = Interval.CreateClosedInterval(5, 10);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(0), new OpenIntervalEndPoint(5)), new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).Intervals);
+        }
 
+        [Test]
+        public void Excluding_A_Partially_Contained_Interval_Works_Correctly()
+        {
+            //[10, 20] exclude [5, 15] = (15, 20]
+            var interval1 = Interval.CreateClosedInterval(10, 20);
+            var interval2 = Interval.CreateClosedInterval(5, 15);
+            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(15), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).Intervals);
+
+            //[10, 20] exclude [15, 25] = [10, 15)
+            var interval1B = Interval.CreateClosedInterval(10, 20);
+            var interval2B = Interval.CreateClosedInterval(15, 25);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).Intervals);
+        }
 
         private void TestExclusionResultsForNonOverlappingIntervals(Interval interval1, Interval interval2)
         {
