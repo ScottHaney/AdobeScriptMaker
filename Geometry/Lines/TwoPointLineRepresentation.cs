@@ -84,7 +84,7 @@ namespace Geometry.Lines
                 var thisLineCanonicalForm = GetCanonicalLineForm();
                 var otherLineCanonicalForm = lineRep.GetCanonicalLineForm();
 
-                var xValue = (thisLineCanonicalForm.YIntercept - otherLineCanonicalForm.YIntercept) / (thisLineCanonicalForm.Slope - otherLineCanonicalForm.Slope);
+                var xValue = (thisLineCanonicalForm.YIntercept - otherLineCanonicalForm.YIntercept) / (otherLineCanonicalForm.Slope - thisLineCanonicalForm.Slope);
                 var yValue = thisLineCanonicalForm.Slope * xValue + thisLineCanonicalForm.YIntercept;
 
                 return new SinglePointLineIntersectionResult(new PointD(xValue, yValue));

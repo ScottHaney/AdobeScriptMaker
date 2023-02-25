@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Geometry.Lines
@@ -13,8 +14,12 @@ namespace Geometry.Lines
 
         public Slope(PointD point1, PointD point2)
         {
-            var rise = point1.Y - point2.Y;
-            var run = point1.X - point2.X;
+            var sorted = new[] { point1, point2 }.OrderBy(x => x.X).ToArray();
+            var start = sorted[0];
+            var end = sorted[1];
+
+            var rise = end.Y - start.Y;
+            var run = end.X - start.X;
 
             if (run == 0)
                 _slope = null;

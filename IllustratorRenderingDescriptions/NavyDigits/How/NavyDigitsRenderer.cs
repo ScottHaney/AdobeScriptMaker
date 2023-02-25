@@ -100,9 +100,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 3)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
-                    new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
+                    /*new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
@@ -110,7 +109,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
                     new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.3f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
-                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },*/
                     new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
