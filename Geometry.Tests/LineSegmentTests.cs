@@ -1,4 +1,5 @@
 ﻿using Geometry.Lines;
+using Geometry.LineSegments;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

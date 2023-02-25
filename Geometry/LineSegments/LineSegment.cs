@@ -5,8 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Geometry.Lines;
 
-namespace Geometry.Lines
+namespace Geometry.LineSegments
 {
     public class LineSegment : IEquatable<LineSegment>
     {
@@ -109,7 +110,7 @@ namespace Geometry.Lines
             return new Line(new PointF((float)_bounds[0].X, (float)_bounds[0].Y), new PointF((float)_bounds[1].X, (float)_bounds[1].Y));
         }
 
-        public static bool operator==(LineSegment lineSegment1, LineSegment lineSegment2)
+        public static bool operator ==(LineSegment lineSegment1, LineSegment lineSegment2)
         {
             if (ReferenceEquals(lineSegment1, null))
                 return ReferenceEquals(lineSegment2, null);
@@ -117,7 +118,7 @@ namespace Geometry.Lines
             return lineSegment1.Equals(lineSegment2);
         }
 
-        public static bool operator!=(LineSegment lineSegment1, LineSegment lineSegment2)
+        public static bool operator !=(LineSegment lineSegment1, LineSegment lineSegment2)
             => !(lineSegment1 == lineSegment2);
 
         public bool Equals(LineSegment other)

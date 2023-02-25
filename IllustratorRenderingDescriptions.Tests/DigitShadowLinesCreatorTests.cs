@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Geometry;
 using Geometry.Lines;
+using Geometry.LineSegments;
 
 namespace IllustratorRenderingDescriptions.Tests
 {

@@ -2,6 +2,7 @@
 using AdobeComponents.Components;
 using Geometry;
 using Geometry.Lines;
+using Geometry.LineSegments;
 using IllustratorRenderingDescriptions.NavyDigits.What;
 using RenderingDescriptions.How;
 using RenderingDescriptions.Timing;

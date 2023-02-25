@@ -1,4 +1,5 @@
 ﻿using Geometry.Lines;
+using Geometry.LineSegments;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;

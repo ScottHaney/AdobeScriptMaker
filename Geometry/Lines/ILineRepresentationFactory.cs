@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Geometry.LineSegments;
 
 namespace Geometry.Lines
 {
@@ -8,10 +9,5 @@ namespace Geometry.Lines
     {
         ILineRepresentation CreateLine(PointD point1, PointD point2);
         ILineRepresentation CreateLine(PointD point1, double? slope);
-    }
-
-    public interface ILineSegmentRepresentationFactory
-    {
-        LineSegment Create(PointD point1, PointD point2);
     }
 }
