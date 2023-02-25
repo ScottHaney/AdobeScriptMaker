@@ -102,7 +102,7 @@ namespace Geometry.Tests
         {
             var factory = new LineRepresentationFactory();
 
-            TestLineEquality(
+            TestLinesEquality(
                 factory.CreateLine(new PointD(0, 5), new PointD(10, 5)),
                 factory.CreateLine(new PointD(0, 5), new PointD(10, 5)));
         }
@@ -112,12 +112,22 @@ namespace Geometry.Tests
         {
             var factory = new LineRepresentationFactory();
 
-            TestLineEquality(
+            TestLinesEquality(
                 factory.CreateLine(new PointD(1, 5), new PointD(1, 15)),
                 factory.CreateLine(new PointD(1, 5), new PointD(1, 15)));
         }
 
-        private void TestLineEquality(LineRepresentation rep1, LineRepresentation rep2)
+        [Test]
+        public void Two_45_Degree_Lines_With_Different_Intervals_Are_Equal()
+        {
+            var factory = new LineRepresentationFactory();
+
+            TestLinesEquality(
+                factory.CreateLine(new PointD(1, 1), new PointD(10, 10)),
+                factory.CreateLine(new PointD(20, 20), new PointD(30, 30)));
+        }
+
+        private void TestLinesEquality(LineRepresentation rep1, LineRepresentation rep2)
         {
             Assert.IsTrue(rep1 == rep2);
             Assert.IsTrue(rep2 == rep1);
