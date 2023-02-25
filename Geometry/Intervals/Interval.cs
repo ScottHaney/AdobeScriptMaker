@@ -35,38 +35,42 @@ namespace Geometry.Intervals
 
         public Interval IntersectionWith(Interval otherInterval)
         {
-            //Move the current interval from left to right starting across the otherInterval starting with the current
-            //interval being fully to the left of the otherInterval and ending with the current interval being
-            //fully to the right of the otherInterval
-
-            if (_end.Value < otherInterval._start.Value)
-                return Empty;
-            else if (_end.Value == otherInterval._start.Value)
-                return new Interval(_end, otherInterval._start);
-            else if (_end.Value <= otherInterval._end.Value)
+            Interval left;
+            Interval right;
+            if (_start.Value < otherInterval._start.Value)
             {
-                IntervalEndPoint endPointToUse;
-                if (_end.Value < otherInterval._end.Value)
-                    endPointToUse = _end;
-                else
-                    endPointToUse = OverlapIdenticallyValuedPoints(_end, otherInterval._end);
-
-                if (_start.Value < otherInterval._start.Value)
-                    return new Interval(otherInterval._start, endPointToUse);
-                else if (_start.Value == otherInterval._start.Value)
-                    return new Interval(OverlapIdenticallyValuedPoints(_start, otherInterval._start), endPointToUse);
-                else
-                    return new Interval(_start, endPointToUse);
+                left = this;
+                right = otherInterval;
             }
             else
             {
-                if (_start.Value < otherInterval._end.Value)
-                    return new Interval(_start, otherInterval._end);
-                else if (_start.Value == otherInterval._end.Value)
-                    return new Interval(_start, otherInterval._end);
-                else
-                    return Empty;
+                left = otherInterval;
+                right = this;
             }
+
+            //Cases where the intervals have no overlap
+            if (left._end.Value < right._start.Value)
+                return Empty;
+            if (left._start.Value > right._end.Value)
+                return Empty;
+
+            //Case where the intervals overlap at a single point
+            if (left._end.Value == right._start.Value)
+                return new Interval(left._end, right._start);
+
+            //Cases where the intervals overlap to form a new interval
+            var newStartPoint = GetPointByValue(Math.Max(left._start.Value, right._start.Value), left._start, right._start);
+            var newEndPoint = GetPointByValue(Math.Min(left._end.Value, right._end.Value), left._end, right._end);
+
+            return new Interval(newStartPoint, newEndPoint);
+        }
+
+        private IntervalEndPoint GetPointByValue(double targetValue, IntervalEndPoint option1, IntervalEndPoint option2)
+        {
+            if (option1.Value == targetValue && option2.Value == targetValue)
+                return OverlapIdenticallyValuedPoints(option1, option2);
+
+            return option1.Value == targetValue ? option1 : option2;
         }
 
         private IntervalEndPoint OverlapIdenticallyValuedPoints(IntervalEndPoint p1, IntervalEndPoint p2)
@@ -141,6 +145,14 @@ namespace Geometry.Intervals
             {
                 return _start.GetHashCode() + _end.GetHashCode();
             }
+        }
+
+        public override string ToString()
+        {
+            var startSymbol = _start.IncludesPoint ? "[" : "(";
+            var endSymbol = _end.IncludesPoint ? "]" : ")";
+
+            return $"{startSymbol}{_start.Value}, {_end.Value}{endSymbol}";
         }
     }
 
