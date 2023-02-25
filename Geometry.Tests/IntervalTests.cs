@@ -67,7 +67,7 @@ namespace Geometry.Tests
             Assert.IsTrue(interval2C.IntersectionWith(interval1C).IsEmpty());
         }
 
-        public void Intervals_That_Overlap_At_Only_A_Single_EndPoint_Value_That_Is_Included_In_Both_Intervals_Have_A_Single_Value_Intersection_Results()
+        public void Intervals_That_Overlap_At_Only_A_Single_EndPoint_Value_That_Is_Included_In_Both_Intervals_Have_A_Single_Value_Intersection_Result()
         {
             var interval1 = Interval.CreateClosedInterval(0, 5);
             var interval2 = Interval.CreateClosedInterval(5, 10);
@@ -83,6 +83,30 @@ namespace Geometry.Tests
 
             Assert.IsTrue(interval1A.IntersectionWith(interval2A) == interval1A);
             Assert.IsTrue(interval2A.IntersectionWith(interval1A) == interval1A);
+
+            var interval1B = Interval.CreateClosedInterval(5, 10);
+            var interval2B = Interval.CreateClosedInterval(5, 20);
+
+            Assert.IsTrue(interval1B.IntersectionWith(interval2B) == interval1B);
+            Assert.IsTrue(interval2B.IntersectionWith(interval1B) == interval1B);
+
+            var interval1C = Interval.CreateOpenInterval(5, 10);
+            var interval2C = Interval.CreateOpenInterval(5, 20);
+
+            Assert.IsTrue(interval1C.IntersectionWith(interval2C) == interval1C);
+            Assert.IsTrue(interval2C.IntersectionWith(interval1C) == interval1C);
+
+            var interval1D = Interval.CreateClosedInterval(15, 20);
+            var interval2D = Interval.CreateClosedInterval(5, 20);
+
+            Assert.IsTrue(interval1D.IntersectionWith(interval2D) == interval1D);
+            Assert.IsTrue(interval2D.IntersectionWith(interval1D) == interval1D);
+
+            var interval1E = Interval.CreateOpenInterval(15, 20);
+            var interval2E = Interval.CreateOpenInterval(5, 20);
+
+            Assert.IsTrue(interval1E.IntersectionWith(interval2E) == interval1E);
+            Assert.IsTrue(interval2E.IntersectionWith(interval1E) == interval1E);
         }
     }
 }
