@@ -40,10 +40,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             var result = new StringBuilder();
 
-            for (int i = 2; i <= 9; i++)
+            for (int i = 0; i <= 9; i++)
             {
-                var rowIndex = ((i - 2) / digitsPerRow);
-                var columnIndex = (i - 2) % digitsPerRow;
+                var rowIndex = (i / digitsPerRow);
+                var columnIndex = i % digitsPerRow;
 
                 var xOffset = (columnIndex + 1) * xGapPerDigit + columnIndex * _boundingBoxSize.Width;
                 var yOffset = (rowIndex + 1) * yGapPerDigit + rowIndex * _boundingBoxSize.Height;
@@ -62,7 +62,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             if (digit == 0)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -77,7 +76,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 1)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -101,7 +99,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 3)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -119,7 +116,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 4)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitFourChisler(widthPaddingPercentage, widthPaddingPercentage, 0.65f, 0.65f, 0.25f))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -128,7 +124,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 5)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
@@ -143,7 +138,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 6)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -159,7 +153,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 7)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitSevenChisler(0.85f, widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
@@ -168,7 +161,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 8)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -184,7 +176,6 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 9)
             {
-                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
