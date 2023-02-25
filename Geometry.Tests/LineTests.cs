@@ -1,3 +1,5 @@
+using Geometry.Lines;
+using Geometry.LineSegments;
 using NUnit.Framework;
 using System.Drawing;
 
@@ -93,6 +95,37 @@ namespace Geometry.Tests
 
             Assert.AreEqual(0, intersectionPoint.X);
             Assert.AreEqual(0, intersectionPoint.Y);
+        }
+
+        [Test]
+        public void Two_Identical_Horizontal_Lines_Are_Equal()
+        {
+            var factory = new LineRepresentationFactory();
+
+            TestLineEquality(
+                factory.CreateLine(new PointD(0, 5), new PointD(10, 5)),
+                factory.CreateLine(new PointD(0, 5), new PointD(10, 5)));
+        }
+
+        [Test]
+        public void Two_Identical_Vertical_Lines_Are_Equal()
+        {
+            var factory = new LineRepresentationFactory();
+
+            TestLineEquality(
+                factory.CreateLine(new PointD(1, 5), new PointD(1, 15)),
+                factory.CreateLine(new PointD(1, 5), new PointD(1, 15)));
+        }
+
+        private void TestLineEquality(LineRepresentation rep1, LineRepresentation rep2)
+        {
+            Assert.IsTrue(rep1 == rep2);
+            Assert.IsTrue(rep2 == rep1);
+            Assert.IsFalse(rep1 != rep2);
+            Assert.IsFalse(rep2 != rep1);
+
+            Assert.IsTrue(rep1.Equals(rep2));
+            Assert.IsTrue(rep2.Equals(rep1));
         }
     }
 }

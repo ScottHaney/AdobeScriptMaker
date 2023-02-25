@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class HorizontalLineRepresentation : LineRepresentation, IEquatable<HorizontalLineRepresentation>
+    public class HorizontalLineRepresentation : LineRepresentation, IEquatable<HorizontalLineRepresentation>, IEquatable<LineRepresentation>, ICanonicalLineFormCapable
     {
         private readonly double _yValue;
 
@@ -80,6 +80,12 @@ namespace Geometry.Lines
         public PointD GetIntersectionPoint(PointD point, ISlope slope)
             => new PointD(slope.GetXValue(point, _yValue), _yValue);
 
+
+        public CanonicalLineForm GetCanonicalLineForm()
+        {
+            return new CanonicalLineForm(0, _yValue);
+        }
+
         public static bool operator==(HorizontalLineRepresentation line1, HorizontalLineRepresentation line2)
         {
             if (ReferenceEquals(line1, null))
@@ -97,6 +103,19 @@ namespace Geometry.Lines
                 return false;
 
             return _yValue == other._yValue;
+        }
+
+        public override bool Equals(LineRepresentation other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+            else if (ReferenceEquals(other, this))
+                return true;
+
+            if (other is ICanonicalLineFormCapable canonicalRep)
+                return Equals(canonicalRep);
+            else
+                return false;
         }
 
         public override bool Equals(object obj)

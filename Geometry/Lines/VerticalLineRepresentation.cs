@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class VerticalLineRepresentation : LineRepresentation, IEquatable<VerticalLineRepresentation>
+    public class VerticalLineRepresentation : LineRepresentation, IEquatable<VerticalLineRepresentation>, IEquatable<LineRepresentation>
     {
         private readonly double _xValue;
 
@@ -97,6 +97,19 @@ namespace Geometry.Lines
                 return false;
 
             return _xValue == other._xValue;
+        }
+
+        public override bool Equals(LineRepresentation other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+            else if (ReferenceEquals(this, other))
+                return true;
+
+            if (other is VerticalLineRepresentation verticalRep)
+                return Equals(verticalRep);
+            else
+                return false;
         }
 
         public override bool Equals(object obj)

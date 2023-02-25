@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public abstract class LineRepresentation
+    public abstract class LineRepresentation : IEquatable<LineRepresentation>
     {
         public abstract ILineIntersectionResult GetIntersectionWith(LineRepresentation otherLine);
         public abstract bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2);
@@ -14,6 +14,24 @@ namespace Geometry.Lines
         public abstract ParallelBoundingLine[] GetParallelBoundingLines(double distance);
         public abstract double DistanceToPoint(PointD point);
         public abstract double GetAngle();
+
+        public static bool operator==(LineRepresentation left, LineRepresentation right)
+        {
+            if (ReferenceEquals(left, null))
+                return ReferenceEquals(right, null);
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LineRepresentation left, LineRepresentation right)
+            => !(left == right);
+
+        public abstract bool Equals([AllowNull] LineRepresentation other);
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as LineRepresentation);
+        }
     }
 
     public class ParallelBoundingLine

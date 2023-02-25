@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class PointSlopeLineRepresentation : LineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>
+    public class PointSlopeLineRepresentation : LineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>, IEquatable<LineRepresentation>
     {
         private readonly PointD _point;
         private readonly ISlope _slope;
@@ -104,6 +104,19 @@ namespace Geometry.Lines
                 return false;
 
             return GetCanonicalLineForm() == other.GetCanonicalLineForm();
+        }
+
+        public override bool Equals(LineRepresentation other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+            else if (ReferenceEquals(other, this))
+                return true;
+
+            if (other is ICanonicalLineFormCapable canonicalRep)
+                return Equals(canonicalRep);
+            else
+                return false;
         }
 
         public override bool Equals(object obj)
