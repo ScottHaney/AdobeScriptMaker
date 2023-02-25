@@ -39,77 +39,102 @@ namespace Geometry.Tests
         [Test]
         public void Intervals_That_Have_No_Points_In_Common_Have_Empty_Intersection_Results()
         {
-            var interval1 = Interval.CreateOpenInterval(0, 5);
-            var interval2 = Interval.CreateOpenInterval(10, 15);
-
-            Assert.IsTrue(interval1.IntersectionWith(interval2).IsEmpty());
-            Assert.IsTrue(interval2.IntersectionWith(interval1).IsEmpty());
+            //(0, 5) intersect (10, 15) = ()
+            TestEmptyIntersectionResult(
+                Interval.CreateOpenInterval(0, 5),
+                Interval.CreateOpenInterval(10, 15));
         }
 
         [Test]
         public void Intervals_That_Overlap_At_Only_A_Single_EndPoint_Value_Not_Included_In_Both_Intervals_Have_Empty_Intersection_Results()
         {
-            var interval1A = Interval.CreateOpenInterval(0, 5);
-            var interval2A = Interval.CreateClosedInterval(5, 10);
+            //(0, 5) intersect [5, 10] = ()
+            TestEmptyIntersectionResult(
+                Interval.CreateOpenInterval(0, 5),
+                Interval.CreateClosedInterval(5, 10));
 
-            Assert.IsTrue(interval1A.IntersectionWith(interval2A).IsEmpty());
-            Assert.IsTrue(interval2A.IntersectionWith(interval1A).IsEmpty());
+            //[0, 5] intersect (5, 10) = ()
+            TestEmptyIntersectionResult(
+                Interval.CreateClosedInterval(0, 5),
+                Interval.CreateOpenInterval(5, 10));
 
-            var interval1B = Interval.CreateClosedInterval(0, 5);
-            var interval2B = Interval.CreateOpenInterval(5, 10);
-
-            Assert.IsTrue(interval1B.IntersectionWith(interval2B).IsEmpty());
-            Assert.IsTrue(interval2B.IntersectionWith(interval1B).IsEmpty());
-
-            var interval1C = Interval.CreateOpenInterval(0, 5);
-            var interval2C = Interval.CreateOpenInterval(5, 10);
-
-            Assert.IsTrue(interval1C.IntersectionWith(interval2C).IsEmpty());
-            Assert.IsTrue(interval2C.IntersectionWith(interval1C).IsEmpty());
+            //(0, 5) intersect (5, 10) = ()
+            TestEmptyIntersectionResult(
+                Interval.CreateOpenInterval(0, 5),
+                Interval.CreateOpenInterval(5, 10));
         }
 
         [Test]
         public void Intervals_That_Overlap_At_Only_A_Single_EndPoint_Value_That_Is_Included_In_Both_Intervals_Have_A_Single_Value_Intersection_Result()
         {
-            var interval1 = Interval.CreateClosedInterval(0, 5);
-            var interval2 = Interval.CreateClosedInterval(5, 10);
-            
-            Assert.IsTrue(interval1.IntersectionWith(interval2).ContainsSinglePoint());
-            Assert.IsTrue(interval2.IntersectionWith(interval1).ContainsSinglePoint());
+            //[0, 5] intersect [5, 10] = [5,5]
+            TestSinglePointIntersectionResult(
+                Interval.CreateClosedInterval(0, 5),
+                Interval.CreateClosedInterval(5, 10));
         }
 
         [Test]
         public void Interval_That_Fully_Contains_Other_Interval_Has_Other_Interval_As_The_Intersection_Result()
         {
-            var interval1A = Interval.CreateClosedInterval(5, 10);
-            var interval2A = Interval.CreateClosedInterval(0, 20);
+            //[5, 10] intersect [0, 20] = [5, 10]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(5, 10),
+                Interval.CreateClosedInterval(0, 20),
+                Interval.CreateClosedInterval(5, 10));
 
-            Assert.IsTrue(interval1A.IntersectionWith(interval2A) == interval1A);
-            Assert.IsTrue(interval2A.IntersectionWith(interval1A) == interval1A);
+            //[5, 10] intersect [5, 20] = [5, 10]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(5, 10),
+                Interval.CreateClosedInterval(5, 20),
+                Interval.CreateClosedInterval(5, 10));
 
-            var interval1B = Interval.CreateClosedInterval(5, 10);
-            var interval2B = Interval.CreateClosedInterval(5, 20);
+            //[15, 20] intersect [5, 20] = [15, 20]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(15, 20),
+                Interval.CreateClosedInterval(5, 20),
+                Interval.CreateClosedInterval(15, 20));
 
-            Assert.IsTrue(interval1B.IntersectionWith(interval2B) == interval1B);
-            Assert.IsTrue(interval2B.IntersectionWith(interval1B) == interval1B);
+            //(5, 10) intersect (0, 20) = (5, 10)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(5, 10),
+                Interval.CreateOpenInterval(0, 20),
+                Interval.CreateOpenInterval(5, 10));
 
-            var interval1C = Interval.CreateOpenInterval(5, 10);
-            var interval2C = Interval.CreateOpenInterval(5, 20);
+            //(5, 10) intersect (5, 20) = (5, 10)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(5, 10),
+                Interval.CreateOpenInterval(5, 20),
+                Interval.CreateOpenInterval(5, 10));
 
-            Assert.IsTrue(interval1C.IntersectionWith(interval2C) == interval1C);
-            Assert.IsTrue(interval2C.IntersectionWith(interval1C) == interval1C);
+            //(15, 20) intersect (5, 20) = (15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(15, 20),
+                Interval.CreateOpenInterval(5, 20),
+                Interval.CreateOpenInterval(15, 20));
 
-            var interval1D = Interval.CreateClosedInterval(15, 20);
-            var interval2D = Interval.CreateClosedInterval(5, 20);
+            //[5, 10) intersect (0, 20) = [5, 10)
+            TestOverlappingIntervalsIntersectionResult(
+                new Interval(new ClosedIntervalEndPoint(5), new OpenIntervalEndPoint(10)),
+                new Interval(new OpenIntervalEndPoint(0), new OpenIntervalEndPoint(20)),
+                new Interval(new ClosedIntervalEndPoint(5), new OpenIntervalEndPoint(10)));
 
-            Assert.IsTrue(interval1D.IntersectionWith(interval2D) == interval1D);
-            Assert.IsTrue(interval2D.IntersectionWith(interval1D) == interval1D);
+            //(5, 10] intersect (0, 20) = (5, 10]
+            TestOverlappingIntervalsIntersectionResult(
+                new Interval(new OpenIntervalEndPoint(5), new ClosedIntervalEndPoint(10)),
+                new Interval(new OpenIntervalEndPoint(0), new OpenIntervalEndPoint(20)),
+                new Interval(new OpenIntervalEndPoint(5), new ClosedIntervalEndPoint(10)));
 
-            var interval1E = Interval.CreateOpenInterval(15, 20);
-            var interval2E = Interval.CreateOpenInterval(5, 20);
+            //[5, 10) intersect [0, 20] = [5, 10)
+            TestOverlappingIntervalsIntersectionResult(
+                new Interval(new ClosedIntervalEndPoint(5), new OpenIntervalEndPoint(10)),
+                new Interval(new ClosedIntervalEndPoint(0), new ClosedIntervalEndPoint(20)),
+                new Interval(new ClosedIntervalEndPoint(5), new OpenIntervalEndPoint(10)));
 
-            Assert.IsTrue(interval1E.IntersectionWith(interval2E) == interval1E);
-            Assert.IsTrue(interval2E.IntersectionWith(interval1E) == interval1E);
+            //(5, 10] intersect [0, 20] = (5, 10]
+            TestOverlappingIntervalsIntersectionResult(
+                new Interval(new OpenIntervalEndPoint(5), new ClosedIntervalEndPoint(10)),
+                new Interval(new ClosedIntervalEndPoint(0), new ClosedIntervalEndPoint(20)),
+                new Interval(new OpenIntervalEndPoint(5), new ClosedIntervalEndPoint(10)));
         }
 
         [Test]
@@ -246,6 +271,18 @@ namespace Geometry.Tests
                 Interval.CreateClosedInterval(15, 25),
                 Interval.CreateOpenInterval(10, 20),
                 new Interval(new ClosedIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+        }
+
+        private void TestSinglePointIntersectionResult(Interval interval1, Interval interval2)
+        {
+            Assert.IsTrue(interval1.IntersectionWith(interval2).ContainsSinglePoint());
+            Assert.IsTrue(interval2.IntersectionWith(interval1).ContainsSinglePoint());
+        }
+
+        private void TestEmptyIntersectionResult(Interval interval1, Interval interval2)
+        {
+            Assert.IsTrue(interval1.IntersectionWith(interval2).IsEmpty());
+            Assert.IsTrue(interval2.IntersectionWith(interval1).IsEmpty());
         }
 
         private void TestOverlappingIntervalsIntersectionResult(Interval interval1,
