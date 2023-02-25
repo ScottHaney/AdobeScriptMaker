@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace Geometry.Tests
@@ -20,8 +21,7 @@ namespace Geometry.Tests
             var endpoint1 = includesPoint1 ? (IntervalEndPoint)new ClosedIntervalEndPoint(value1) : new OpenIntervalEndPoint(value1);
             var endpoint2 = includesPoint2 ? (IntervalEndPoint)new ClosedIntervalEndPoint(value2) : new OpenIntervalEndPoint(value2);
 
-            Assert.AreNotEqual(endpoint1, endpoint2);
-            Assert.AreNotEqual(endpoint2, endpoint1);
+            AssertInEquality(endpoint1, endpoint2);
         }
 
         public void Two_EndPoints_With_The_Same_Value_And_The_Same_IncludePoint_Value_Are_Equal()
@@ -31,12 +31,12 @@ namespace Geometry.Tests
             var endpoint1A = new OpenIntervalEndPoint(value);
             var endpoint2A = new OpenIntervalEndPoint(value);
 
-            Assert.AreEqual(endpoint1A, endpoint2A);
+            AssertEquality(endpoint1A, endpoint2A);
 
             var endpoint1B = new ClosedIntervalEndPoint(value);
             var endpoint2B = new ClosedIntervalEndPoint(value);
 
-            Assert.AreEqual(endpoint1B, endpoint2B);
+            AssertEquality(endpoint1B, endpoint2B);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Assertion", "NUnit2021:Incompatible types for EqualTo constraint", Justification = "Ensure that no IEquatable implementation slips in to break the constraint that the two end point types can never be equal")]
@@ -47,8 +47,29 @@ namespace Geometry.Tests
             var endpoint1 = new OpenIntervalEndPoint(value);
             var endpoint2 = new ClosedIntervalEndPoint(value);
 
-            Assert.AreNotEqual(endpoint1, endpoint2);
-            Assert.AreNotEqual(endpoint2, endpoint1);
+            AssertInEquality<IntervalEndPoint>(endpoint1, endpoint2);
+        }
+
+        private void AssertInEquality<T>(T endpoint1, T endpoint2) where T : IntervalEndPoint
+        {
+            Assert.IsFalse(endpoint1.Equals(endpoint2));
+            Assert.IsFalse(endpoint2.Equals(endpoint1));
+            Assert.IsFalse(endpoint1 == endpoint2);
+            Assert.IsFalse(endpoint2 == endpoint1);
+
+            Assert.IsTrue(endpoint1 != endpoint2);
+            Assert.IsTrue(endpoint2 != endpoint1);
+        }
+
+        private void AssertEquality<T>(T endpoint1, T endpoint2) where T : IntervalEndPoint
+        {
+            Assert.IsTrue(endpoint1.Equals(endpoint2));
+            Assert.IsTrue(endpoint2.Equals(endpoint1));
+            Assert.IsTrue(endpoint1 == endpoint2);
+            Assert.IsTrue(endpoint2 == endpoint1);
+
+            Assert.IsFalse(endpoint1 != endpoint2);
+            Assert.IsFalse(endpoint2 != endpoint1);
         }
     }
 }

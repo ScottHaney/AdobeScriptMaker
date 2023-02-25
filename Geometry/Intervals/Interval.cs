@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -173,22 +174,60 @@ namespace Geometry.Intervals
         }
     }
 
-    public class OpenIntervalEndPoint : IntervalEndPoint
+    public class OpenIntervalEndPoint : IntervalEndPoint, IEquatable<OpenIntervalEndPoint>
     {
         public override bool IncludesPoint => false;
 
         public OpenIntervalEndPoint(double value)
             : base(value)
         { }
+
+        public static bool operator==(OpenIntervalEndPoint point1, OpenIntervalEndPoint point2)
+        {
+            if (ReferenceEquals(point1, null))
+                return ReferenceEquals(point2, null);
+
+            return point1.Equals(point2);
+        }
+
+        public static bool operator !=(OpenIntervalEndPoint point1, OpenIntervalEndPoint point2)
+            => !(point1 == point2);
+
+        public bool Equals([AllowNull] OpenIntervalEndPoint other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return Value == other.Value;
+        }
     }
 
-    public class ClosedIntervalEndPoint : IntervalEndPoint
+    public class ClosedIntervalEndPoint : IntervalEndPoint, IEquatable<ClosedIntervalEndPoint>
     {
         public override bool IncludesPoint => true;
 
         public ClosedIntervalEndPoint(double value)
             : base(value)
         { }
+
+        public static bool operator ==(ClosedIntervalEndPoint point1, ClosedIntervalEndPoint point2)
+        {
+            if (ReferenceEquals(point1, null))
+                return ReferenceEquals(point2, null);
+
+            return point1.Equals(point2);
+        }
+
+        public static bool operator !=(ClosedIntervalEndPoint point1, ClosedIntervalEndPoint point2)
+            => !(point1 == point2);
+
+        public bool Equals([AllowNull] ClosedIntervalEndPoint other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return Value == other.Value;
+        }
     }
 
 
