@@ -39,7 +39,6 @@ namespace Geometry.Tests
             AssertEquality(endpoint1B, endpoint2B);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Assertion", "NUnit2021:Incompatible types for EqualTo constraint", Justification = "Ensure that no IEquatable implementation slips in to break the constraint that the two end point types can never be equal")]
         public void Two_EndPoints_With_The_Same_Value_And_Different_IncludePoint_Values_Are_Not_Equal()
         {
             var value = 5;
