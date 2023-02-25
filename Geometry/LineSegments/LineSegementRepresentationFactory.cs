@@ -20,7 +20,7 @@ namespace Geometry.LineSegments
             return new LineSegment(_factory.CreateLine(point1, point2), point1, point2);
         }
 
-        public LineSegment Create(ILineRepresentation lineRep, PointD point1, PointD point2)
+        public LineSegment Create(LineRepresentation lineRep, PointD point1, PointD point2)
         {
             return new LineSegment(lineRep, point1, point2);
         }

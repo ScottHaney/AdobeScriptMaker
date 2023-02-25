@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class VerticalLineRepresentation : ILineRepresentation, IEquatable<VerticalLineRepresentation>
+    public class VerticalLineRepresentation : LineRepresentation, IEquatable<VerticalLineRepresentation>
     {
         private readonly double _xValue;
 
@@ -14,12 +14,12 @@ namespace Geometry.Lines
             _xValue = xValue;
         }
 
-        public double DistanceToPoint(PointD point)
+        public override double DistanceToPoint(PointD point)
         {
             return Math.Abs(point.X - _xValue);
         }
 
-        public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
+        public override ParallelBoundingLine[] GetParallelBoundingLines(double distance)
         {
             return new[]
             {
@@ -28,7 +28,7 @@ namespace Geometry.Lines
             };
         }
 
-        public ParametricRange GetParametricRange(PointD point1, PointD point2)
+        public override ParametricRange GetParametricRange(PointD point1, PointD point2)
         {
             var sorted = new[] { point1, point2 }
                 .OrderBy(x => x.Y)
@@ -37,10 +37,10 @@ namespace Geometry.Lines
             return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].Y), new ParametricPoint(sorted[1], sorted[1].Y));
         }
 
-        public double GetAngle()
+        public override double GetAngle()
             => 90;
 
-        public ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine)
+        public override ILineIntersectionResult GetIntersectionWith(LineRepresentation otherLine)
         {
             if (otherLine is HorizontalLineRepresentation horizontalLineRep)
                 return new SinglePointLineIntersectionResult(horizontalLineRep.CreateIntersectionPoint(_xValue));
@@ -65,7 +65,7 @@ namespace Geometry.Lines
                 throw new NotSupportedException();
         }
 
-        public bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2)
+        public override bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2)
         {
             var yValues = new[] { bound1.Y, bound2.Y };
             var minY = yValues.Min();

@@ -64,7 +64,7 @@ namespace Geometry
             return results;
         }
 
-        private IEnumerable<LineSegment> CreateLineSegment(ILineRepresentation line, ParametricPoint p1, ParametricPoint p2)
+        private IEnumerable<LineSegment> CreateLineSegment(LineRepresentation line, ParametricPoint p1, ParametricPoint p2)
         {
             //Make sure to avoid adding any empty line segments
             if (p1.ParametricValue != p2.ParametricValue)

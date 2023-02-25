@@ -8,7 +8,7 @@ namespace Geometry.Lines
 {
     public class LineRepresentationFactory : ILineRepresentationFactory
     {
-        public ILineRepresentation CreateLine(PointD point1, PointD point2)
+        public LineRepresentation CreateLine(PointD point1, PointD point2)
         {
             if (point1.Y == point2.Y)
                 return new HorizontalLineRepresentation(point1.Y);
@@ -18,7 +18,7 @@ namespace Geometry.Lines
                 return new TwoPointLineRepresentation(point1, point2);
         }
 
-        public ILineRepresentation CreateLine(PointD point1, double? slope)
+        public LineRepresentation CreateLine(PointD point1, double? slope)
         {
             if (slope == null)
                 return new VerticalLineRepresentation(point1.X);

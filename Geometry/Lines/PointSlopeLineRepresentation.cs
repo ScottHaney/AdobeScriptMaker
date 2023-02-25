@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public class PointSlopeLineRepresentation : ILineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>
+    public class PointSlopeLineRepresentation : LineRepresentation, ICanonicalLineFormCapable, IEquatable<ICanonicalLineFormCapable>
     {
         private readonly PointD _point;
         private readonly ISlope _slope;
@@ -17,14 +17,14 @@ namespace Geometry.Lines
             _slope = slope;
         }
 
-        public double DistanceToPoint(PointD point)
+        public override double DistanceToPoint(PointD point)
         {
             //Taken from wikipedia
             var angle = _slope.GetAngle();
             return Math.Abs(Math.Cos(angle) * (_point.Y - point.Y) - Math.Sin(angle) * (_point.X - point.X));
         }
 
-        public ParallelBoundingLine[] GetParallelBoundingLines(double distance)
+        public override ParallelBoundingLine[] GetParallelBoundingLines(double distance)
         {
             var perpendicularSlope = _slope.GetPerpendicularSlope();
             var diffInfo = perpendicularSlope.GetDistanceInfoForArcLength(_point, distance);
@@ -42,7 +42,7 @@ namespace Geometry.Lines
             };
         }
 
-        public ParametricRange GetParametricRange(PointD point1, PointD point2)
+        public override ParametricRange GetParametricRange(PointD point1, PointD point2)
         {
             var sorted = new[] { point1, point2 }
                 .OrderBy(x => x.X)
@@ -51,7 +51,7 @@ namespace Geometry.Lines
             return new ParametricRange(new ParametricPoint(sorted[0], sorted[0].X), new ParametricPoint(sorted[1], sorted[1].X));
         }
 
-        public double GetAngle()
+        public override double GetAngle()
             => _slope.GetAngle();
 
         public double GetXValue(double yValue)
@@ -69,7 +69,7 @@ namespace Geometry.Lines
             return new CanonicalLineForm(_slope.GetValue(), GetYValue(0));
         }
 
-        public ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine)
+        public override ILineIntersectionResult GetIntersectionWith(LineRepresentation otherLine)
         {
             if (otherLine is HorizontalLineRepresentation horizontalLineRep)
                 return new SinglePointLineIntersectionResult(horizontalLineRep.GetIntersectionPoint(_point, _slope));
@@ -89,7 +89,7 @@ namespace Geometry.Lines
                 throw new NotSupportedException();
         }
 
-        public bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2)
+        public override bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2)
         {
             var xValues = new[] { bound1.X, bound2.X };
             var minX = xValues.Min();

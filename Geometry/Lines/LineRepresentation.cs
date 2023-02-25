@@ -5,23 +5,23 @@ using System.Text;
 
 namespace Geometry.Lines
 {
-    public interface ILineRepresentation
+    public abstract class LineRepresentation
     {
-        ILineIntersectionResult GetIntersectionWith(ILineRepresentation otherLine);
-        bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2);
+        public abstract ILineIntersectionResult GetIntersectionWith(LineRepresentation otherLine);
+        public abstract bool IsInRange(PointD targetPoint, PointD bound1, PointD bound2);
 
-        ParametricRange GetParametricRange(PointD point1, PointD point2);
-        ParallelBoundingLine[] GetParallelBoundingLines(double distance);
-        double DistanceToPoint(PointD point);
-        double GetAngle();
+        public abstract ParametricRange GetParametricRange(PointD point1, PointD point2);
+        public abstract ParallelBoundingLine[] GetParallelBoundingLines(double distance);
+        public abstract double DistanceToPoint(PointD point);
+        public abstract double GetAngle();
     }
 
     public class ParallelBoundingLine
     {
-        public readonly ILineRepresentation Line;
+        public readonly LineRepresentation Line;
         public readonly RelativeLineDirection Direction;
 
-        public ParallelBoundingLine(ILineRepresentation line, RelativeLineDirection direction)
+        public ParallelBoundingLine(LineRepresentation line, RelativeLineDirection direction)
         {
             Line = line;
             Direction = direction;
@@ -34,9 +34,9 @@ namespace Geometry.Lines
         SubtractedFrom
     }
 
-    public class IsTheSameLineEqualityComparer : IEqualityComparer<ILineRepresentation>
+    public class IsTheSameLineEqualityComparer : IEqualityComparer<LineRepresentation>
     {
-        public bool Equals([AllowNull] ILineRepresentation x, [AllowNull] ILineRepresentation y)
+        public bool Equals([AllowNull] LineRepresentation x, [AllowNull] LineRepresentation y)
         {
             if (ReferenceEquals(x, null))
                 return ReferenceEquals(y, null);
@@ -45,7 +45,7 @@ namespace Geometry.Lines
             return intersectionResult.IsTheSameLine;
         }
 
-        public int GetHashCode([DisallowNull] ILineRepresentation obj)
+        public int GetHashCode([DisallowNull] LineRepresentation obj)
         {
             return obj?.GetHashCode() ?? 19;
         }

@@ -7,7 +7,7 @@ namespace Geometry.Lines
 {
     public interface ILineRepresentationFactory
     {
-        ILineRepresentation CreateLine(PointD point1, PointD point2);
-        ILineRepresentation CreateLine(PointD point1, double? slope);
+        LineRepresentation CreateLine(PointD point1, PointD point2);
+        LineRepresentation CreateLine(PointD point1, double? slope);
     }
 }

@@ -12,7 +12,7 @@ namespace Geometry.LineSegments
 {
     public class LineSegment : IEquatable<LineSegment>
     {
-        private readonly ILineRepresentation _line;
+        private readonly LineRepresentation _line;
         private readonly PointD[] _bounds;
 
         public PointD StartPoint => _bounds[0];
@@ -20,7 +20,7 @@ namespace Geometry.LineSegments
 
         private static readonly ILineRepresentationFactory _factory = new LineRepresentationFactory();
 
-        internal LineSegment(ILineRepresentation line, params PointD[] bounds)
+        internal LineSegment(LineRepresentation line, params PointD[] bounds)
         {
             _line = line;
             _bounds = bounds;
@@ -126,7 +126,7 @@ namespace Geometry.LineSegments
             return touchesThisLineSegment && touchesOtherLineSegment;
         }
 
-        public ILineRepresentation ToLine()
+        public LineRepresentation ToLine()
         {
             return _line;
         }

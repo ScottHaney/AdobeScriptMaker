@@ -875,21 +875,21 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var endConnection = endConnections.Single();
 
                 var lineBars = marbleLineInfo.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                ILineRepresentation shadowLine;
+                LineRepresentation shadowLine;
                 if (marbleLineInfo.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
                     shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
                 else
                     shadowLine = lineBars.First(x => x.Direction == RelativeLineDirection.SubtractedFrom).Line;
 
                 var startBars = startConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                ILineRepresentation startConnectionLine;
+                LineRepresentation startConnectionLine;
                 if (startConnection.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
                     startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
                 else
                     startConnectionLine = startBars.First(x => x.Direction == RelativeLineDirection.SubtractedFrom).Line;
 
                 var endBars = endConnection.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
-                ILineRepresentation endConnectionLine;
+                LineRepresentation endConnectionLine;
                 if (endConnection.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)
                     endConnectionLine = endBars.First(x => x.Direction == RelativeLineDirection.AddTo).Line;
                 else
