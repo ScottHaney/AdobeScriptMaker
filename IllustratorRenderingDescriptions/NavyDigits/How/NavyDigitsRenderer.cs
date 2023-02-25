@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -99,6 +100,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 3)
             {
+                return string.Empty;
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
@@ -749,6 +751,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 marbleEdges = trimmedEdges.Concat(newMarbleEdges).ToList();
             }
 
+            marbleEdges = JoinMarbleEdges(marbleEdges, lineSegmentFactory).ToList();
             return AdjustShadowsForStroke3(marbleEdges, lineSegmentFactory).ToList();
 
             /*var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
@@ -784,6 +787,16 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             var lineDivider = new LineDivider2();
             return originalShadowLines.SelectMany(x => lineDivider.DivideLines(x, removeLines)).ToList();
+        }
+
+        private IEnumerable<ChiselEdge> JoinMarbleEdges(List<ChiselEdge> marbleEdges, LineSegmentRepresentationFactory factory)
+        {
+            foreach (var group in marbleEdges.GroupBy(x => x.EdgeInfo))
+            {
+                var joinedSegments = LineSegment.Join(group.Select(x => x.LineSegment).ToArray());
+                foreach (var joinedSegment in joinedSegments)
+                    yield return new ChiselEdge(joinedSegment, group.Key);
+            }
         }
 
         private IEnumerable<LineSegment> JoinLineSegments(List<LineSegment> segments, LineSegmentRepresentationFactory lineSegmentFactory)
@@ -1176,11 +1189,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
         public override string ToString()
         {
-            return $"Line Segment: {LineSegment.ToString()}, IsMarble: {EdgeInfo.CreatesMarbleEdge}, IsShadow: {EdgeInfo.CastsShadow}, Orientation: {EdgeInfo.MarbleOrientation}";
+            return $"Line Segment: {LineSegment}, IsMarble: {EdgeInfo.CreatesMarbleEdge}, IsShadow: {EdgeInfo.CastsShadow}, Orientation: {EdgeInfo.MarbleOrientation}";
         }
     }
 
-    public class ChiselEdgeInfo
+    public class ChiselEdgeInfo : IEquatable<ChiselEdgeInfo>
     {
         public readonly bool CastsShadow;
         public readonly bool CreatesMarbleEdge;
@@ -1205,6 +1218,38 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             CastsShadow = castsShadow;
             CreatesMarbleEdge = true;
             MarbleOrientation = marbleOrientation;
+        }
+
+        public static bool operator==(ChiselEdgeInfo lhs, ChiselEdgeInfo rhs)
+        {
+            if (ReferenceEquals(lhs, null))
+                return ReferenceEquals(rhs, null);
+
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(ChiselEdgeInfo lhs, ChiselEdgeInfo rhs)
+            => !(lhs == rhs);
+
+        public bool Equals([AllowNull] ChiselEdgeInfo other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+
+            return CastsShadow == other.CastsShadow && CreatesMarbleEdge == other.CreatesMarbleEdge && MarbleOrientation == other.MarbleOrientation;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ChiselEdgeInfo);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return CastsShadow.GetHashCode() + CreatesMarbleEdge.GetHashCode() + MarbleOrientation?.GetHashCode() ?? 3;
+            }
         }
     }
 

@@ -98,6 +98,27 @@ namespace Geometry.Intervals
             return new Interval(newStartPoint, newEndPoint);
         }
 
+        public bool TryConnectWith(Interval otherInterval, out Interval combinedInterval)
+        {
+            var intersection = this.IntersectionWith(otherInterval);
+            if (intersection.ContainsSinglePoint())
+            {
+                if (End.Value == otherInterval.Start.Value)
+                {
+                    combinedInterval = new Interval(Start, otherInterval.End);
+                    return true;
+                }
+                else if (Start.Value == otherInterval.End.Value)
+                {
+                    combinedInterval = new Interval(otherInterval.Start, End);
+                    return true;
+                }
+            }
+
+            combinedInterval = null;
+            return false;
+        }
+
         private IntervalEndPoint GetPointByValue(double targetValue, IntervalEndPoint option1, IntervalEndPoint option2)
         {
             if (option1.Value == targetValue && option2.Value == targetValue)

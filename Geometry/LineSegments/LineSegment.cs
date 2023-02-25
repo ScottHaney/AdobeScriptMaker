@@ -32,6 +32,44 @@ namespace Geometry.LineSegments
             return _segmentFactory.Create(new PointD(StartPoint.X, StartPoint.Y + yShift), new PointD(EndPoint.X, EndPoint.Y + yShift));
         }
 
+        public static IEnumerable<LineSegment> Join(params LineSegment[] segments)
+        {
+            var groups = segments
+                .GroupBy(x => x._line)
+                .ToList();
+
+            foreach (var group in groups)
+            {
+                var items = group.ToList();
+                if (items.Count == 1)
+                    yield return items.First();
+                else
+                {
+                    var pointsMap = new Dictionary<double, PointD>();
+
+                    var intervals = items
+                        .Select(x => x.ToInterval(pointsMap))
+                        .OrderBy(x => x.Start.Value)
+                        .ToArray();
+
+                    var currentInterval = intervals.First();
+                    for (int i = 1; i < intervals.Length; i++)
+                    {
+                        var nextInterval = intervals[i];
+                        if (currentInterval.TryConnectWith(nextInterval, out var combinedInterval))
+                            currentInterval = combinedInterval;
+                        else
+                        {
+                            yield return _segmentFactory.Create(pointsMap[currentInterval.Start.Value], pointsMap[currentInterval.End.Value]);
+                            currentInterval = nextInterval;
+                        }
+                    }
+
+                    yield return _segmentFactory.Create(pointsMap[currentInterval.Start.Value], pointsMap[currentInterval.End.Value]);
+                }
+            }
+        }
+
         public IEnumerable<LineSegment> Exclude(params LineSegment[] otherSegments)
         {
             var pointsMap = new Dictionary<double, PointD>();
