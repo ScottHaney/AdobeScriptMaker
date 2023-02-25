@@ -11,7 +11,7 @@ namespace Geometry.Tests
         [Test]
         public void Throws_An_Exception_When_The_Start_And_End_Are_In_The_Wrong_Order()
         {
-            Assert.Throws<InvalidIntervalException>(() => new Interval(10, 5));
+            Assert.Throws<InvalidIntervalException>(() => Interval.CreateOpenInterval(10, 5));
         }
     }
 }

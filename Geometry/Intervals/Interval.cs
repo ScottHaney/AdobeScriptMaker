@@ -1,6 +1,8 @@
 ﻿using Geometry.Lines;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Net;
 using System.Text;
 using System.Transactions;
 
@@ -8,17 +10,63 @@ namespace Geometry.Intervals
 {
     public class Interval
     {
-        public readonly double Start;
-        public readonly double End;
+        private readonly IntervalEndPoint _start;
+        private readonly IntervalEndPoint _end;
 
-        public Interval(double start, double end)
+        public Interval(IntervalEndPoint startPoint, IntervalEndPoint endPoint)
         {
-            if (start > end)
-                throw new InvalidIntervalException(start, end);
+            if (startPoint > endPoint)
+                throw new InvalidIntervalException(startPoint, endPoint);
 
-            Start = start;
-            End = end;
+            _start = startPoint;
+            _end = endPoint;
         }
+
+        public static Interval CreateClosedInterval(double start, double end)
+            => new Interval(new ClosedIntervalEndPoint(start), new ClosedIntervalEndPoint(end));
+
+        public static Interval CreateOpenInterval(double start, double end)
+            => new Interval(new OpenIntervalEndPoint(start), new OpenIntervalEndPoint(end));
+    }
+
+    public abstract class IntervalEndPoint
+    {
+        public readonly double Value;
+
+        public abstract bool IncludesPoint { get; }
+
+        public IntervalEndPoint(double value)
+        {
+            Value = value;
+        }
+
+        public static bool operator>(IntervalEndPoint point, IntervalEndPoint otherPoint)
+        {
+            return point.Value > otherPoint.Value;
+        }
+
+        public static bool operator <(IntervalEndPoint point, IntervalEndPoint otherPoint)
+        {
+            return point.Value < otherPoint.Value;
+        }
+    }
+
+    public class OpenIntervalEndPoint : IntervalEndPoint
+    {
+        public override bool IncludesPoint => false;
+
+        public OpenIntervalEndPoint(double value)
+            : base(value)
+        { }
+    }
+
+    public class ClosedIntervalEndPoint : IntervalEndPoint
+    {
+        public override bool IncludesPoint => true;
+
+        public ClosedIntervalEndPoint(double value)
+            : base(value)
+        { }
     }
 
 
@@ -26,15 +74,15 @@ namespace Geometry.Intervals
     public class InvalidIntervalException : Exception
     {
         public InvalidIntervalException() { }
-        public InvalidIntervalException(double start, double end) : base(GetMessage(start, end)) { }
-        public InvalidIntervalException(double start, double end, Exception inner) : base(GetMessage(start, end), inner) { }
+        public InvalidIntervalException(IntervalEndPoint start, IntervalEndPoint end) : base(GetMessage(start, end)) { }
+        public InvalidIntervalException(IntervalEndPoint start, IntervalEndPoint end, Exception inner) : base(GetMessage(start, end), inner) { }
         protected InvalidIntervalException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
 
-        private static string GetMessage(double start, double end)
+        private static string GetMessage(IntervalEndPoint start, IntervalEndPoint end)
         {
-            return $"The interval [{start},{end}] is invalid because the end points were given in the wrong order";
+            return $"The interval [{start.Value}, {end.Value}] is invalid because the end points were given in the wrong order";
         }
     }
 
