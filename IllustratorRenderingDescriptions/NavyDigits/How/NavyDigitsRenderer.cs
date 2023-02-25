@@ -101,7 +101,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             else if (digit == 3)
             {
                 var sculpture = new DigitSculpture(boundingBox,
-                    /*new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
+                    new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
@@ -109,7 +109,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage),
                     new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.3f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
-                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },*/
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
                     new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
@@ -741,9 +741,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             var marbleEdges = chiselResults.First().Edges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
             foreach (var chiselResult in chiselResults.Skip(1))
             {
-                var newMarbleEdges = chiselResult.Edges
+                /*var newMarbleEdges = chiselResult.Edges
                     .Where(x => IsNewMarbleEdge(marbleEdges, x))
-                    .ToList();
+                    .ToList();*/
+
+                var newMarbleEdges = GetNewMarbleEdges(marbleEdges, chiselResult.Edges);
 
                 var trimmedEdges = TrimMarbleEdges(marbleEdges, chiselResult.Edges);
 
@@ -752,14 +754,6 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
             marbleEdges = JoinMarbleEdges(marbleEdges, lineSegmentFactory).ToList();
             return AdjustShadowsForStroke3(marbleEdges, lineSegmentFactory).ToList();
-
-            /*var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
-            var marbleBoundaryLinesDebug = marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).OrderBy(x => x.StartPoint.X).ToList();
-
-            marbleBoundaryLines = JoinLineSegments2(marbleBoundaryLines, lineSegmentFactory).ToList();
-            var marbleBoundaryLinesDebug2 = marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).OrderBy(x => x.StartPoint.X).ToList();
-
-            return AdjustShadowsForStroke2(marbleBoundaryLines, lineSegmentFactory).ToList();*/
         }
 
         private IEnumerable<ChiselEdge> TrimMarbleEdges(IEnumerable<ChiselEdge> currentEdges,
@@ -770,6 +764,17 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             {
                 foreach (var item in currentEdge.LineSegment.Exclude(edgesToRemove))
                     yield return new ChiselEdge(item, currentEdge.EdgeInfo);
+            }
+        }
+
+        private IEnumerable<ChiselEdge> GetNewMarbleEdges(IEnumerable<ChiselEdge> currentMarbleEdges,
+            IEnumerable<ChiselEdge> chiselEdges)
+        {
+            var currentMarble = currentMarbleEdges.Select(x => x.LineSegment).ToArray();
+            foreach (var chiselMarbleEdge in chiselEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge))
+            {
+                foreach (var item in chiselMarbleEdge.LineSegment.Exclude(currentMarble))
+                    yield return new ChiselEdge(item, chiselMarbleEdge.EdgeInfo);
             }
         }
 
