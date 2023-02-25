@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Transactions;
@@ -27,6 +28,29 @@ namespace Geometry.Intervals
 
         public static Interval CreateOpenInterval(double start, double end)
             => new Interval(new OpenIntervalEndPoint(start), new OpenIntervalEndPoint(end));
+
+        public bool IsEmpty()
+        {
+            if (_end > _start)
+                return false;
+            else
+                return !IncludesValue(_end.Value);
+        }
+
+        private bool IncludesValue(double value)
+        {
+            if (value > _start && value < _end)
+                return true;
+            else if (value < _start || value > _end)
+                return false;
+            else
+            {
+                //Make sure that each end point that matches the value (could be both end points in an interval like [9,9]) includes the point
+                return new[] { _start, _end }
+                    .Where(x => x == value)
+                    .All(x => x.IncludesPoint);
+            }
+        }
     }
 
     public abstract class IntervalEndPoint
@@ -40,14 +64,50 @@ namespace Geometry.Intervals
             Value = value;
         }
 
+        public static bool operator ==(IntervalEndPoint point, double otherValue)
+        {
+            return point.Value == otherValue;
+        }
+
+        public static bool operator !=(IntervalEndPoint point, double otherValue)
+            => !(point == otherValue);
+
+        public static bool operator ==(double value, IntervalEndPoint otherPoint)
+        {
+            return value == otherPoint.Value;
+        }
+
+        public static bool operator !=(double value, IntervalEndPoint otherPoint)
+            => !(value == otherPoint.Value);
+
         public static bool operator>(IntervalEndPoint point, IntervalEndPoint otherPoint)
         {
             return point.Value > otherPoint.Value;
         }
 
+        public static bool operator >(IntervalEndPoint point, double otherValue)
+        {
+            return point.Value > otherValue;
+        }
+
+        public static bool operator >(double value, IntervalEndPoint otherPoint)
+        {
+            return value > otherPoint.Value;
+        }
+
         public static bool operator <(IntervalEndPoint point, IntervalEndPoint otherPoint)
         {
             return point.Value < otherPoint.Value;
+        }
+
+        public static bool operator <(IntervalEndPoint point, double otherValue)
+        {
+            return point.Value < otherValue;
+        }
+
+        public static bool operator <(double value, IntervalEndPoint otherPoint)
+        {
+            return value < otherPoint.Value;
         }
     }
 
