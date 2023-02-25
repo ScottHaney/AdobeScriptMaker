@@ -1562,7 +1562,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 var intersectionPoint = new PointF(topRight.X, topRight.Y + xLength * slope);
 
                 var shadowSides = MoveToCenter
-                    ? new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, true) }
+                    ? new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, MarbleOrientations.Negative) }
                     : new[] { new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, false), new ChiselEdgeInfo(false, MarbleOrientations.Negative) };
 
                 return new DigitChiselResult(new PointF[]
