@@ -19,11 +19,17 @@ namespace Geometry.LineSegments
         public PointD EndPoint => _bounds[1];
 
         private static readonly ILineRepresentationFactory _factory = new LineRepresentationFactory();
+        private static readonly ILineSegmentRepresentationFactory _segmentFactory = new LineSegmentRepresentationFactory(_factory);
 
         internal LineSegment(LineRepresentation line, params PointD[] bounds)
         {
             _line = line;
             _bounds = bounds;
+        }
+
+        public LineSegment ShiftY(double yShift)
+        {
+            return _segmentFactory.Create(new PointD(StartPoint.X, StartPoint.Y + yShift), new PointD(EndPoint.X, EndPoint.Y + yShift));
         }
 
         public IEnumerable<LineSegment> Exclude(params LineSegment[] otherSegments)
@@ -42,11 +48,15 @@ namespace Geometry.LineSegments
             }
         }
 
-        private Interval ToInterval(Dictionary<double, PointD> pointsMap)
+        private Interval ToInterval(Dictionary<double, PointD> pointsMap = null)
         {
             var range = GetParametricRange();
-            pointsMap[range.Start.ParametricValue] = range.Start.Point;
-            pointsMap[range.End.ParametricValue] = range.End.Point;
+
+            if (pointsMap != null)
+            {
+                pointsMap[range.Start.ParametricValue] = range.Start.Point;
+                pointsMap[range.End.ParametricValue] = range.End.Point;
+            }
 
             return Interval.CreateClosedInterval(range.Start.ParametricValue, range.End.ParametricValue);
         }
@@ -104,15 +114,12 @@ namespace Geometry.LineSegments
 
         public bool OverlapsWith(LineSegment other)
         {
-            var intersectionResult = _line.GetIntersectionWith(other._line);
-            if (intersectionResult.HasNoPointsInCommonWith)
-                return false;
-            else if (intersectionResult.IsTheSameLine)
+            if (_line == other._line)
             {
-                var range1 = _line.GetParametricRange(_bounds[0], _bounds[1]);
-                var range2 = other._line.GetParametricRange(other._bounds[0], other._bounds[1]);
+                var range1 = ToInterval();
+                var range2 = other.ToInterval();
 
-                return range1.OverlapsWith(range2);
+                return range1.IntersectionWith(range2).ContainsMoreThanOnePoint();
             }
             else
                 return false;

@@ -1,4 +1,6 @@
 using Geometry;
+using Geometry.Lines;
+using Geometry.LineSegments;
 using IllustratorRenderingDescriptions.NavyDigits.How;
 using NUnit.Framework;
 using System;
@@ -28,10 +30,10 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+            CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
         }
 
         [Test]
@@ -53,11 +55,12 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
-            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[1], result.Points[2]) }, shadowLines);
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            CollectionAssert.AreEquivalent(new[] { factory.Create(result.Points[1], result.Points[2]) }, shadowLines);
         }
 
         [Test]
@@ -79,10 +82,10 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+            CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
         }
 
         [Test]
@@ -104,11 +107,12 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
-            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[1]) }, shadowLines);
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            CollectionAssert.AreEquivalent(new[] { factory.Create(result.Points[0], result.Points[1]) }, shadowLines);
         }
 
         [Test]
@@ -130,11 +134,12 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
-            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[2]) }, shadowLines);
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            CollectionAssert.AreEquivalent(new[] { factory.Create(result.Points[0], result.Points[2]) }, shadowLines);
         }
 
         [Test]
@@ -156,11 +161,12 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
-            CollectionAssert.AreEquivalent(new[] { new Line(result.Points[0], result.Points[2]) }, shadowLines);
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            CollectionAssert.AreEquivalent(new[] { factory.Create(result.Points[0], result.Points[2]) }, shadowLines);
         }
 
         [Test]
@@ -182,10 +188,10 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+            CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
         }
 
         [Test]
@@ -207,10 +213,10 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
-            CollectionAssert.AreEquivalent(Array.Empty<Line>(), shadowLines);
+            CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
         }
     }
 }
