@@ -758,7 +758,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
                 marbleEdges = trimmedEdges.Concat(newMarbleEdges).ToList();
             }
 
-            return AdjustShadowsForStroke3(marbleEdges, lineSegmentFactory);
+            return AdjustShadowsForStroke3(marbleEdges, lineSegmentFactory).ToList();
 
             /*var marbleBoundaryLines = marbleEdges.Where(x => x.EdgeInfo.CreatesMarbleEdge).ToList();
             var marbleBoundaryLinesDebug = marbleBoundaryLines.Select(x => lineSegmentFactory.Create(new PointD(x.Start), new PointD(x.End))).OrderBy(x => x.StartPoint.X).ToList();
@@ -784,7 +784,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             ChiselEdge newEdge)
         {
             if (newEdge.EdgeInfo.CreatesMarbleEdge)
-                return currentEdges.All(x => x.LineSegment.OverlapsWith(newEdge.LineSegment));
+                return currentEdges.All(x => !x.LineSegment.OverlapsWith(newEdge.LineSegment));
             else
                 return false;
         }
@@ -1181,6 +1181,11 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
         {
             LineSegment = lineSegment;
             EdgeInfo = edgeInfo;
+        }
+
+        public override string ToString()
+        {
+            return $"Line Segment: {LineSegment.ToString()}, IsMarble: {EdgeInfo.CreatesMarbleEdge}, IsShadow: {EdgeInfo.CastsShadow}, Orientation: {EdgeInfo.MarbleOrientation}";
         }
     }
 
