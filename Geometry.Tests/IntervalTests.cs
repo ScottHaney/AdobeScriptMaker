@@ -303,12 +303,12 @@ namespace Geometry.Tests
             //[10, 15] exclude [0, 10] = (10, 15]
             var interval1 = Interval.CreateClosedInterval(10, 15);
             var interval2 = Interval.CreateClosedInterval(0, 10);
-            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(15)) }, interval1.Exclude(interval2).Intervals);
+            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(15)) }, interval1.Exclude(interval2).NonEmptyIntervals);
 
             //[10, 15] exclude [15, 20] = [10, 15)
             var interval1B = Interval.CreateClosedInterval(10, 15);
             var interval2B = Interval.CreateClosedInterval(15, 20);
-            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).Intervals);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).NonEmptyIntervals);
         }
 
         [Test]
@@ -317,7 +317,7 @@ namespace Geometry.Tests
             //[0, 20] exclude [5, 10] = [0, 5) and (10, 20]
             var interval1 = Interval.CreateClosedInterval(0, 20);
             var interval2 = Interval.CreateClosedInterval(5, 10);
-            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(0), new OpenIntervalEndPoint(5)), new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).Intervals);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(0), new OpenIntervalEndPoint(5)), new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).NonEmptyIntervals);
         }
 
         [Test]
@@ -326,18 +326,18 @@ namespace Geometry.Tests
             //[10, 20] exclude [5, 15] = (15, 20]
             var interval1 = Interval.CreateClosedInterval(10, 20);
             var interval2 = Interval.CreateClosedInterval(5, 15);
-            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(15), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).Intervals);
+            CollectionAssert.AreEqual(new[] { new Interval(new OpenIntervalEndPoint(15), new ClosedIntervalEndPoint(20)) }, interval1.Exclude(interval2).NonEmptyIntervals);
 
             //[10, 20] exclude [15, 25] = [10, 15)
             var interval1B = Interval.CreateClosedInterval(10, 20);
             var interval2B = Interval.CreateClosedInterval(15, 25);
-            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).Intervals);
+            CollectionAssert.AreEqual(new[] { new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)) }, interval1B.Exclude(interval2B).NonEmptyIntervals);
         }
 
         private void TestExclusionResultsForNonOverlappingIntervals(Interval interval1, Interval interval2)
         {
             var exclusionResult = interval1.Exclude(interval2);
-            CollectionAssert.AreEqual(new[] { interval1 }, exclusionResult.Intervals);
+            CollectionAssert.AreEqual(new[] { interval1 }, exclusionResult.NonEmptyIntervals);
         }
 
         private void TestSinglePointIntersectionResult(Interval interval1, Interval interval2)

@@ -188,7 +188,11 @@ namespace Geometry.Intervals
 
         public bool IsEmpty => _resultingIntervals.Length == 0 || _resultingIntervals.All(x => x.IsEmpty());
 
-        public IEnumerable<Interval> Intervals => _resultingIntervals.Where(x => !x.IsEmpty());
+        public bool HasPositiveLengthIntervals => _resultingIntervals.Any(x => x.ContainsMoreThanOnePoint());
+
+        public IEnumerable<Interval> NonEmptyIntervals => _resultingIntervals.Where(x => !x.IsEmpty());
+
+        public IEnumerable<Interval> PositiveLengthIntervals => _resultingIntervals.Where(x => x.ContainsMoreThanOnePoint());
 
         public IntervalExclusionResult(params Interval[] resultingIntervals)
         {
