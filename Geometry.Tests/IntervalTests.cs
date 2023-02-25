@@ -84,9 +84,6 @@ namespace Geometry.Tests
             var interval1A = Interval.CreateClosedInterval(5, 10);
             var interval2A = Interval.CreateClosedInterval(0, 20);
 
-            var int1 = interval1A.IntersectionWith(interval2A);
-            var int2 = interval2A.IntersectionWith(interval1A);
-
             Assert.IsTrue(interval1A.IntersectionWith(interval2A) == interval1A);
             Assert.IsTrue(interval2A.IntersectionWith(interval1A) == interval1A);
 
@@ -116,9 +113,155 @@ namespace Geometry.Tests
         }
 
         [Test]
-        public void Interval_That_Partially_Contains_Other_Interval_Has_Partial_Interval_As_The_Intersection_Result()
+        public void Closed_Interval_That_Partially_Contains_Other_Closed_Interval_Has_Partial_Interval_As_The_Intersection_Result()
         {
+            //[5, 15] intersect [10, 20] = [10, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(5, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(10), new ClosedIntervalEndPoint(15)));
 
+            //[10, 15] intersect [10, 20] = [10, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(10, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(10), new ClosedIntervalEndPoint(15)));
+
+            //[12, 15] intersect [10, 20] = [12, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(12, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(12), new ClosedIntervalEndPoint(15)));
+
+            //[15, 20] intersect [10, 20] = [15, 20]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(15, 20),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(15), new ClosedIntervalEndPoint(20)));
+
+            //[15, 25] intersect [10, 20] = [15, 20]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(15, 25),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(15), new ClosedIntervalEndPoint(20)));
+        }
+
+        [Test]
+        public void Open_Interval_That_Partially_Contains_Other_Open_Interval_Has_Partial_Interval_As_The_Intersection_Result()
+        {
+            //(5, 15) intersect (10, 20) = (10, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(5, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(10), new OpenIntervalEndPoint(15)));
+
+            //(10, 15) intersect (10, 20) = (10, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(10, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(10), new OpenIntervalEndPoint(15)));
+
+            //(12, 15) intersect (10, 20) = (12, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(12, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(12), new OpenIntervalEndPoint(15)));
+
+            //(15, 20) intersect (10, 20) = (15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(15, 20),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+
+            //(15, 25) intersect (10, 20) = (15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(15, 25),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+        }
+
+        [Test]
+        public void Open_Interval_That_Partially_Contains_Other_Closed_Interval_Has_Partial_Interval_As_The_Intersection_Result()
+        {
+            //(5, 15) intersect [10, 20] = [10, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(5, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(10), new OpenIntervalEndPoint(15)));
+
+            //(10, 15) intersect [10, 20] = (10, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(10, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(10), new OpenIntervalEndPoint(15)));
+
+            //(12, 15) intersect [10, 20] = (12, 15)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(12, 15),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(12), new OpenIntervalEndPoint(15)));
+
+            //(15, 20) intersect [10, 20] = (15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(15, 20),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+
+            //(15, 25) intersect [10, 20] = (15, 20]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateOpenInterval(15, 25),
+                Interval.CreateClosedInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(15), new ClosedIntervalEndPoint(20)));
+        }
+
+        [Test]
+        public void Closed_Interval_That_Partially_Contains_Other_Open_Interval_Has_Partial_Interval_As_The_Intersection_Result()
+        {
+            //[5, 15] intersect (10, 20) = (10, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(5, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(15)));
+
+            //[10, 15] intersect (10, 20) = (10, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(10, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new OpenIntervalEndPoint(10), new ClosedIntervalEndPoint(15)));
+
+            //[12, 15] intersect (10, 20) = [12, 15]
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(12, 15),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(12), new ClosedIntervalEndPoint(15)));
+
+            //[15, 20] intersect (10, 20) = [15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(15, 20),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+
+            //[15, 25] intersect (10, 20) = [15, 20)
+            TestOverlappingIntervalsIntersectionResult(
+                Interval.CreateClosedInterval(15, 25),
+                Interval.CreateOpenInterval(10, 20),
+                new Interval(new ClosedIntervalEndPoint(15), new OpenIntervalEndPoint(20)));
+        }
+
+        private void TestOverlappingIntervalsIntersectionResult(Interval interval1,
+            Interval interval2,
+            Interval expectedResult)
+        {
+            var result1 = interval1.IntersectionWith(interval2);
+            var result2 = interval2.IntersectionWith(interval1);
+
+            Assert.IsTrue(result1 == expectedResult);
+            Assert.IsTrue(result2 == expectedResult);
+            Assert.IsFalse(result1 != expectedResult);
+            Assert.IsFalse(result2 != expectedResult);
+
+            Assert.AreEqual(expectedResult, result1);
+            Assert.AreEqual(expectedResult, result2);
         }
     }
 }
