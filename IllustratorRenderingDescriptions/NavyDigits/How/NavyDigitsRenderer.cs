@@ -45,7 +45,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
             var widthPaddingPercentage = 0.2f;
-            var strokeWidth = 20;
+            var strokeWidth = 1;
 
             if (digit == 0)
             {
