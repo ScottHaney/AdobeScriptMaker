@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 
 namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
@@ -10,11 +11,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         private readonly DigitHoleName _name;
         private readonly float _widthPaddingPercentage;
 
+        private readonly DigitHoleBevelName[] _bevelNames;
+
         public DigitHole(DigitHoleName name,
-            float widthPaddingPercentage)
+            float widthPaddingPercentage,
+            params DigitHoleBevelName[] bevels)
         {
             _name = name;
             _widthPaddingPercentage = widthPaddingPercentage;
+            _bevelNames = bevels;
         }
 
         public IEnumerable<DigitChiselResult> GetPoints(RectangleF outerBounds)
@@ -24,14 +29,22 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
             if (_name == DigitHoleName.Top)
             {
-                yield return new DigitChiselResult(holeRect.ToPathPoints(), edgesInfo);
+                yield return AddInBevels(holeRect.ToPathPoints(), edgesInfo);
             }
             else if (_name == DigitHoleName.Bottom)
             {
-                yield return new DigitChiselResult(holeRect.ToPathPoints(), edgesInfo);
+                yield return AddInBevels(holeRect.ToPathPoints(), edgesInfo);
             }
             else
                 throw new NotSupportedException();
+        }
+
+        private DigitChiselResult AddInBevels(PointF[] points, ChiselEdgeInfo[] edgesInfo)
+        {
+            if (!_bevelNames.Any())
+                return new DigitChiselResult(points, edgesInfo);
+
+            throw new NotImplementedException();
         }
 
         private RectangleF GetHoleBounds(RectangleF outerBounds)
@@ -54,7 +67,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         }
     }
 
-    public enum DigitHoleBevel
+    public enum DigitHoleBevelName
     {
         TopLeft,
         TopRight,
