@@ -19,36 +19,47 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
         public IEnumerable<DigitChiselResult> GetPoints(RectangleF outerBounds)
         {
-            var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
-
             var edgesInfo = new[] { new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(true, true) };
+            var holeRect = GetHoleBounds(outerBounds);
+
             if (_name == DigitHoleName.Top)
             {
-                var upperRect = new RectangleF(outerBounds.TopLeft(), new SizeF(outerBounds.Width, outerBounds.Height / 2));
-
-                yield return new DigitChiselResult(new[]
-                {
-                    new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + digitLineWidth),
-                    new PointF(outerBounds.Right - digitLineWidth, outerBounds.Top + digitLineWidth),
-                    new PointF(outerBounds.Right - digitLineWidth, upperRect.Bottom - digitLineWidth / 2),
-                    new PointF(outerBounds.Left + digitLineWidth, upperRect.Bottom - digitLineWidth / 2)
-                }, edgesInfo);
+                yield return new DigitChiselResult(holeRect.ToPathPoints(), edgesInfo);
             }
             else if (_name == DigitHoleName.Bottom)
             {
-                var lowerRect = new RectangleF(new PointF(outerBounds.Left, outerBounds.Top + outerBounds.Height / 2), new SizeF(outerBounds.Width, outerBounds.Height / 2));
-
-                yield return new DigitChiselResult(new[]
-                {
-                    new PointF(outerBounds.Left + digitLineWidth, lowerRect.Top + digitLineWidth / 2),
-                    new PointF(outerBounds.Right - digitLineWidth, lowerRect.Top + digitLineWidth / 2),
-                    new PointF(outerBounds.Right - digitLineWidth, lowerRect.Bottom - digitLineWidth),
-                    new PointF(outerBounds.Left + digitLineWidth, lowerRect.Bottom - digitLineWidth)
-                }, edgesInfo);
+                yield return new DigitChiselResult(holeRect.ToPathPoints(), edgesInfo);
             }
             else
                 throw new NotSupportedException();
         }
+
+        private RectangleF GetHoleBounds(RectangleF outerBounds)
+        {
+            var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
+
+            PointF topLeft;
+            if (_name == DigitHoleName.Top)
+            {
+                topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + digitLineWidth);
+            }
+            else if (_name == DigitHoleName.Bottom)
+            {
+                topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + outerBounds.Height / 2 + digitLineWidth / 2);
+            }
+            else
+                throw new NotSupportedException();
+
+            return new RectangleF(topLeft, new SizeF(outerBounds.Width - 2 * digitLineWidth, (outerBounds.Height - 3 * digitLineWidth) / 2));
+        }
+    }
+
+    public enum DigitHoleBevel
+    {
+        TopLeft,
+        TopRight,
+        BottomRight,
+        BottomLeft
     }
 
     public enum DigitHoleName
