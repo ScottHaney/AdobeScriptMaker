@@ -16,6 +16,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
         private readonly DigitHoleBevelName[] _bevelNames;
 
+        public bool OffsetHeightForDigit5 { get; set; }
+
         public DigitHole(DigitHoleName name,
             float widthPaddingPercentage,
             float angle,
@@ -85,18 +87,30 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
             var digitLineWidth = _widthPaddingPercentage * outerBounds.Width;
 
             PointF topLeft;
+            float heightOffset = 0;
             if (_name == DigitHoleName.Top)
             {
+                if (OffsetHeightForDigit5)
+                {
+                    heightOffset = -digitLineWidth / 2;
+                }
+
                 topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + digitLineWidth);
             }
             else if (_name == DigitHoleName.Bottom)
             {
-                topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + outerBounds.Height / 2 + digitLineWidth / 2);
+                if (OffsetHeightForDigit5)
+                {
+                    heightOffset = digitLineWidth / 2;
+                    topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + outerBounds.Height / 2 + digitLineWidth / 2 - heightOffset);
+                }
+                else
+                    topLeft = new PointF(outerBounds.Left + digitLineWidth, outerBounds.Top + outerBounds.Height / 2 + digitLineWidth / 2);
             }
             else
                 throw new NotSupportedException();
 
-            return new RectangleF(topLeft, new SizeF(outerBounds.Width - 2 * digitLineWidth, (outerBounds.Height - 3 * digitLineWidth) / 2));
+            return new RectangleF(topLeft, new SizeF(outerBounds.Width - 2 * digitLineWidth, (outerBounds.Height - 3 * digitLineWidth) / 2 + heightOffset));
         }
     }
 

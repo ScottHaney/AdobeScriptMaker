@@ -16,6 +16,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
         public bool MoveToCenter { get; set; }
 
+        public bool OffsetHeightForDigit5 { get; set; }
+
         public DigitCorner(DigitCornerName cornerName,
             float widthPercentage,
             float angle)
@@ -38,6 +40,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
                 var shift = cornerPoint.Y == outerBounds.Top
                     ? distance
                     : -distance;
+
+                if (OffsetHeightForDigit5 && _cornerName == DigitCornerName.TopRight)
+                    shift -= centerBarHeight / 2;
 
                 yield return result.ShiftY(shift);
             }

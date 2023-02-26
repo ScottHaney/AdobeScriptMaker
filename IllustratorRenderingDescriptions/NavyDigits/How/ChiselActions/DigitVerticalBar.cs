@@ -10,6 +10,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         private readonly DigitVerticalBarName _name;
         private readonly float _widthPaddingPercentage;
 
+        public bool OffsetHeightForDigit5 { get; set; }
+
         public float OverhangPercentage { get; set; }
 
         public DigitVerticalBar(DigitVerticalBarName name,
@@ -38,12 +40,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
             }
             else if (_name == DigitVerticalBarName.TopRight)
             {
+                var heightOffset = OffsetHeightForDigit5 ? dimension / 2 : 0;
+
                 var topLeft = new PointF(outerBounds.Width - dimension, dimension);
                 var bottomRight = new PointF(outerBounds.Width, outerBounds.Height / 2 - dimension / 2);
 
-                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                var originalRectHeight = bottomRight.Y - topLeft.Y;
+                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, originalRectHeight - heightOffset));
 
-                var overhangHeight = OverhangPercentage * rect.Height;
+                var overhangHeight = OverhangPercentage * originalRectHeight;
                 rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
@@ -64,12 +69,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
             }
             else if (_name == DigitVerticalBarName.BottomLeft)
             {
+                var heightOffset = OffsetHeightForDigit5 ? dimension / 2 : 0;
+
                 var topLeft = new PointF(0, outerBounds.Height / 2 + dimension / 2);
                 var bottomRight = new PointF(dimension, outerBounds.Height - dimension);
 
-                var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+                var originalRectHeight = bottomRight.Y - topLeft.Y;
+                var rect = new RectangleF(new PointF(topLeft.X, topLeft.Y - heightOffset), new SizeF(bottomRight.X - topLeft.X, originalRectHeight + heightOffset));
 
-                var overhangHeight = OverhangPercentage * rect.Height;
+                var overhangHeight = OverhangPercentage * originalRectHeight;
                 rect = new RectangleF(rect.TopLeft(), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);

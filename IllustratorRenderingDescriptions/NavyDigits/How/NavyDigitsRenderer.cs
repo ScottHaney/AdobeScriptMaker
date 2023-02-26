@@ -114,11 +114,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
-                    new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage),
-                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
-                    new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true })
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45) { OffsetHeightForDigit5 = true },
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft) { OffsetHeightForDigit5 = true },
+                    new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OffsetHeightForDigit5 = true },
+                    new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f, OffsetHeightForDigit5 = true },
+                    new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true, OffsetHeightForDigit5 = true })
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
