@@ -420,13 +420,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     .Where(x => x.LineSegment != marbleLine.LineSegment)
                     .Single(x => marbleLine.LineSegment.StartPoint == x.LineSegment.StartPoint || marbleLine.LineSegment.StartPoint == x.LineSegment.EndPoint);
 
-                var endConnections = marbleLines
+                var endConnection = marbleLines
                     .Where(x => x.LineSegment != marbleLine.LineSegment)
-                    .Where(x => marbleLine.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLine.LineSegment.EndPoint == x.LineSegment.EndPoint)
-                    .ToList();
-                                    
-                var endConnection = endConnections.Single();
-
+                    .Single(x => marbleLine.LineSegment.EndPoint == x.LineSegment.StartPoint || marbleLine.LineSegment.EndPoint == x.LineSegment.EndPoint);
+                    
                 var lineBars = marbleLine.LineSegment.ToLine().GetParallelBoundingLines(StrokeWidth / 2);
                 LineRepresentation shadowLine;
                 if (marbleLine.EdgeInfo.MarbleOrientation == MarbleOrientations.Negative)

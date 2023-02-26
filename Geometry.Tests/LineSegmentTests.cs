@@ -20,6 +20,7 @@ namespace Geometry.Tests
             var segment = factory.Create(p1, p2);
             var reversedSegment = factory.Create(p2, p1);
 
+            Assert.IsTrue(segment == reversedSegment);
             Assert.AreEqual(segment, reversedSegment);
         }
 

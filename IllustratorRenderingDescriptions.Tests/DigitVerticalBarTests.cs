@@ -33,12 +33,12 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = verticalBar.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
-            CollectionAssert.AreEquivalent(new[] { factory.Create(result.Points[0], result.Points[1]) }, shadowLines);
+            CollectionAssert.Contains(shadowLines, factory.Create(result.Points[0], result.Points[1]));
         }
 
         [Test]
