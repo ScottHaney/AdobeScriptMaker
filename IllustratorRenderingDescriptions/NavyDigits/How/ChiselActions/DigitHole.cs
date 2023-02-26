@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml;
 
 namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 {
@@ -10,15 +12,18 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
     {
         private readonly DigitHoleName _name;
         private readonly float _widthPaddingPercentage;
+        private readonly float _angle;
 
         private readonly DigitHoleBevelName[] _bevelNames;
 
         public DigitHole(DigitHoleName name,
             float widthPaddingPercentage,
+            float angle,
             params DigitHoleBevelName[] bevels)
         {
             _name = name;
             _widthPaddingPercentage = widthPaddingPercentage;
+            _angle = angle;
             _bevelNames = bevels;
         }
 
@@ -29,22 +34,50 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
             if (_name == DigitHoleName.Top)
             {
-                yield return AddInBevels(holeRect.ToPathPoints(), edgesInfo);
+                yield return AddInBevels(holeRect, holeRect.ToPathPoints(), edgesInfo);
             }
             else if (_name == DigitHoleName.Bottom)
             {
-                yield return AddInBevels(holeRect.ToPathPoints(), edgesInfo);
+                yield return AddInBevels(holeRect, holeRect.ToPathPoints(), edgesInfo);
             }
             else
                 throw new NotSupportedException();
         }
 
-        private DigitChiselResult AddInBevels(PointF[] points, ChiselEdgeInfo[] edgesInfo)
+        private DigitChiselResult AddInBevels(RectangleF bounds, PointF[] points, ChiselEdgeInfo[] edgesInfo)
         {
             if (!_bevelNames.Any())
                 return new DigitChiselResult(points, edgesInfo);
 
-            throw new NotImplementedException();
+            var pointsResult = new List<PointF>();
+            var edgesResult = new List<ChiselEdgeInfo>();
+            for (int i = 0; i < points.Length; i++)
+            {
+                var bevelValue = (DigitHoleBevelName)i;
+                if (_bevelNames.Contains(bevelValue) || _bevelNames.Contains(DigitHoleBevelName.All))
+                {
+                    var cornerCreator = new DigitCornerPointsCreator((DigitCornerName)i, _widthPaddingPercentage, _angle);
+                    var cornerResult = cornerCreator.Create(bounds);
+
+                    pointsResult.Add(cornerResult.HypotenusePoints.First());
+                    edgesResult.Add(edgesResult[i]);
+
+                    pointsResult.Add(cornerResult.HypotenusePoints.Last());
+
+                    var orientation = (bevelValue == DigitHoleBevelName.TopLeft || bevelValue == DigitHoleBevelName.BottomLeft)
+                        ? MarbleOrientations.Negative
+                        : MarbleOrientations.Positive;
+
+                    edgesResult.Add(new ChiselEdgeInfo(bevelValue == DigitHoleBevelName.TopLeft, orientation));
+                }
+                else
+                {
+                    pointsResult.Add(points[i]);
+                    edgesResult.Add(edgesInfo[i]);
+                }
+            }
+
+            return new DigitChiselResult(pointsResult.ToArray(), edgesResult.ToArray());
         }
 
         private RectangleF GetHoleBounds(RectangleF outerBounds)
@@ -69,10 +102,11 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
     public enum DigitHoleBevelName
     {
-        TopLeft,
-        TopRight,
-        BottomRight,
-        BottomLeft
+        TopLeft = 0,
+        TopRight = 1,
+        BottomRight = 2,
+        BottomLeft = 3,
+        All = 4
     }
 
     public enum DigitHoleName

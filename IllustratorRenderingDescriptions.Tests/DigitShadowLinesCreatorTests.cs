@@ -89,7 +89,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var angle = 45;
 
             var results = new List<DigitChiselResult>();
-            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage);
+            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage, angle);
             results.AddRange(bottomHoleChisler.GetPoints(marble));
 
             var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
@@ -118,7 +118,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle) { MoveToCenter = true };
             results.AddRange(bottomRightCornerChisler.GetPoints(marble));
 
-            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage);
+            var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage, angle);
             results.AddRange(bottomHoleChisler.GetPoints(marble));
 
             var bottomBarChisler = new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPercentage);

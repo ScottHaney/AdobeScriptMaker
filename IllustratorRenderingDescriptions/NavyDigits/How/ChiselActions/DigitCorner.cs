@@ -184,10 +184,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
     public enum DigitCornerName
     {
-        TopLeft,
-        TopRight,
-        BottomRight,
-        BottomLeft
+        TopLeft = 0,
+        TopRight = 1,
+        BottomRight = 2,
+        BottomLeft = 3
     }
 
     public static class DigitCornerNameExtensions

@@ -16,7 +16,7 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Removes_The_Top_Hole()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var hole = new DigitHole(DigitHoleName.Top, 0.1f);
+            var hole = new DigitHole(DigitHoleName.Top, 0.1f, 45);
 
             var actualResult = hole.GetPoints(digitBoundingBox);
 
@@ -35,7 +35,7 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Removes_The_Bottom_Hole()
         {
             var digitBoundingBox = new RectangleF(0, 0, 100, 100);
-            var hole = new DigitHole(DigitHoleName.Bottom, 0.1f);
+            var hole = new DigitHole(DigitHoleName.Bottom, 0.1f, 45);
 
             var actualResult = hole.GetPoints(digitBoundingBox);
 
