@@ -2,6 +2,7 @@ using Geometry;
 using Geometry.Lines;
 using Geometry.LineSegments;
 using IllustratorRenderingDescriptions.NavyDigits.How;
+using IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions;
 using NUnit.Framework;
 using System;
 using System.Drawing;
@@ -19,7 +20,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 50), new PointF(0, 0), new PointF(50, 0) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(0, 50), new PointD(0, 0), new PointD(50, 0) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -44,7 +45,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 55), new PointF(0, 45), new PointF(10, 45) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(0, 55), new PointD(0, 45), new PointD(10, 45) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -71,7 +72,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 0), new PointF(100, 0), new PointF(100, 50) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(50, 0), new PointD(100, 0), new PointD(100, 50) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -96,7 +97,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(90, 45), new PointF(100, 45), new PointF(100, 55) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(90, 45), new PointD(100, 45), new PointD(100, 55) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -123,7 +124,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 50), new PointF(100, 100), new PointF(50, 100) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(100, 50), new PointD(100, 100), new PointD(50, 100) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -150,7 +151,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 45), new PointF(100, 55), new PointF(90, 55) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(100, 45), new PointD(100, 55), new PointD(90, 55) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -177,7 +178,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(50, 100), new PointF(0, 100), new PointF(0, 50) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(50, 100), new PointD(0, 100), new PointD(0, 50) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -202,7 +203,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResult = corner.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(10, 55), new PointF(0, 55), new PointF(0, 45) }, actualResult.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(10, 55), new PointD(0, 55), new PointD(0, 45) }, actualResult.SelectMany(x => x.Points));
         }
 
         [Test]

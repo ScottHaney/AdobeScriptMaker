@@ -8,6 +8,7 @@ using System.Linq;
 using Geometry;
 using Geometry.Lines;
 using Geometry.LineSegments;
+using IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions;
 
 namespace IllustratorRenderingDescriptions.Tests
 {

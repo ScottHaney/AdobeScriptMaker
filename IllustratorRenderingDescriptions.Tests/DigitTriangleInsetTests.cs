@@ -1,4 +1,6 @@
-﻿using IllustratorRenderingDescriptions.NavyDigits.How;
+﻿using Geometry;
+using IllustratorRenderingDescriptions.NavyDigits.How;
+using IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResults = inset.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(0, 60), new PointF(10, 50), new PointF(0, 40) }, actualResults.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(0, 60), new PointD(10, 50), new PointD(0, 40) }, actualResults.SelectMany(x => x.Points));
         }
 
         [Test]
@@ -29,7 +31,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var actualResults = inset.GetPoints(digitBoundingBox);
 
-            CollectionAssert.AreEqual(new[] { new PointF(100, 40), new PointF(90, 50), new PointF(100, 60) }, actualResults.SelectMany(x => x.Points));
+            CollectionAssert.AreEqual(new[] { new PointD(100, 40), new PointD(90, 50), new PointD(100, 60) }, actualResults.SelectMany(x => x.Points));
         }
     }
 }
