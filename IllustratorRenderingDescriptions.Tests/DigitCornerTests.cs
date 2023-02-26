@@ -31,7 +31,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
@@ -56,7 +56,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
@@ -83,7 +83,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
@@ -108,7 +108,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
@@ -135,7 +135,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.5f, 45)) { StrokeWidth = 0 };
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(0.5f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
@@ -162,7 +162,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
@@ -189,7 +189,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);
@@ -214,7 +214,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = corner.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2() { IncludeMarble = false };
+            var shadowsCreator = new DigitShadowLinesCreator() { IncludeMarble = false };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             CollectionAssert.AreEquivalent(Array.Empty<LineSegment>(), shadowLines);

@@ -19,7 +19,7 @@ namespace IllustratorRenderingDescriptions.Tests
         {
             var marble = new RectangleF(0, 0, 100, 100);
 
-            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.2f, 45)) { StrokeWidth = 0 };
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(0.2f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowLinesCreator.CreateShadows(marble, new List<DigitChiselResult>());
 
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
@@ -42,7 +42,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle);
             var result = bottomRightCornerChisler.GetPoints(marble);
 
-            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
             var shadowLines = shadowLinesCreator.CreateShadows(marble, result.ToList());
 
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
@@ -66,7 +66,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var bottomRightCornerChisler = new DigitCorner(DigitCornerName.BottomRight, widthPercentage, angle) { MoveToCenter = true };
             var result = bottomRightCornerChisler.GetPoints(marble);
 
-            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
             var shadowLines = shadowLinesCreator.CreateShadows(marble, result.ToList());
 
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
@@ -92,7 +92,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var bottomHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage);
             results.AddRange(bottomHoleChisler.GetPoints(marble));
 
-            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
             var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
 
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
@@ -124,7 +124,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var bottomBarChisler = new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPercentage);
             results.AddRange(bottomBarChisler.GetPoints(marble));
 
-            var shadowLinesCreator = new DigitShadowLinesCreator2(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
             var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
 
             var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());

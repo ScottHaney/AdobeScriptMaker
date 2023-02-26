@@ -33,7 +33,7 @@ namespace IllustratorRenderingDescriptions.Tests
 
             var results = verticalBar.GetPoints(digitBoundingBox);
 
-            var shadowsCreator = new DigitShadowLinesCreator2(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
+            var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(0.1f, 45)) { StrokeWidth = 0 };
             var shadowLines = shadowsCreator.CreateShadows(digitBoundingBox, results.ToList());
 
             var result = results.First();
