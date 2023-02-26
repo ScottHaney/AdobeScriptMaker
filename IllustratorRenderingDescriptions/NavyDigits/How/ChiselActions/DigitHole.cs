@@ -60,15 +60,15 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
                     var cornerResult = cornerCreator.Create(bounds);
 
                     pointsResult.Add(cornerResult.HypotenusePoints.First());
-                    edgesResult.Add(edgesResult[i]);
-
-                    pointsResult.Add(cornerResult.HypotenusePoints.Last());
 
                     var orientation = (bevelValue == DigitHoleBevelName.TopLeft || bevelValue == DigitHoleBevelName.BottomLeft)
                         ? MarbleOrientations.Negative
                         : MarbleOrientations.Positive;
 
                     edgesResult.Add(new ChiselEdgeInfo(bevelValue == DigitHoleBevelName.TopLeft, orientation));
+
+                    edgesResult.Add(edgesInfo[i]);
+                    pointsResult.Add(cornerResult.HypotenusePoints.Last());
                 }
                 else
                 {

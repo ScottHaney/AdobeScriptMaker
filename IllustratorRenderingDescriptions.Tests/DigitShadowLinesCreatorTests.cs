@@ -140,5 +140,63 @@ namespace IllustratorRenderingDescriptions.Tests
 
             CollectionAssert.AreEquivalent(expectedResult, shadowLines);
         }
+
+        [Test]
+        public void Creates_Correct_Shadows_For_Marble_With_The_Top_Beveled_Hole_For_The_Digit_Zero_Removed()
+        {
+            var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
+
+            var results = new List<DigitChiselResult>();
+            var topHoleChisler = new DigitHole(DigitHoleName.Top, widthPercentage, angle, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight);
+            results.AddRange(topHoleChisler.GetPoints(marble));
+
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            /*var expectedResult = new[]
+            {
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 100), new PointD(100, 80)),
+                factory.Create(new PointD(100, 40), new PointD(80, 60)),
+                factory.Create(new PointD(100, 0), new PointD(100, 40)),
+                factory.Create(new PointD(20, 60), new PointD(80, 60)),
+                factory.Create(new PointD(20, 60), new PointD(20, 80))
+            };
+
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);*/
+        }
+
+        [Test]
+        public void Creates_Correct_Shadows_For_Marble_With_The_Bottom_Beveled_Hole_For_The_Digit_Zero_Removed()
+        {
+            var marble = new RectangleF(0, 0, 100, 100);
+            var widthPercentage = 0.2f;
+            var angle = 45;
+
+            var results = new List<DigitChiselResult>();
+            var topHoleChisler = new DigitHole(DigitHoleName.Bottom, widthPercentage, angle, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft);
+            results.AddRange(topHoleChisler.GetPoints(marble));
+
+            var shadowLinesCreator = new DigitShadowLinesCreator(new ShadowCreator(widthPercentage, angle)) { StrokeWidth = 0 };
+            var shadowLines = shadowLinesCreator.CreateShadows(marble, results);
+
+            var factory = new LineSegmentRepresentationFactory(new LineRepresentationFactory());
+            /*var expectedResult = new[]
+            {
+                factory.Create(new PointD(0, 100), new PointD(100, 100)),
+                factory.Create(new PointD(100, 100), new PointD(100, 80)),
+                factory.Create(new PointD(100, 40), new PointD(80, 60)),
+                factory.Create(new PointD(100, 0), new PointD(100, 40)),
+                factory.Create(new PointD(20, 60), new PointD(80, 60)),
+                factory.Create(new PointD(20, 60), new PointD(20, 80))
+            };
+
+            CollectionAssert.AreEquivalent(expectedResult, shadowLines);*/
+        }
+
+
     }
 }

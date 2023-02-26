@@ -54,8 +54,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitCrossBar(widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
