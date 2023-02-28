@@ -44,7 +44,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         private string CreateDigitScript(int digit, RectangleF boundingBox)
         {
-            var widthPaddingPercentage = 0.2f;
+            var widthPaddingPercentage = 0.25f;
+            var triangleInsetPaddingPercentage = 0.5f * widthPaddingPercentage;
+
             var strokeWidth = 1;
 
             if (digit == 0)
@@ -96,7 +98,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.5f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = 0.3f },
-                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45))
+                    new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
@@ -155,8 +157,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.All),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.All),
-                    new DigitTriangleInset(DigitTriangleInsetName.Left, 0.25f * widthPaddingPercentage, 45),
-                    new DigitTriangleInset(DigitTriangleInsetName.Right, 0.25f * widthPaddingPercentage, 45))
+                    new DigitTriangleInset(DigitTriangleInsetName.Left, triangleInsetPaddingPercentage, 45),
+                    new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
