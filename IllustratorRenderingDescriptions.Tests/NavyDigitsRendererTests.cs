@@ -9,7 +9,11 @@ namespace IllustratorRenderingDescriptions.Tests
         [Test]
         public void Create_Digits()
         {
-            var renderer = new NavyDigitsRenderer(new SizeF(250, 400));
+            var heightToWidthRatio = 1.5f;
+            var width = 250;
+            var height = heightToWidthRatio * width;
+
+            var renderer = new NavyDigitsRenderer(new SizeF(width, height));
             var script = renderer.CreateScript();
         }
     }
