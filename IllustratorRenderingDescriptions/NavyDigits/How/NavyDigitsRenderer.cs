@@ -107,7 +107,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             else if (digit == 4)
             {
                 var sculpture = new DigitSculpture(boundingBox,
-                    new DigitFourChisler(widthPaddingPercentage, widthPaddingPercentage, 0.65f, 0.65f, 0.25f))
+                    new DigitFourChisler(widthPaddingPercentage, widthPaddingPercentage, 0.65f, 0.6f, widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth };
 
                 return sculpture.Carve();
