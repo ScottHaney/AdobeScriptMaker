@@ -47,6 +47,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var widthPaddingPercentage = 0.25f;
             var triangleInsetPaddingPercentage = 0.5f * widthPaddingPercentage;
             var overhangPercentage = 0.4f;
+            var shadowWidthPercentage = 1 / 8.0f;
 
             var strokeWidth = 1;
 
@@ -60,7 +61,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitCrossBar(widthPaddingPercentage))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -68,7 +69,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitOneChisler(widthPaddingPercentage))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -83,7 +84,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45) { MoveToCenter = true },
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45) { MoveToCenter = true })
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -100,7 +101,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -108,7 +109,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitFourChisler(widthPaddingPercentage, widthPaddingPercentage, 0.65f, 0.6f, widthPaddingPercentage))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -122,7 +123,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OffsetHeightForDigit5 = true },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, OffsetHeightForDigit5 = true },
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true, OffsetHeightForDigit5 = true })
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -137,7 +138,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.All),
                     new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true })
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -145,7 +146,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             {
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitSevenChisler(0.85f, widthPaddingPercentage))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -160,7 +161,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.All),
                     new DigitTriangleInset(DigitTriangleInsetName.Left, triangleInsetPaddingPercentage, 45),
                     new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }
@@ -175,7 +176,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45) { MoveToCenter = true })
-                { Id = digit.ToString(), StrokeWidth = strokeWidth };
+                { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
                 return sculpture.Carve();
             }

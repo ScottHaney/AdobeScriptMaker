@@ -15,6 +15,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits
         private readonly IDigitChisleAction[] _chiselActions;
 
         public float StrokeWidth { get; set; } = 1;
+        public float ShadowWidthPercentage { get; set; } = 1 / 8.0f;
 
         public string Id { get; set; }
 
@@ -79,7 +80,7 @@ for (var i = 0; i < {digitVariableName}.pathItems.length; i++) {{
 
             }
 
-            script.Append(CreateShadowScript(_marble, digitVariableName, 0.15f, idPostfix, chiseledOutSections));
+            script.Append(CreateShadowScript(_marble, digitVariableName, ShadowWidthPercentage, idPostfix, chiseledOutSections));
 
             return script.ToString();
         }
