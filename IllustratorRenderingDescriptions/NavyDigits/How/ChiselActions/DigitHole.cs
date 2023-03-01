@@ -12,6 +12,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
     {
         private readonly DigitHoleName _name;
         private readonly float _widthPaddingPercentage;
+        private readonly DigitHoleWidthPaddingProvider _innerWidthPaddingProvider;
         private readonly float _angle;
 
         private readonly DigitHoleBevelName[] _bevelNames;
@@ -20,14 +21,23 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
         public DigitHole(DigitHoleName name,
             float widthPaddingPercentage,
+            DigitHoleWidthPaddingProvider innerWidthPaddingProvider,
             float angle,
             params DigitHoleBevelName[] bevels)
         {
             _name = name;
             _widthPaddingPercentage = widthPaddingPercentage;
+            _innerWidthPaddingProvider = innerWidthPaddingProvider;
             _angle = angle;
             _bevelNames = bevels;
         }
+
+        public DigitHole(DigitHoleName name,
+            float widthPaddingPercentage,
+            float angle,
+            params DigitHoleBevelName[] bevels)
+            : this(name, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(widthPaddingPercentage), angle, bevels)
+        { }
 
         public IEnumerable<DigitChiselResult> GetPoints(RectangleF outerBounds)
         {
@@ -58,7 +68,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
                 var bevelValue = (DigitHoleBevelName)i;
                 if (_bevelNames.Contains(bevelValue) || _bevelNames.Contains(DigitHoleBevelName.All))
                 {
-                    var cornerCreator = new DigitCornerPointsCreator((DigitCornerName)i, _widthPaddingPercentage, _angle);
+                    var cornerCreator = new DigitCornerPointsCreator((DigitCornerName)i, _innerWidthPaddingProvider.GetWidthPaddingPercentage(bevelValue), _angle);
                     var cornerResult = cornerCreator.Create(bounds);
 
                     pointsResult.Add(cornerResult.HypotenusePoints.First());
@@ -127,5 +137,25 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
     {
         Top,
         Bottom
+    }
+
+    public abstract class DigitHoleWidthPaddingProvider
+    {
+        public abstract float GetWidthPaddingPercentage(DigitHoleBevelName name);
+    }
+
+    public class ConstantDigitHoleWidthPaddingProvider : DigitHoleWidthPaddingProvider
+    {
+        private readonly float _widthPercentage;
+
+        public ConstantDigitHoleWidthPaddingProvider(float widthPercentage)
+        {
+            _widthPercentage = widthPercentage;
+        }
+
+        public override float GetWidthPaddingPercentage(DigitHoleBevelName name)
+        {
+            return _widthPercentage;
+        }
     }
 }

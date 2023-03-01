@@ -46,6 +46,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         {
             var widthPaddingPercentage = 0.25f;
             var triangleInsetPaddingPercentage = 0.5f * widthPaddingPercentage;
+            var holeWidthPaddingPercentage = 0.20f;
             var overhangPercentage = 0.4f;
             var shadowWidthPercentage = 1 / 8.0f;
 
@@ -58,8 +59,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitCrossBar(widthPaddingPercentage))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
@@ -75,7 +76,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 2)
             {
-                var topHole = new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight);
+                var topHole = new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight);
                 var topHolePoints = topHole.GetPoints(boundingBox);
 
                 var firstTwoPoints = topHolePoints.First().Points.Take(2).ToArray();
@@ -84,7 +85,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft),
                     topHole,
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPaddingPercentage),
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, FixedOverhangHeight = height },
@@ -101,9 +102,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
-                    new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.6f },
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
+                    new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.55f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
@@ -124,8 +125,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45) { OffsetHeightForDigit5 = true },
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft) { OffsetHeightForDigit5 = true },
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45) { OffsetHeightForDigit5 = true },
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft) { OffsetHeightForDigit5 = true },
                     new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OffsetHeightForDigit5 = true },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, OffsetHeightForDigit5 = true },
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true, OffsetHeightForDigit5 = true })
@@ -140,8 +141,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.All),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                     new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true })
                 { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
@@ -163,8 +164,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.All),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.All),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                     new DigitTriangleInset(DigitTriangleInsetName.Left, triangleInsetPaddingPercentage, 45),
                     new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
                 { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
@@ -178,8 +179,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.All),
-                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
+                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
+                    new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45) { MoveToCenter = true })
                 { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
