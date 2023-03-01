@@ -96,7 +96,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
-                    new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.5f },
+                    new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.6f },
                     new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                     new DigitTriangleInset(DigitTriangleInsetName.Right, triangleInsetPaddingPercentage, 45))
