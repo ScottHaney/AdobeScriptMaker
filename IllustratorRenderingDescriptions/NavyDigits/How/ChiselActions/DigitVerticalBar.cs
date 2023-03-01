@@ -13,6 +13,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         public bool OffsetHeightForDigit5 { get; set; }
 
         public float OverhangPercentage { get; set; }
+        public float? FixedOverhangHeight { get; set; }
 
         public DigitVerticalBar(DigitVerticalBarName name,
             float widthPaddingPercentage)
@@ -27,13 +28,13 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
             if (_name == DigitVerticalBarName.TopLeft)
             {
-                var topLeft = new PointF(0, dimension);
+                var topLeft = new PointF(0, FixedOverhangHeight == null ? dimension : (dimension + FixedOverhangHeight.Value));
                 var bottomRight = new PointF(dimension, outerBounds.Height / 2 - dimension / 2);
 
                 var rect = new RectangleF(topLeft, new SizeF(bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
 
-                var overhangHeight = OverhangPercentage * rect.Height;
-                rect = new RectangleF(new PointF(rect.Left, rect.Top + overhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - overhangHeight));
+                var actualOverhangHeight = FixedOverhangHeight == null ? (OverhangPercentage * rect.Height) : 0;
+                rect = new RectangleF(new PointF(rect.Left, rect.Top + actualOverhangHeight), new SizeF(rect.Size.Width, rect.Size.Height - actualOverhangHeight));
 
                 rect.Location = new PointF(outerBounds.TopLeft().X + rect.TopLeft().X, outerBounds.TopLeft().Y + rect.TopLeft().Y);
                 yield return new DigitChiselResult(rect, new ChiselEdgeInfo(true, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, true), new ChiselEdgeInfo(false, false));

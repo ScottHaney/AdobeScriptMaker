@@ -75,13 +75,19 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             }
             else if (digit == 2)
             {
+                var topHole = new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight);
+                var topHolePoints = topHole.GetPoints(boundingBox);
+
+                var firstTwoPoints = topHolePoints.First().Points.Take(2).ToArray();
+                var height = (float)Math.Abs(firstTwoPoints[0].Y - firstTwoPoints[1].Y);
+
                 var sculpture = new DigitSculpture(boundingBox,
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
                     new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft),
-                    new DigitHole(DigitHoleName.Top, widthPaddingPercentage, 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight),
+                    topHole,
                     new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPaddingPercentage),
-                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
+                    new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, FixedOverhangHeight = height },
                     new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45) { MoveToCenter = true },
                     new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45) { MoveToCenter = true })
                 { Id = digit.ToString(), StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
