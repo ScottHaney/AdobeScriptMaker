@@ -50,7 +50,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var overhangPercentage = 0.4f;
             var shadowWidthPercentage = 1 / 8.0f;
 
-            var strokeWidth = 1;
+            var strokeWidth = 0;
 
             if (digit == 0)
             {

@@ -79,6 +79,19 @@ for (var i = 0; i < {digitOutlineVar}.pathItems.length; i++) {{
 }}");
 
             }
+            else
+            {
+                script.AppendLine($@"if ({digitOutlineVar}.typename === 'PathItem') {{
+{digitOutlineVar}.strokeWidth = {StrokeWidth};
+{digitOutlineVar}.strokeColor = new NoColor();;
+}}
+else {{
+for (var i = 0; i < {digitOutlineVar}.pathItems.length; i++) {{
+{digitOutlineVar}.pathItems[i].strokeWidth = {StrokeWidth};
+{digitOutlineVar}.pathItems[i].strokeColor = new NoColor();;
+}}
+}}");
+            }
 
             var shadowsGroupVarName = $"{Id}_shadows";
             var shadowsResult = CreateShadowScript(_marble, digitOutlineVar, ShadowWidthPercentage, idPostfix, chiseledOutSections, shadowsGroupVarName);

@@ -10,7 +10,7 @@ namespace IllustratorRenderingDescriptions.Tests
         public void Create_Digits()
         {
             var heightToWidthRatio = 1.5f;
-            var width = 250;
+            var width = 300;
             var height = heightToWidthRatio * width;
 
             var renderer = new NavyDigitsRenderer(new SizeF(width, height));
