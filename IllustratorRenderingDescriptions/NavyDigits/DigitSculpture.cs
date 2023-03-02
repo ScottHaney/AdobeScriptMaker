@@ -55,32 +55,43 @@ namespace IllustratorRenderingDescriptions.NavyDigits
                 script.AppendLine(CreatePath(chiseledOutSections[i].Points, "doc.pathItems", $"chiselSection{i}_{idPostfix}", DigitColor));
             }
 
-            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", Id));
+            var digitOutlineVarName = $"{Id}_outline";
+            script.AppendLine(CreatePathFinderScript("Live Pathfinder Exclude", digitOutlineVarName));
 
-            var digitVariableName = $"digit_{Id}_path";
-
-            script.AppendLine(SelectNamedItem(Id));
-            script.AppendLine($"var {digitVariableName} = doc.selection[0];");
+            var digitOutlineVar = $"digit_outline_{Id}";
+            script.AppendLine(SelectNamedItem(digitOutlineVarName));
+            script.AppendLine($"var {digitOutlineVar} = doc.selection[0];");
             script.AppendLine("app.activeDocument.selection = null;");
 
             var strokeColor = new int[] { 0, 0, 0 };
 
             if (StrokeWidth > 0)
             {
-                script.AppendLine($@"if ({digitVariableName}.typename === 'PathItem') {{
-{digitVariableName}.strokeWidth = {StrokeWidth};
-{digitVariableName}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
+                script.AppendLine($@"if ({digitOutlineVar}.typename === 'PathItem') {{
+{digitOutlineVar}.strokeWidth = {StrokeWidth};
+{digitOutlineVar}.strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
 }}
 else {{
-for (var i = 0; i < {digitVariableName}.pathItems.length; i++) {{
-{digitVariableName}.pathItems[i].strokeWidth = {StrokeWidth};
-{digitVariableName}.pathItems[i].strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
+for (var i = 0; i < {digitOutlineVar}.pathItems.length; i++) {{
+{digitOutlineVar}.pathItems[i].strokeWidth = {StrokeWidth};
+{digitOutlineVar}.pathItems[i].strokeColor = new RGBColor({strokeColor[0]},{strokeColor[1]},{strokeColor[2]});
 }}
 }}");
 
             }
 
-            script.Append(CreateShadowScript(_marble, digitVariableName, ShadowWidthPercentage, idPostfix, chiseledOutSections));
+            var shadowsGroupVarName = $"{Id}_shadows";
+            var shadowsResult = CreateShadowScript(_marble, digitOutlineVar, ShadowWidthPercentage, idPostfix, chiseledOutSections, shadowsGroupVarName);
+
+            script.AppendLine(shadowsResult.script);
+
+            //Group the outline and the shadows together
+            var groupVar = $"group_{Guid.NewGuid().ToString("N")}";
+            script.AppendLine($@"var {groupVar} = app.activeDocument.groupItems.add();
+{groupVar}.name = '{Id}';");
+
+            script.AppendLine($@"{shadowsResult.groupVarName}.move({groupVar}, ElementPlacement.INSIDE);");
+            script.AppendLine($@"{digitOutlineVar}.move({groupVar}, ElementPlacement.INSIDE);");
 
             return script.ToString();
         }
@@ -149,17 +160,15 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             return variableName;
         }
 
-        private string CreateShadowScript(RectangleF marble,
+        private (string script, string groupVarName) CreateShadowScript(RectangleF marble,
             string digitVariableName,
             float dimensionPercentage,
             string idPostfix,
             List<DigitChiselResult> chiseledOutSections,
+            string shadowsGroupName,
             float shadowAngle = 45)
         {
             var script = new StringBuilder();
-
-            //var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(dimensionPercentage, shadowAngle)) { StrokeWidth = StrokeWidth };
-            //var updatedShadowPaths = shadowsCreator.CreateShadowPaths(marble, chiseledOutSections).ToList();
 
             var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(dimensionPercentage, shadowAngle)) { StrokeWidth = StrokeWidth };
             var updatedShadowPaths = shadowsCreator.CreateShadowPaths(marble, chiseledOutSections).ToList();
@@ -179,8 +188,6 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 //Remove any parts of the shadows that overlap the digit
                 script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", itemName));
-                //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Exclude\");");
-                //script.AppendLine("app.activeDocument.selection = null;");
 
                 //Make sure to get rid of the stroke that gets added after running the path finder operation
                 var updatedShadowRef = FindItemRefByName(itemName, script);
@@ -192,41 +199,13 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             //Group all of the shadows together
             var groupVar = $"group_{Guid.NewGuid().ToString("N")}";
             script.AppendLine($@"var {groupVar} = app.activeDocument.groupItems.add();
-{groupVar}.name = '{Id}_shadows';");
+{groupVar}.name = '{shadowsGroupName}';");
 
             foreach (var shadowItemRef in shadowItemsRefs)
                 script.AppendLine($@"{shadowItemRef}.move({groupVar}, ElementPlacement.INSIDE);");
 
-            //script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
-
-
-
-            //var removeShadowPaths = removeShadowLines
-            //    .Select(removeShadowLine => new[] { removeShadowLine.Start, removeShadowLine.End, new PointF(removeShadowLine.End.X + offsetX, removeShadowLine.End.Y + offsetY), new PointF(removeShadowLine.Start.X + offsetX, removeShadowLine.Start.Y + offsetY) });
-
-            //var removeShadowPathsName = $"remove_shadows_{idPostfix}";
-            //script.AppendLine(CreateCompoundPath(removeShadowPaths, "doc.compoundPathItems", removeShadowPathsName, x => $"remove_shadow_line{x}_{idPostfix}", isBlue: true));
-
-            //var removeShadowLinesGroupName = $"{Id}_remove_shadow_lines";
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", removeShadowLinesGroupName, false));
-
-            //var shadowPaths = shadowLines
-            //    .Select(shadowLine => new[] { shadowLine.Start, shadowLine.End, new PointF(shadowLine.End.X + offsetX, shadowLine.End.Y + offsetY), new PointF(shadowLine.Start.X + offsetX, shadowLine.Start.Y + offsetY) });
-
-            //var shadowPathsName = $"shadows_{idPostfix}";
-            //script.AppendLine(CreateCompoundPath(shadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
-
-            //var shadowLinesGroupName = $"{Id}_shadow_lines";
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Add", shadowLinesGroupName, false));
-
-            //script.AppendLine(SelectNamedItem(shadowPathsName));
-            //script.AppendLine(SelectNamedItem(removeShadowPathsName));
-
-            //script.AppendLine(CreatePathFinderScript("Live Pathfinder Minus Back", ""));
-            //script.AppendLine("app.executeMenuCommand(\"Live Pathfinder Minus Back\");");
             script.AppendLine("app.activeDocument.selection = null;");
-
-            return script.ToString();
+            return (script.ToString(), groupVar);
         }
 
         private string CreatePath(PointD[] points, string pathItems, string variableName, int[] color, bool isClosed = true)
