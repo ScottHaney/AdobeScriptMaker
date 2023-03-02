@@ -166,6 +166,7 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
             var shadowPathsName = $"shadows_{idPostfix}";
 
+            var shadowItemsRefs = new List<string>();
             for (int i = 0; i < updatedShadowPaths.Count; i++)
             {
                 var duplicateVar = $"dup_digit_{Guid.NewGuid().ToString("N")}";
@@ -183,9 +184,18 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
 
                 //Make sure to get rid of the stroke that gets added after running the path finder operation
                 var updatedShadowRef = FindItemRefByName(itemName, script);
+                shadowItemsRefs.Add(updatedShadowRef);
                 script.AppendLine($@"{updatedShadowRef}.strokeWidth = 0;
 {updatedShadowRef}.strokeColor = new NoColor();");
             }
+
+            //Group all of the shadows together
+            var groupVar = $"group_{Guid.NewGuid().ToString("N")}";
+            script.AppendLine($@"var {groupVar} = app.activeDocument.groupItems.add();
+{groupVar}.name = '{Id}_shadows';");
+
+            foreach (var shadowItemRef in shadowItemsRefs)
+                script.AppendLine($@"{shadowItemRef}.move({groupVar}, ElementPlacement.INSIDE);");
 
             //script.AppendLine(CreateCompoundPath(updatedShadowPaths, "doc.compoundPathItems", shadowPathsName, x => $"shadow_line{x}_{idPostfix}", isBlack: true));
 
