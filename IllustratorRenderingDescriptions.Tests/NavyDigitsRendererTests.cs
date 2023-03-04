@@ -18,7 +18,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var height = heightToWidthRatio * width;
 
             var renderer = new NavyDigitsRenderer(new SizeF(width, height));
-            var script = renderer.CreateScript(Enumerable.Range(0, 10).ToArray());
+            var script = renderer.CreateSingleDigitScript(Enumerable.Range(0, 10).ToArray());
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace IllustratorRenderingDescriptions.Tests
             var script1 = sculpture.Carve();
 
             var renderer = new NavyDigitsRenderer(new SizeF(width, height));
-            var script2 = renderer.CreateScript(0, 1);
+            var script2 = renderer.CreateSingleDigitScript(0, 1);
 
             var finalScript = string.Join(Environment.NewLine, script1, script2);
         }
@@ -56,24 +56,8 @@ namespace IllustratorRenderingDescriptions.Tests
             var width = 300;
             var height = heightToWidthRatio * width;
 
-            var widthPaddingPercentage = 0.25f;
-            var triangleInsetPaddingPercentage = 0.5f * widthPaddingPercentage;
-            var holeWidthPaddingPercentage = 0.20f;
-            var overhangPercentage = 0.4f;
-            var shadowWidthPercentage = 1 / 8.0f;
-
-            var strokeWidth = 0;
-            var boundingBoxForBlock = new RectangleF(new PointF(0, 0), new SizeF(width * 2, height));
-
-            var sculpture = new DigitSculpture(boundingBoxForBlock)
-            { Id = "block", StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
-
-            var script1 = sculpture.Carve();
-
             var renderer = new NavyDigitsRenderer(new SizeF(width, height));
-            var script2 = renderer.CreateScript(0, 1);
-
-            var finalScript = string.Join(Environment.NewLine, script1, script2);
+            var script = renderer.CreateNumberScript(4, 3);
         }
     }
 }

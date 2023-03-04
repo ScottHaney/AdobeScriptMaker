@@ -21,7 +21,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             _boundingBoxSize = boundingBoxSize;
         }
 
-        public string CreateScript(params int[] indicesToInclude)
+        public string CreateSingleDigitScript(params int[] indicesToInclude)
         {
             indicesToInclude = indicesToInclude ?? Array.Empty<int>();
 
@@ -44,6 +44,24 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 var topLeft = new PointF(xOffset, yOffset);
 
                 result.AppendLine(CreateDigitScript(i, new RectangleF(topLeft, _boundingBoxSize), i.ToString()));
+            }
+
+            return result.ToString();
+        }
+
+        public string CreateNumberScript(params int[] digits)
+        {
+            var xGapPerDigit = _boundingBoxSize.Width * 0.35f;
+
+            var result = new StringBuilder();
+
+            for (int i = 0; i < digits.Length; i++)
+            {
+                var xOffset = 150 + i * xGapPerDigit + i * _boundingBoxSize.Width;
+                var yOffset = 150;
+                var topLeft = new PointF(xOffset, yOffset);
+
+                result.AppendLine(CreateDigitScript(digits[i], new RectangleF(topLeft, _boundingBoxSize), Guid.NewGuid().ToString("N")));
             }
 
             return result.ToString();
@@ -102,7 +120,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
                 else if (digit == 3)
                     return CreateThree(boundingBox);
                 else if (digit == 4)
-                    return CreateFive(boundingBox);
+                    return CreateFour(boundingBox);
                 else if (digit == 5)
                     return CreateFive(boundingBox);
                 else if (digit == 6)
