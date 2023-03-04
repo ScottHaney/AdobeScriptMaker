@@ -19,8 +19,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             _boundingBoxSize = boundingBoxSize;
         }
 
-        public string CreateScript()
+        public string CreateScript(params int[] indicesToInclude)
         {
+            indicesToInclude = indicesToInclude ?? Array.Empty<int>();
+
             var digitsPerRow = 5;
             var xGapPerDigit = 100;
             var yGapPerDigit = 150;
@@ -29,6 +31,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
             for (int i = 0; i <= 9; i++)
             {
+                if (!indicesToInclude.Contains(i))
+                    continue;
+
                 var rowIndex = (i / digitsPerRow);
                 var columnIndex = i % digitsPerRow;
 
