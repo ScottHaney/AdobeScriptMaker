@@ -99,12 +99,15 @@ for (var i = 0; i < {digitOutlineVar}.pathItems.length; i++) {{
             script.AppendLine(shadowsResult.script);
 
             //Group the outline and the shadows together
-            var groupVar = $"group_{Guid.NewGuid().ToString("N")}";
-            script.AppendLine($@"var {groupVar} = app.activeDocument.groupItems.add();
+            if (!string.IsNullOrEmpty(shadowsResult.groupVarName))
+            {
+                var groupVar = $"group_{Guid.NewGuid().ToString("N")}";
+                script.AppendLine($@"var {groupVar} = app.activeDocument.groupItems.add();
 {groupVar}.name = '{Id}';");
 
-            script.AppendLine($@"{shadowsResult.groupVarName}.move({groupVar}, ElementPlacement.INSIDE);");
-            script.AppendLine($@"{digitOutlineVar}.move({groupVar}, ElementPlacement.INSIDE);");
+                script.AppendLine($@"{shadowsResult.groupVarName}.move({groupVar}, ElementPlacement.INSIDE);");
+                script.AppendLine($@"{digitOutlineVar}.move({groupVar}, ElementPlacement.INSIDE);");
+            }
 
             return script.ToString();
         }
@@ -181,6 +184,9 @@ if (doc.groupItems[i].name == '{name}') {{{variableName} = doc.groupItems[i]; {m
             string shadowsGroupName,
             float shadowAngle = 45)
         {
+            if (dimensionPercentage == 0)
+                return (string.Empty, string.Empty);
+
             var script = new StringBuilder();
 
             var shadowsCreator = new DigitShadowLinesCreator(new ShadowCreator(dimensionPercentage, shadowAngle)) { StrokeWidth = StrokeWidth };
