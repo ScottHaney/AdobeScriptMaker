@@ -87,8 +87,9 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private readonly float shadowWidthPercentage;
         private readonly float triangleInsetPaddingPercentage;
         private readonly int strokeWidth;
+        private readonly float cornerWidthPaddingPercentage;
 
-        public DigitSculptureFactory(float _widthPaddingPercentage, float _holeWidthPaddingPercentage, float _overhangPercentage, float _shadowWidthPercentage, float _triangleInsetPaddingPercentage, int _strokeWidth)
+        public DigitSculptureFactory(float _widthPaddingPercentage, float _holeWidthPaddingPercentage, float _overhangPercentage, float _shadowWidthPercentage, float _triangleInsetPaddingPercentage, int _strokeWidth, float? _cornerWidthPaddingPercentage = null)
         {
             widthPaddingPercentage = _widthPaddingPercentage;
             holeWidthPaddingPercentage = _holeWidthPaddingPercentage;
@@ -96,6 +97,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             shadowWidthPercentage = _shadowWidthPercentage;
             triangleInsetPaddingPercentage = _triangleInsetPaddingPercentage;
             strokeWidth = _strokeWidth;
+            cornerWidthPaddingPercentage = _cornerWidthPaddingPercentage ?? _widthPaddingPercentage;
         }
 
         public DigitSculpture Create(RectangleF boundingBox, int digit)
@@ -127,10 +129,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateZero(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                    new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                    new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                    new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
-                    new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
+                    new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                    new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
+                    new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
+                    new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
                     new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
                     new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                     new DigitCrossBar(widthPaddingPercentage))
@@ -157,14 +159,14 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
             var height = (float)Math.Abs(firstTwoPoints[0].Y - firstTwoPoints[1].Y);
 
             var sculpture = new DigitSculpture(boundingBox,
-                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
+                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft),
                 topHole,
                 new DigitVerticalBar(DigitVerticalBarName.BottomRight, widthPaddingPercentage),
                 new DigitVerticalBar(DigitVerticalBarName.TopLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, FixedOverhangHeight = height },
-                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45) { MoveToCenter = true },
-                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45) { MoveToCenter = true })
+                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45) { MoveToCenter = true },
+                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45) { MoveToCenter = true })
             { StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
             return sculpture;
@@ -173,10 +175,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateThree(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
                                 new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight),
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                                 new DigitCrossBar(widthPaddingPercentage) { ExtendLeft = true, RightPadding = 0.55f },
@@ -200,13 +202,13 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateFive(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
                                 new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45) { OffsetHeightForDigit5 = true },
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft) { OffsetHeightForDigit5 = true },
                                 new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OffsetHeightForDigit5 = true },
                                 new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage, OffsetHeightForDigit5 = true },
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true, OffsetHeightForDigit5 = true })
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45) { MoveToCenter = true, OffsetHeightForDigit5 = true })
             { StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
             return sculpture;
@@ -215,14 +217,14 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateSix(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
                                 new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                                 new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45) { MoveToCenter = true })
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45) { MoveToCenter = true })
             { StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
             return sculpture;
@@ -240,10 +242,10 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateEight(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
                                 new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                                 new DigitTriangleInset(DigitTriangleInsetName.Left, triangleInsetPaddingPercentage, 45),
@@ -256,14 +258,14 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private DigitSculpture CreateNine(RectangleF boundingBox)
         {
             var sculpture = new DigitSculpture(boundingBox,
-                                new DigitCorner(DigitCornerName.TopLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.TopRight, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45),
-                                new DigitCorner(DigitCornerName.BottomRight, widthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
+                                new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
                                 new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.BottomRight, DigitHoleBevelName.BottomLeft),
                                 new DigitVerticalBar(DigitVerticalBarName.BottomLeft, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
-                                new DigitCorner(DigitCornerName.BottomLeft, widthPaddingPercentage, 45) { MoveToCenter = true })
+                                new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45) { MoveToCenter = true })
             { StrokeWidth = strokeWidth, ShadowWidthPercentage = shadowWidthPercentage };
 
             return sculpture;
