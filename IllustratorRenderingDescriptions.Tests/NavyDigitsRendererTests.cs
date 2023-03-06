@@ -104,9 +104,9 @@ namespace IllustratorRenderingDescriptions.Tests
             var width = 300;
             var height = heightToWidthRatio * width;
 
-            var widthPaddingPercentage = 0.2f;
+            var widthPaddingPercentage = 0.175f;
             var triangleInsetPaddingPercentage = 0.5f * widthPaddingPercentage;
-            var holeWidthPaddingPercentage = 0.12f;
+            var holeWidthPaddingPercentage = 0.10f;
             var overhangPercentage = 0.3f;
             var shadowWidthPercentage = 0;
 
