@@ -68,19 +68,31 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
                 var bevelValue = (DigitHoleBevelName)i;
                 if (_bevelNames.Contains(bevelValue) || _bevelNames.Contains(DigitHoleBevelName.All))
                 {
-                    var cornerCreator = new DigitCornerPointsCreator((DigitCornerName)i, _innerWidthPaddingProvider.GetWidthPaddingPercentage(bevelValue), _angle);
+                    var paddingPercentage = _innerWidthPaddingProvider.GetWidthPaddingPercentage(bevelValue);
+                    var cornerCreator = new DigitCornerPointsCreator((DigitCornerName)i, paddingPercentage, _angle);
                     var cornerResult = cornerCreator.Create(bounds);
 
-                    pointsResult.Add(cornerResult.HypotenusePoints.First());
+                    if (paddingPercentage < 0)
+                    {
+                        edgesResult.Add(new ChiselEdgeInfo(false, MarbleOrientations.Positive));
+                        pointsResult.Add(cornerResult.AllPoints[0]);
 
-                    var orientation = (bevelValue == DigitHoleBevelName.TopLeft || bevelValue == DigitHoleBevelName.BottomLeft)
-                        ? MarbleOrientations.Negative
-                        : MarbleOrientations.Positive;
+                        edgesResult.Add(edgesInfo[i]);
+                        pointsResult.Add(cornerResult.AllPoints[1]);
+                    }
+                    else
+                    {
+                        pointsResult.Add(cornerResult.HypotenusePoints.First());
 
-                    edgesResult.Add(new ChiselEdgeInfo(bevelValue == DigitHoleBevelName.TopLeft, orientation));
+                        var orientation = (bevelValue == DigitHoleBevelName.TopLeft || bevelValue == DigitHoleBevelName.BottomLeft)
+                            ? MarbleOrientations.Negative
+                            : MarbleOrientations.Positive;
 
-                    edgesResult.Add(edgesInfo[i]);
-                    pointsResult.Add(cornerResult.HypotenusePoints.Last());
+                        edgesResult.Add(new ChiselEdgeInfo(bevelValue == DigitHoleBevelName.TopLeft, orientation));
+
+                        edgesResult.Add(edgesInfo[i]);
+                        pointsResult.Add(cornerResult.HypotenusePoints.Last());
+                    }
                 }
                 else
                 {
@@ -156,6 +168,24 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         public override float GetWidthPaddingPercentage(DigitHoleBevelName name)
         {
             return _widthPercentage;
+        }
+    }
+
+    public class CV6DigitHoleWidthPaddingProvider : DigitHoleWidthPaddingProvider
+    {
+        private readonly float _widthPercentage;
+
+        public CV6DigitHoleWidthPaddingProvider(float widthPercentage)
+        {
+            _widthPercentage = widthPercentage;
+        }
+
+        public override float GetWidthPaddingPercentage(DigitHoleBevelName name)
+        {
+            if (name == DigitHoleBevelName.BottomLeft)
+                return -_widthPercentage;
+            else
+                return _widthPercentage;
         }
     }
 }

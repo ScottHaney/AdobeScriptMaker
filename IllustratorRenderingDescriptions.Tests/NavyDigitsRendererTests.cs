@@ -119,6 +119,8 @@ namespace IllustratorRenderingDescriptions.Tests
                 triangleInsetPaddingPercentage,
                 strokeWidth);
 
+            factory.CustomDigitHoleWidthPaddingProviderForSix = new CV6DigitHoleWidthPaddingProvider(holeWidthPaddingPercentage);
+
             var renderer = new NavyDigitsRenderer(new SizeF(width, height), factory);
             var script = renderer.CreateNumberScript(6);
         }
