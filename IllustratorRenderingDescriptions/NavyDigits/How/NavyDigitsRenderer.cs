@@ -89,6 +89,8 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
         private readonly int strokeWidth;
         private readonly float cornerWidthPaddingPercentage;
 
+        public DigitHoleWidthPaddingProvider CustomDigitHoleWidthPaddingProviderForSix { get; set; }
+
         public DigitSculptureFactory(float _widthPaddingPercentage, float _holeWidthPaddingPercentage, float _overhangPercentage, float _shadowWidthPercentage, float _triangleInsetPaddingPercentage, int _strokeWidth, float? _cornerWidthPaddingPercentage = null)
         {
             widthPaddingPercentage = _widthPaddingPercentage;
@@ -216,12 +218,19 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How
 
         private DigitSculpture CreateSix(RectangleF boundingBox)
         {
+            var isCv6 = CustomDigitHoleWidthPaddingProviderForSix is CV6DigitHoleWidthPaddingProvider;
+            DigitHoleBevelName[] bevelNames;
+            if (isCv6)
+                bevelNames = new[] { DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight, DigitHoleBevelName.BottomLeft };
+            else
+                bevelNames = new[] { DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight };
+
             var sculpture = new DigitSculpture(boundingBox,
                                 new DigitCorner(DigitCornerName.TopLeft, cornerWidthPaddingPercentage, 45),
                                 new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45),
                                 new DigitCorner(DigitCornerName.BottomLeft, cornerWidthPaddingPercentage, 45),
                                 new DigitCorner(DigitCornerName.BottomRight, cornerWidthPaddingPercentage, 45),
-                                new DigitHole(DigitHoleName.Top, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.TopLeft, DigitHoleBevelName.TopRight),
+                                new DigitHole(DigitHoleName.Top, widthPaddingPercentage, CustomDigitHoleWidthPaddingProviderForSix ?? new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, bevelNames),
                                 new DigitHole(DigitHoleName.Bottom, widthPaddingPercentage, new ConstantDigitHoleWidthPaddingProvider(holeWidthPaddingPercentage), 45, DigitHoleBevelName.All),
                                 new DigitVerticalBar(DigitVerticalBarName.TopRight, widthPaddingPercentage) { OverhangPercentage = overhangPercentage },
                                 new DigitCorner(DigitCornerName.TopRight, cornerWidthPaddingPercentage, 45) { MoveToCenter = true })

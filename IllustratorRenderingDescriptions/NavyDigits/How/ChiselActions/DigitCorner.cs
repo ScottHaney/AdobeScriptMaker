@@ -114,7 +114,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
 
         public DigitCornerPointsResult Create(RectangleF outerBounds)
         {
-            var xLength = outerBounds.Width * _widthPercentage;
+            var xLength = outerBounds.Width * Math.Abs(_widthPercentage);
             var slope = (float)Math.Tan(_angle * (Math.PI / 180));
 
             if (_cornerName == DigitCornerName.TopLeft)
@@ -160,10 +160,20 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
                 var refPoint = new PointF(bottomLeft.X + xLength, bottomLeft.Y);
                 var intersectionPoint = new PointF(bottomLeft.X, bottomLeft.Y - xLength * slope);
 
-                return new DigitCornerPointsResult(
-                    refPoint,
-                    bottomLeft,
-                    intersectionPoint);
+                if (_widthPercentage >= 0)
+                {
+                    return new DigitCornerPointsResult(
+                        refPoint,
+                        bottomLeft,
+                        intersectionPoint);
+                }
+                else
+                {
+                    return new DigitCornerPointsResult(
+                        refPoint,
+                        new PointF(intersectionPoint.X, refPoint.Y + Math.Abs(intersectionPoint.Y - refPoint.Y)),
+                        bottomLeft);
+                }
             }
             else
             {

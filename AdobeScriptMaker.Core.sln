@@ -33,9 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IllustratorRenderingDescrip
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IllustratorRenderingDescriptions.Tests", "IllustratorRenderingDescriptions.Tests\IllustratorRenderingDescriptions.Tests.csproj", "{E1A7FF04-7607-4E49-8BEC-87C70FA9E862}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry", "Geometry\Geometry.csproj", "{97E3B612-E276-4A02-845B-8286A910BC1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geometry", "Geometry\Geometry.csproj", "{97E3B612-E276-4A02-845B-8286A910BC1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry.Tests", "Geometry.Tests\Geometry.Tests.csproj", "{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geometry.Tests", "Geometry.Tests\Geometry.Tests.csproj", "{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeScriptMaker.UI", "AdobeScriptMaker.UI\AdobeScriptMaker.UI.csproj", "{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeScriptMaker.UI.ViewModels", "AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.ViewModels.csproj", "{D5F51480-207F-4631-8599-B9381C3E2409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +115,14 @@ Global
 		{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F51480-207F-4631-8599-B9381C3E2409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F51480-207F-4631-8599-B9381C3E2409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F51480-207F-4631-8599-B9381C3E2409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F51480-207F-4631-8599-B9381C3E2409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
