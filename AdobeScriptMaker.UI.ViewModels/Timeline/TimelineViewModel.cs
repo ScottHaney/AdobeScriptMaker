@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace AdobeScriptMaker.UI.ViewModels.Timeline
 {
-    public class TimelineViewModel
+    public partial class TimelineViewModel : ObservableObject
     {
-        public ObservableCollection<TimelineComponentViewModel> Components { get; set; } = new ObservableCollection<TimelineComponentViewModel>();
+        [ObservableProperty]
+        private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
     }
 }

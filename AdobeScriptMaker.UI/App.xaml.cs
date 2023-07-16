@@ -15,10 +15,12 @@ namespace AdobeScriptMaker.UI
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnActivated(EventArgs e)
+        private void Application_Startup(object sender, StartupEventArgs e)
         {
-            base.OnActivated(e);
-            MainWindow.DataContext = new DesignTimeScriptBuilderViewModel();
+            var mainWindow = new MainWindow();
+            mainWindow.DataContext = new DesignTimeScriptBuilderViewModel();
+            MainWindow = mainWindow;
+            mainWindow.Show();
         }
     }
 }

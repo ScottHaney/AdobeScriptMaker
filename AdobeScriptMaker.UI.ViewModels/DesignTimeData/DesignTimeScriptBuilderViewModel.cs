@@ -1,5 +1,6 @@
 ﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
 using AdobeScriptMaker.UI.ViewModels.ScriptBuilder.Parameters;
+using AdobeScriptMaker.UI.ViewModels.Timeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,17 @@ namespace AdobeScriptMaker.UI.ViewModels.DesignTimeData
     public class DesignTimeScriptBuilderViewModel
     {
         public List<ScriptBuilderComponentViewModel> Components { get; set; }
+        public TimelineViewModel TimeLine { get; set; }
 
         public DesignTimeScriptBuilderViewModel()
         {
+            TimeLine = new TimelineViewModel();
+
             Components = new List<ScriptBuilderComponentViewModel>();
 
             var component = new ScriptBuilderComponentViewModel();
             component.Name = "Test Component";
+            component.TimelineReference = TimeLine;
 
             Components.Add(component);
         }

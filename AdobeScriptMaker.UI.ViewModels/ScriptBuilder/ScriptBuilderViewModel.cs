@@ -1,4 +1,5 @@
 ﻿using AdobeScriptMaker.UI.ViewModels.Timeline;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace AdobeScriptMaker.UI.ViewModels.ScriptBuilder
 {
-    public class ScriptBuilderViewModel
+    public partial class ScriptBuilderViewModel : ObservableObject
     {
-        public List<ScriptBuilderComponentViewModel> Components { get; set; }
-        public TimelineViewModel TimeLine { get; set; }
+        [ObservableProperty]
+        private List<ScriptBuilderComponentViewModel> components;
+
+        [ObservableProperty]
+        private TimelineViewModel timeLine;
     }
 }

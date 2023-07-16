@@ -1,4 +1,6 @@
 ﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder.Parameters;
+using AdobeScriptMaker.UI.ViewModels.Timeline;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -10,17 +12,22 @@ using System.Windows.Input;
 
 namespace AdobeScriptMaker.UI.ViewModels.ScriptBuilder
 {
-    public partial class ScriptBuilderComponentViewModel
+    public partial class ScriptBuilderComponentViewModel : ObservableObject
     {
-        public string Name { get; set; }
-        public List<IScriptBuilderParameter> Parameters { get; set; }
+        [ObservableProperty]
+        private string name;
+
+        [ObservableProperty]
+        private List<IScriptBuilderParameter> parameters;
+
+        public TimelineViewModel TimelineReference { get; set; }
+
 
         [RelayCommand]
         private void Selected()
         {
-
+            if (TimelineReference != null)
+                TimelineReference.Components.Add(new TimelineComponentViewModel() { WrappedComponent = this });
         }
     }
-
-
 }
