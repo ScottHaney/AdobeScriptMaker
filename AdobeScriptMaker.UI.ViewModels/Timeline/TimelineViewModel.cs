@@ -12,5 +12,8 @@ namespace AdobeScriptMaker.UI.ViewModels.Timeline
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
+
+        [ObservableProperty]
+        private double width;
     }
 }

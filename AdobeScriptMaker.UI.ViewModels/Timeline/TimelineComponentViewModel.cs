@@ -1,4 +1,5 @@
 ﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace AdobeScriptMaker.UI.ViewModels.Timeline
 {
-    public class TimelineComponentViewModel
+    public partial class TimelineComponentViewModel : ObservableObject
     {
         public ScriptBuilderComponentViewModel WrappedComponent { get; set; }
-        public double StartPosition { get; set; }
-        public double Width { get; set; }
+
+        [ObservableProperty]
+        private double startPosition;
+
+        [ObservableProperty]
+        private double width;
     }
 }
