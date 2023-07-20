@@ -48,10 +48,10 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="Testing"
+                            <local:TimelineItem
                                        Background="Orange"
                                        local:TimelineTrackPanel.Left="{Binding Start}"
-                                       local:TimelineTrackPanel.Right="{Binding End}"></TextBlock>
+                                       local:TimelineTrackPanel.Right="{Binding End}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

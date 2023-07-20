@@ -4,20 +4,14 @@
     xmlns:local="clr-namespace:AdobeScriptMaker.UI">
 
 
-    <Style TargetType="{x:Type local:ResizeableControl}">
+    <Style TargetType="{x:Type local:TimelineItem}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:ResizeableControl}">
+                <ControlTemplate TargetType="{x:Type local:TimelineItem}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                        </Grid>
+                        <TextBlock Text="Testing"></TextBlock>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
