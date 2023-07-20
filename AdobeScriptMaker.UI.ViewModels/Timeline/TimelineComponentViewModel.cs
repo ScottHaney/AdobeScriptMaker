@@ -16,6 +16,9 @@ namespace AdobeScriptMaker.UI.ViewModels.Timeline
         private double startPosition;
 
         [ObservableProperty]
-        private double width;
+        private double start;
+
+        [ObservableProperty]
+        private double end;
     }
 }

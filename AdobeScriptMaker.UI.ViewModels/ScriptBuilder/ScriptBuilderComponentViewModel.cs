@@ -27,7 +27,16 @@ namespace AdobeScriptMaker.UI.ViewModels.ScriptBuilder
         private void Selected()
         {
             if (TimelineReference != null)
-                TimelineReference.Components.Add(new TimelineComponentViewModel() { WrappedComponent = this });
+            {
+                double start;
+                if (!TimelineReference.Components.Any())
+                    start = 0;
+                else
+                    start = TimelineReference.Components.Max(x => x.End);
+
+                TimelineReference.Components.Add(new TimelineComponentViewModel() { WrappedComponent = this, Start = start, End = start + 100 });
+
+            }
         }
     }
 }
