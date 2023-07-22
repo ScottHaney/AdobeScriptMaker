@@ -27,9 +27,23 @@ namespace AdobeScriptMaker.UI.ViewModels.Timeline
         public void Receive(ResizeTimelineComponentMessage message)
         {
             if (message.Direction == ResizeDirection.End)
-                message.Component.End += message.SizeChange;
+            {
+                var index = components.IndexOf(message.Component);
+                var maxValue = index >= 0 && index < components.Count - 1  ? components[index + 1].Start : width;
+
+                var updatedValue = message.Component.End + message.SizeChange;
+                if (updatedValue <= maxValue)
+                    message.Component.End += message.SizeChange;
+            }
             else if (message.Direction == ResizeDirection.Start)
-                message.Component.Start += message.SizeChange;
+            {
+                var index = components.IndexOf(message.Component);
+                var minValue = index > 0 ? components[index - 1].End : 0;
+
+                var updatedValue = message.Component.Start + message.SizeChange;
+                if (updatedValue >= minValue)
+                    message.Component.Start += message.SizeChange;
+            }
         }
     }
 }
