@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI", "Adob
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI.Core", "AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.Core.csproj", "{D5F51480-207F-4631-8599-B9381C3E2409}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EA8B8AAF-0D39-4036-A402-938B880D31CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeScriptMaker.UI.Core.Tests", "AdobeScriptMaker.UI.Core.Tests\AdobeScriptMaker.UI.Core.Tests.csproj", "{2CE283ED-60A1-416C-9693-01699B790BE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,9 +127,16 @@ Global
 		{D5F51480-207F-4631-8599-B9381C3E2409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5F51480-207F-4631-8599-B9381C3E2409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5F51480-207F-4631-8599-B9381C3E2409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CE283ED-60A1-416C-9693-01699B790BE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CE283ED-60A1-416C-9693-01699B790BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CE283ED-60A1-416C-9693-01699B790BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CE283ED-60A1-416C-9693-01699B790BE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2CE283ED-60A1-416C-9693-01699B790BE1} = {EA8B8AAF-0D39-4036-A402-938B880D31CD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2EEE365A-7110-4402-84C7-AF82178D584E}
