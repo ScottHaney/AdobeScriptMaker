@@ -72,7 +72,7 @@ namespace AdobeScriptMaker.UI.Core.Tests.ViewModels
 
             mainVm.Receive(new ResizeTimelineComponentMessage(componentVm, 55, ResizeDirection.Start));
 
-            Assert.AreEqual(50, componentVm.Start);
+            Assert.AreEqual(100, componentVm.Start);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace AdobeScriptMaker.UI.Core.Tests.ViewModels
 
             mainVm.Receive(new ResizeTimelineComponentMessage(componentVm, 500, ResizeDirection.End));
 
-            Assert.AreEqual(100, componentVm.End);
+            Assert.AreEqual(500, componentVm.End);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace AdobeScriptMaker.UI.Core.Tests.ViewModels
 
             mainVm.Receive(new ResizeTimelineComponentMessage(componentVm, -55, ResizeDirection.End));
 
-            Assert.AreEqual(100, componentVm.End);
+            Assert.AreEqual(50, componentVm.End);
         }
     }
 }
