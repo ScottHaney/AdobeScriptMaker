@@ -50,8 +50,8 @@
                         <DataTemplate>
                             <local:TimelineItem
                                        Background="Orange"
-                                       local:TimelineTrackPanel.Left="{Binding Start}"
-                                       local:TimelineTrackPanel.Right="{Binding End}"/>
+                                       local:TimelineTrackPanel.Left="{Binding Start, Mode=TwoWay}"
+                                       local:TimelineTrackPanel.Right="{Binding End, Mode=TwoWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

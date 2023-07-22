@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
 using AdobeScriptMaker.UI.ViewModels.DesignTimeData;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using AdobeScriptMaker.UI.ViewModels.Timeline;
 
 namespace AdobeScriptMaker.UI
 {
@@ -17,10 +20,24 @@ namespace AdobeScriptMaker.UI
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            Ioc.Default.ConfigureServices(GetServices().BuildServiceProvider());
+
             var mainWindow = new MainWindow();
             mainWindow.DataContext = new DesignTimeScriptBuilderViewModel();
             MainWindow = mainWindow;
             mainWindow.Show();
+        }
+
+        private ServiceCollection GetServices()
+        {
+            var services = new ServiceCollection();
+
+            services.AddTransient<ScriptBuilderComponentViewModel>();
+            services.AddTransient<ScriptBuilderViewModel>();
+            services.AddTransient<TimelineComponentViewModel>();
+            services.AddTransient<TimelineViewModel>();
+
+            return services;
         }
     }
 }

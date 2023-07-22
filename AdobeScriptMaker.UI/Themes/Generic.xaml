@@ -1,6 +1,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:prism="http://prismlibrary.com/"
     xmlns:local="clr-namespace:AdobeScriptMaker.UI">
 
 
@@ -11,7 +13,36 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <TextBlock Text="Testing"></TextBlock>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="10"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Thumb Name="_leftResize">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="DragDelta">
+                                        <prism:InvokeCommandAction Command="{Binding UpdateStartCommand}"
+                                                                   TriggerParameterPath="HorizontalChange"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Thumb>
+                            <Thumb Name="_rightResize" Grid.Column="2">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="DragDelta">
+                                        <prism:InvokeCommandAction Command="{Binding UpdateEndCommand}"
+                                                                   TriggerParameterPath="HorizontalChange"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Thumb>
+                            
+                            <TextBlock Text="Testing"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Grid.Column="1"></TextBlock>
+                        </Grid>
+                        
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

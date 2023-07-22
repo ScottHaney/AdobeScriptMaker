@@ -23,7 +23,8 @@ namespace AdobeScriptMaker.UI
 
         // Using a DependencyProperty as the backing store for Left.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LeftProperty =
-            DependencyProperty.RegisterAttached("Left", typeof(double), typeof(TimelineTrackPanel), new PropertyMetadata(0.0));
+            DependencyProperty.RegisterAttached("Left", typeof(double), typeof(TimelineTrackPanel),
+                new FrameworkPropertyMetadata(0.0, OnPositioningChanged));
 
         public static double GetRight(DependencyObject obj)
         {
@@ -37,7 +38,34 @@ namespace AdobeScriptMaker.UI
 
         // Using a DependencyProperty as the backing store for Right.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RightProperty =
-            DependencyProperty.RegisterAttached("Right", typeof(double), typeof(TimelineTrackPanel), new PropertyMetadata(0.0));
+            DependencyProperty.RegisterAttached("Right", typeof(double), typeof(TimelineTrackPanel),
+                new FrameworkPropertyMetadata(0.0,OnPositioningChanged));
+
+        /// <summary>
+        /// Used to make sure that WPF knows to update the panel layout, this trick was taken from the source code for the WPF built in Canvas
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="e"></param>
+        private static void OnPositioningChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is UIElement uie)
+            {
+                var panel = GetTrackPanel(uie);
+                if (panel != null)
+                    panel.InvalidateMeasure();
+            }
+        }
+
+        private static TimelineTrackPanel GetTrackPanel(DependencyObject d)
+        {
+            var current = VisualTreeHelper.GetParent(d) as UIElement;
+            while (current != null && !(current is TimelineTrackPanel))
+            {
+                current = VisualTreeHelper.GetParent(current) as UIElement;
+            }
+
+            return current as TimelineTrackPanel;
+        }
 
         protected override Size MeasureOverride(Size availableSize)
         {
