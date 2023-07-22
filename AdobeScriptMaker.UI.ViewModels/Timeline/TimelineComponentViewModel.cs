@@ -39,5 +39,15 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         {
             WeakReferenceMessenger.Default.Send(new ResizeTimelineComponentMessage(this, (double)arg, ResizeDirection.Start));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg">This has to be of type object otherwise the binding will fail so just cast it to a double as a hack to get it working</param>
+        [RelayCommand]
+        private void UpdatePosition(object arg)
+        {
+            WeakReferenceMessenger.Default.Send(new RepositionTimelineComponentMessage(this, (double)arg));
+        }
     }
 }

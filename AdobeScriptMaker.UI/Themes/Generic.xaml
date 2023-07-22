@@ -29,6 +29,14 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Thumb>
+                                <Thumb Grid.Column="1">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DragDelta">
+                                            <prism:InvokeCommandAction Command="{Binding UpdatePositionCommand}"
+                                                                   TriggerParameterPath="HorizontalChange"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Thumb>
                                 <Thumb Name="_rightResize"
                                        Cursor="ScrollWE"
                                        Grid.Column="2">
@@ -41,17 +49,14 @@
                                 </Thumb>
                             </Grid>
 
-                            <Grid Panel.ZIndex="1000">
-                                <TextBlock Text="Testing"
+                            <TextBlock Text="Testing"
                                        Panel.ZIndex="1000"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        Background="{TemplateBinding Background}"
                                        IsHitTestVisible="False"
                                        Grid.ColumnSpan="3"></TextBlock>
-                            </Grid>
                         </Grid>
-                        
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

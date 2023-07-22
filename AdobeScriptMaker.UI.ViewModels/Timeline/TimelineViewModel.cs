@@ -7,11 +7,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Windows.Input;
 
 namespace AdobeScriptMaker.UI.Core.Timeline
 {
-    public partial class TimelineViewModel : ObservableRecipient, IRecipient<ResizeTimelineComponentMessage>
+    public partial class TimelineViewModel : ObservableRecipient, IRecipient<ResizeTimelineComponentMessage>, IRecipient<RepositionTimelineComponentMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
@@ -22,6 +23,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         public TimelineViewModel()
         {
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
+            WeakReferenceMessenger.Default.Register<RepositionTimelineComponentMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -54,6 +56,12 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                 if (updatedValue >= minValue && updatedValue <= message.Component.End)
                     message.Component.Start += message.SizeChange;
             }
+        }
+
+        public void Receive(RepositionTimelineComponentMessage message)
+        {
+            message.Component.Start += message.PositionChange;
+            message.Component.End += message.PositionChange;
         }
     }
 }
