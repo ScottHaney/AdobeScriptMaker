@@ -32,7 +32,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                 var maxValue = index >= 0 && index < components.Count - 1  ? components[index + 1].Start : width;
 
                 var updatedValue = message.Component.End + message.SizeChange;
-                if (updatedValue <= maxValue)
+                if (updatedValue <= maxValue && updatedValue >= message.Component.Start)
                     message.Component.End += message.SizeChange;
             }
             else if (message.Direction == ResizeDirection.Start)
@@ -41,7 +41,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                 var minValue = index > 0 ? components[index - 1].End : 0;
 
                 var updatedValue = message.Component.Start + message.SizeChange;
-                if (updatedValue >= minValue)
+                if (updatedValue >= minValue && updatedValue <= message.Component.End)
                     message.Component.Start += message.SizeChange;
             }
         }
