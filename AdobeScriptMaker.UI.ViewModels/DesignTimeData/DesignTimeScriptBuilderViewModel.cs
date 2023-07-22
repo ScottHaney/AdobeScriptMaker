@@ -16,7 +16,7 @@ namespace AdobeScriptMaker.UI.Core.DesignTimeData
 
         public DesignTimeScriptBuilderViewModel()
         {
-            TimeLine = new TimelineViewModel();
+            TimeLine = new TimelineViewModel() { Width = 1000 };
 
             Components = new List<ScriptBuilderComponentViewModel>();
 

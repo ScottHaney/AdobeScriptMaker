@@ -10,37 +10,46 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:TimelineItem}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="10"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
+                            <Grid Panel.ZIndex="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="10"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
 
-                            <Thumb Name="_leftResize">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="DragDelta">
-                                        <prism:InvokeCommandAction Command="{Binding UpdateStartCommand}"
+                                <Thumb Name="_leftResize"
+                                       Cursor="ScrollWE">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DragDelta">
+                                            <prism:InvokeCommandAction Command="{Binding UpdateStartCommand}"
                                                                    TriggerParameterPath="HorizontalChange"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </Thumb>
-                            <Thumb Name="_rightResize" Grid.Column="2">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="DragDelta">
-                                        <prism:InvokeCommandAction Command="{Binding UpdateEndCommand}"
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Thumb>
+                                <Thumb Name="_rightResize"
+                                       Cursor="ScrollWE"
+                                       Grid.Column="2">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DragDelta">
+                                            <prism:InvokeCommandAction Command="{Binding UpdateEndCommand}"
                                                                    TriggerParameterPath="HorizontalChange"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </Thumb>
-                            
-                            <TextBlock Text="Testing"
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Thumb>
+                            </Grid>
+
+                            <Grid Panel.ZIndex="1000">
+                                <TextBlock Text="Testing"
+                                       Panel.ZIndex="1000"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
-                                       Grid.Column="1"></TextBlock>
+                                       Background="{TemplateBinding Background}"
+                                       IsHitTestVisible="False"
+                                       Grid.ColumnSpan="3"></TextBlock>
+                            </Grid>
                         </Grid>
                         
                     </Border>
