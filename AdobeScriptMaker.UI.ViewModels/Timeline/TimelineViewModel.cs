@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AdobeScriptMaker.UI.ViewModels.Timeline
+namespace AdobeScriptMaker.UI.Core.Timeline
 {
     public partial class TimelineViewModel : ObservableRecipient, IRecipient<ResizeTimelineComponentMessage>
     {

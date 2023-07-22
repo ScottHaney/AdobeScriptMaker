@@ -37,9 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geometry", "Geometry\Geomet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Geometry.Tests", "Geometry.Tests\Geometry.Tests.csproj", "{8E8B5447-C647-481C-9481-E1DFEA5FAFA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeScriptMaker.UI", "AdobeScriptMaker.UI\AdobeScriptMaker.UI.csproj", "{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI", "AdobeScriptMaker.UI\AdobeScriptMaker.UI.csproj", "{1E69C448-45AD-4568-9D6D-9EF54C6E6E46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeScriptMaker.UI.ViewModels", "AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.ViewModels.csproj", "{D5F51480-207F-4631-8599-B9381C3E2409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI.Core", "AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.Core.csproj", "{D5F51480-207F-4631-8599-B9381C3E2409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

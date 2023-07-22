@@ -5,11 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
-using AdobeScriptMaker.UI.ViewModels.DesignTimeData;
+using AdobeScriptMaker.UI.Core.ScriptBuilder;
+using AdobeScriptMaker.UI.Core.DesignTimeData;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using AdobeScriptMaker.UI.ViewModels.Timeline;
+using AdobeScriptMaker.UI.Core.Timeline;
 
 namespace AdobeScriptMaker.UI
 {

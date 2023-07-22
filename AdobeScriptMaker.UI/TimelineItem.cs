@@ -1,4 +1,4 @@
-﻿using AdobeScriptMaker.UI.ViewModels.Timeline;
+﻿using AdobeScriptMaker.UI.Core.Timeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;

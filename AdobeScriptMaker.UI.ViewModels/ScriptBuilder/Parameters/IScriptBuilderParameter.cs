@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdobeScriptMaker.UI.ViewModels.ScriptBuilder.Parameters
+namespace AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters
 {
     public interface IScriptBuilderParameter
     {

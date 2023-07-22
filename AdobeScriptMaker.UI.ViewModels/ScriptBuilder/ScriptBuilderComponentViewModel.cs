@@ -1,5 +1,5 @@
-﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder.Parameters;
-using AdobeScriptMaker.UI.ViewModels.Timeline;
+﻿using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
+using AdobeScriptMaker.UI.Core.Timeline;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AdobeScriptMaker.UI.ViewModels.ScriptBuilder
+namespace AdobeScriptMaker.UI.Core.ScriptBuilder
 {
     public partial class ScriptBuilderComponentViewModel : ObservableObject
     {

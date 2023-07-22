@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdobeScriptMaker.UI"
-        xmlns:designTimeData="clr-namespace:AdobeScriptMaker.UI.ViewModels.DesignTimeData;assembly=AdobeScriptMaker.UI.ViewModels"
+        xmlns:designTimeData="clr-namespace:AdobeScriptMaker.UI.Core.DesignTimeData;assembly=AdobeScriptMaker.UI.Core"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         d:DataContext="{d:DesignInstance {x:Type designTimeData:DesignTimeScriptBuilderViewModel}, IsDesignTimeCreatable=True}">

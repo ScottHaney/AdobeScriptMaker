@@ -1,13 +1,13 @@
-﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
-using AdobeScriptMaker.UI.ViewModels.ScriptBuilder.Parameters;
-using AdobeScriptMaker.UI.ViewModels.Timeline;
+﻿using AdobeScriptMaker.UI.Core.ScriptBuilder;
+using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
+using AdobeScriptMaker.UI.Core.Timeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdobeScriptMaker.UI.ViewModels.DesignTimeData
+namespace AdobeScriptMaker.UI.Core.DesignTimeData
 {
     public class DesignTimeScriptBuilderViewModel
     {

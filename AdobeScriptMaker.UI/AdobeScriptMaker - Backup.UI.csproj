@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.Core.csproj" />
+    <ProjectReference Include="..\AdobeScriptMaker.UI.Core\AdobeScriptMaker.UI.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using AdobeScriptMaker.UI.ViewModels.ScriptBuilder;
+﻿using AdobeScriptMaker.UI.Core.ScriptBuilder;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdobeScriptMaker.UI.ViewModels.Timeline
+namespace AdobeScriptMaker.UI.Core.Timeline
 {
     public partial class TimelineComponentViewModel : ObservableObject
     {

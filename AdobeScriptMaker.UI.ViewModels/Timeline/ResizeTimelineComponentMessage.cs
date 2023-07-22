@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdobeScriptMaker.UI.ViewModels.Timeline
+namespace AdobeScriptMaker.UI.Core.Timeline
 {
     public class ResizeTimelineComponentMessage
     {
