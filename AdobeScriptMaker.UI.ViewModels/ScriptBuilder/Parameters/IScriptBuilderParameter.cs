@@ -8,5 +8,6 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters
 {
     public interface IScriptBuilderParameter
     {
+        string Name { get; }
     }
 }

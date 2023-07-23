@@ -15,6 +15,9 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         public ScriptBuilderComponentViewModel WrappedComponent { get; set; }
 
         [ObservableProperty]
+        private string name;
+
+        [ObservableProperty]
         private double start;
 
         [ObservableProperty]

@@ -18,7 +18,7 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
         private string name;
 
         [ObservableProperty]
-        private List<IScriptBuilderParameter> parameters;
+        private List<IScriptBuilderParameter> parameters = new List<IScriptBuilderParameter>();
 
         public TimelineViewModel TimelineReference { get; set; }
 
@@ -34,7 +34,7 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
                 else
                     start = TimelineReference.Components.Max(x => x.End);
 
-                TimelineReference.Components.Add(new TimelineComponentViewModel() { WrappedComponent = this, Start = start, End = start + 100 });
+                TimelineReference.Components.Add(new TimelineComponentViewModel() { WrappedComponent = this, Name = name, Start = start, End = start + 100 });
 
             }
         }

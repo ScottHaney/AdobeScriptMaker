@@ -8,6 +8,7 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters
 {
     public class ScriptBuilderNumericParameter : IScriptBuilderParameter
     {
+        public string Name { get; set; }
         public double MinValue { get; set; }
         public double MaxValue { get; set; }
         public double DefaultValue { get; set; }

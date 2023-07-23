@@ -49,7 +49,7 @@
                                 </Thumb>
                             </Grid>
 
-                            <TextBlock Text="Testing"
+                            <TextBlock Text="{Binding Name}"
                                        Panel.ZIndex="1000"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"

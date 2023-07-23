@@ -21,8 +21,11 @@ namespace AdobeScriptMaker.UI.Core.DesignTimeData
             Components = new List<ScriptBuilderComponentViewModel>();
 
             var component = new ScriptBuilderComponentViewModel();
-            component.Name = "Test Component";
+            component.Name = "Plot Axes";
             component.TimelineReference = TimeLine;
+
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
 
             Components.Add(component);
         }
