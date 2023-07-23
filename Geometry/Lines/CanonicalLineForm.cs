@@ -28,7 +28,7 @@ namespace Geometry.Lines
         public static bool operator !=(CanonicalLineForm x, CanonicalLineForm y)
             => !(x == y);
 
-        public bool Equals([AllowNull] CanonicalLineForm other)
+        public bool Equals(CanonicalLineForm other)
         {
             if (ReferenceEquals(other, null))
                 return false;

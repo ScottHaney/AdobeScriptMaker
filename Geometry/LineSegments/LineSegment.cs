@@ -230,7 +230,7 @@ namespace Geometry.LineSegments
 
     public class LineSegmentLineEqualityComparer : IEqualityComparer<LineSegment>
     {
-        public bool Equals([AllowNull] LineSegment x, [AllowNull] LineSegment y)
+        public bool Equals(LineSegment x, LineSegment y)
         {
             if (ReferenceEquals(x, null))
                 return ReferenceEquals(y, null);
@@ -238,7 +238,7 @@ namespace Geometry.LineSegments
             return x.ToLine().Equals(y.ToLine());
         }
 
-        public int GetHashCode([DisallowNull] LineSegment obj)
+        public int GetHashCode(LineSegment obj)
         {
             return obj?.ToLine().GetHashCode() ?? 19;
         }

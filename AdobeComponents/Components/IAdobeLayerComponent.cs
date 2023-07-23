@@ -12,16 +12,16 @@ namespace AdobeComponents.Components
 
     public interface IAdobeSupportsMaskComponent
     {
-        public AdobeMaskComponent Mask { get; set; }
+        AdobeMaskComponent Mask { get; set; }
     }
 
     public interface IAdobeSupportsScribbleEffect
     {
-        public AdobeScribbleEffect ScribbleEffect { get; set; }
+        AdobeScribbleEffect ScribbleEffect { get; set; }
     }
 
     public interface IAdobeSupportsTrimPathsEffect
     {
-        public AdobeTrimPathsEffect TrimPathsEffect { get; set; }
+        AdobeTrimPathsEffect TrimPathsEffect { get; set; }
     }
 }

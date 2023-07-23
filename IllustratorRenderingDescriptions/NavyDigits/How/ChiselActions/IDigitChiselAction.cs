@@ -157,7 +157,7 @@ namespace IllustratorRenderingDescriptions.NavyDigits.How.ChiselActions
         public static bool operator !=(ChiselEdgeInfo lhs, ChiselEdgeInfo rhs)
             => !(lhs == rhs);
 
-        public bool Equals([AllowNull] ChiselEdgeInfo other)
+        public bool Equals(ChiselEdgeInfo other)
         {
             if (ReferenceEquals(other, null))
                 return false;

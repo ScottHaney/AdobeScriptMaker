@@ -29,7 +29,7 @@ namespace MathRenderingDescriptions.Plot.What.RiemannSums
         {
             var sumsResults = new List<RiemannSumMetadata>();
 
-            foreach (var (index, numRects) in SumsProvider.GetSums().Index())
+            foreach (var numRects in SumsProvider.GetSums())
             {
                 sumsResults.Add(new RiemannSumMetadata(GetArea(numRects),
                     numRects));

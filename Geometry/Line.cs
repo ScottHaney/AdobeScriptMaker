@@ -234,7 +234,7 @@ namespace Geometry
         public static bool operator !=(Line line1, Line line2)
             => !(line1 == line2);
 
-        public bool Equals([AllowNull] Line other)
+        public bool Equals(Line other)
         {
             if (ReferenceEquals(other, null))
                 return false;

@@ -307,7 +307,7 @@ namespace Geometry.Intervals
         public static bool operator !=(OpenIntervalEndPoint point1, OpenIntervalEndPoint point2)
             => !(point1 == point2);
 
-        public bool Equals([AllowNull] OpenIntervalEndPoint other)
+        public bool Equals(OpenIntervalEndPoint other)
         {
             if (ReferenceEquals(other, null))
                 return false;
@@ -350,7 +350,7 @@ namespace Geometry.Intervals
         public static bool operator !=(ClosedIntervalEndPoint point1, ClosedIntervalEndPoint point2)
             => !(point1 == point2);
 
-        public bool Equals([AllowNull] ClosedIntervalEndPoint other)
+        public bool Equals(ClosedIntervalEndPoint other)
         {
             if (ReferenceEquals(other, null))
                 return false;

@@ -26,7 +26,7 @@ namespace Geometry.Lines
         public static bool operator !=(LineRepresentation left, LineRepresentation right)
             => !(left == right);
 
-        public abstract bool Equals([AllowNull] LineRepresentation other);
+        public abstract bool Equals(LineRepresentation other);
 
         public override bool Equals(object obj)
         {
@@ -54,7 +54,7 @@ namespace Geometry.Lines
 
     public class IsTheSameLineEqualityComparer : IEqualityComparer<LineRepresentation>
     {
-        public bool Equals([AllowNull] LineRepresentation x, [AllowNull] LineRepresentation y)
+        public bool Equals(LineRepresentation x, LineRepresentation y)
         {
             if (ReferenceEquals(x, null))
                 return ReferenceEquals(y, null);
@@ -63,7 +63,7 @@ namespace Geometry.Lines
             return intersectionResult.IsTheSameLine;
         }
 
-        public int GetHashCode([DisallowNull] LineRepresentation obj)
+        public int GetHashCode(LineRepresentation obj)
         {
             return obj?.GetHashCode() ?? 19;
         }
