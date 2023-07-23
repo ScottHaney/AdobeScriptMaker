@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace AdobeScriptMaker.UI
+namespace AdobeScriptMaker.UI.Views.Timeline
 {
     public class TimelineTrackPanel : Panel
     {

@@ -1,8 +1,8 @@
 ﻿using AdobeScriptMaker.Core;
 using AdobeScriptMaker.Core.ComponentsConverters;
-using AdobeScriptMaker.UI.Core.Timeline;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MathRenderingDescriptions.Plot;
 using MathRenderingDescriptions.Plot.What;
 using RenderingDescriptions;
@@ -10,27 +10,22 @@ using RenderingDescriptions.Timing;
 using RenderingDescriptions.When;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace AdobeScriptMaker.UI.Core.ScriptBuilder
+namespace AdobeScriptMaker.UI.Core.MainWindows
 {
-    public partial class ScriptBuilderViewModel : ObservableObject
+    public partial class MainScriptBuilderViewModel : ObservableObject,
+        IRecipient<ReceiveTimelineComponentsMessage>
     {
-        [ObservableProperty]
-        private List<ScriptBuilderComponentViewModel> components = new List<ScriptBuilderComponentViewModel>();
-
-        [ObservableProperty]
-        private TimelineViewModel timeLine;
-
-        [RelayCommand]
-        private void Generate()
+        public MainScriptBuilderViewModel()
         {
-            foreach (var component in components)
+            WeakReferenceMessenger.Default.Register<ReceiveTimelineComponentsMessage>(this);
+        }
+
+        public void Receive(ReceiveTimelineComponentsMessage message)
+        {
+            foreach (var component in message.Components)
             {
                 if (component.Name == "Plot Axes")
                 {
@@ -42,7 +37,7 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
                     var axes = new AxesRenderingDescription("Axes",
                         plotLayoutDescription);
 
-                    var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), new AbsoluteTiming(TimeLine.Width)) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
+                    var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), new AbsoluteTiming(message.Width)) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
                     
                     var converter = new UpdatedComponentsConverter();
                     var converted = converter.Convert(new List<RenderingDescription>() { axesToRender });
@@ -51,6 +46,13 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
                     var script = scriptCreator.Visit(converted);
                 }
             }
+        }
+
+        [RelayCommand]
+        private void Generate()
+        {
+            //Slightly convoluted. This message causes the Receive(ReceiveTimelineComponentsMessage message) call above to get run which contains the actual logic
+            WeakReferenceMessenger.Default.Send(new RequestTimelineComponentsMessage());
         }
     }
 }

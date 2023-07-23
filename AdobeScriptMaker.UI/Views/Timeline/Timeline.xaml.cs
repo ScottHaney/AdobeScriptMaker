@@ -1,12 +1,10 @@
-﻿using AdobeScriptMaker.UI.Core.Timeline;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -15,13 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AdobeScriptMaker.UI
+namespace AdobeScriptMaker.UI.Views.Timeline
 {
-    public class TimelineItem : Control
+    /// <summary>
+    /// Interaction logic for Timeline.xaml
+    /// </summary>
+    public partial class Timeline : UserControl
     {
-        static TimelineItem()
+        public Timeline()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TimelineItem), new FrameworkPropertyMetadata(typeof(TimelineItem)));
+            InitializeComponent();
         }
     }
 }

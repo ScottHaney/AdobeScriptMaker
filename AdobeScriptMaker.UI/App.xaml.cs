@@ -14,6 +14,11 @@ using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
 using Prism.Unity;
 using Prism.Ioc;
 using Prism.Mvvm;
+using AdobeScriptMaker.UI.Views.Timeline;
+using AdobeScriptMaker.UI.Views.ScriptComponents;
+using Prism.Modularity;
+using AdobeScriptMaker.UI.PrismModules;
+using AdobeScriptMaker.UI.Core.MainWindows;
 
 namespace AdobeScriptMaker.UI
 {
@@ -37,53 +42,29 @@ namespace AdobeScriptMaker.UI
         {
             base.ConfigureViewModelLocator();
 
-            ViewModelLocationProvider.Register<MainWindow>(() => CreateMainViewModel());
+            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000 });
+            ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
+            ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
         }
 
-        private ScriptBuilderViewModel CreateMainViewModel()
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            var dataContext = new ScriptBuilderViewModel();
+            base.ConfigureModuleCatalog(moduleCatalog);
+
+            moduleCatalog.AddModule<TimelineModule>();
+            moduleCatalog.AddModule<ScriptComponentsModule>();
+        }
+
+        private ScriptBuilderComponentsViewModel CreateScriptComponentsViewModel()
+        {
+            var dataContext = new ScriptBuilderComponentsViewModel();
 
             var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
             component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
             component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
 
             dataContext.Components.Add(component);
-
-            dataContext.TimeLine = new TimelineViewModel() { Width = 1000 };
             return dataContext;
         }
-
-        /*private void Application_Startup(object sender, StartupEventArgs e)
-        {
-            Ioc.Default.ConfigureServices(GetServices().BuildServiceProvider());
-
-            var dataContext = new ScriptBuilderViewModel();
-
-            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
-
-            dataContext.Components.Add(component);
-
-            dataContext.TimeLine = new TimelineViewModel() { Width = 1000 };
-
-            var mainWindow = new MainWindow();
-            mainWindow.DataContext = dataContext;
-            MainWindow = mainWindow;
-            mainWindow.Show();
-        }
-
-        private ServiceCollection GetServices()
-        {
-            var services = new ServiceCollection();
-
-            services.AddTransient<ScriptBuilderComponentViewModel>();
-            services.AddTransient<ScriptBuilderViewModel>();
-            services.AddTransient<TimelineComponentViewModel>();
-            services.AddTransient<TimelineViewModel>();
-
-            return services;
-        }*/
     }
 }

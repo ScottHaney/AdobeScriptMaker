@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AdobeScriptMaker.UI.Core.MainWindows;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
@@ -15,7 +16,8 @@ namespace AdobeScriptMaker.UI.Core.Timeline
     public partial class TimelineViewModel : ObservableRecipient,
         IRecipient<ResizeTimelineComponentMessage>,
         IRecipient<RepositionTimelineComponentMessage>,
-        IRecipient<AddTimelineComponentMessage>
+        IRecipient<AddTimelineComponentMessage>,
+        IRecipient<RequestTimelineComponentsMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
@@ -28,6 +30,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<RepositionTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<AddTimelineComponentMessage>(this);
+            WeakReferenceMessenger.Default.Register<RequestTimelineComponentsMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -68,6 +71,11 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                 start = Components.Max(x => x.End);
 
             Components.Add(new TimelineComponentViewModel() { WrappedComponent = message.Component, Name = message.Component.Name, Start = start, End = start + 100 });
+        }
+
+        public void Receive(RequestTimelineComponentsMessage message)
+        {
+            WeakReferenceMessenger.Default.Send(new ReceiveTimelineComponentsMessage(Components, Width));
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)
