@@ -45,8 +45,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EA8B8AAF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI.Core.Tests", "AdobeScriptMaker.UI.Core.Tests\AdobeScriptMaker.UI.Core.Tests.csproj", "{2CE283ED-60A1-416C-9693-01699B790BE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeScriptMaker.UI.Timeline", "AdobeScriptMaker.UI.Timeline\AdobeScriptMaker.UI.Timeline.csproj", "{1DD682D8-51EA-4967-B4B0-C29BFD37F414}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,10 +131,6 @@ Global
 		{2CE283ED-60A1-416C-9693-01699B790BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CE283ED-60A1-416C-9693-01699B790BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CE283ED-60A1-416C-9693-01699B790BE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DD682D8-51EA-4967-B4B0-C29BFD37F414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DD682D8-51EA-4967-B4B0-C29BFD37F414}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DD682D8-51EA-4967-B4B0-C29BFD37F414}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DD682D8-51EA-4967-B4B0-C29BFD37F414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
