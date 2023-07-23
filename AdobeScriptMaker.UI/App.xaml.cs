@@ -11,15 +11,50 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using AdobeScriptMaker.UI.Core.Timeline;
 using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
+using Prism.Unity;
+using Prism.Ioc;
+using Prism.Mvvm;
 
 namespace AdobeScriptMaker.UI
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        private void Application_Startup(object sender, StartupEventArgs e)
+        protected override Window CreateShell()
+        {
+            var w = (MainWindow)Container.Resolve(typeof(MainWindow));
+            return w;
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+
+        }
+
+        protected override void ConfigureViewModelLocator()
+        {
+            base.ConfigureViewModelLocator();
+
+            ViewModelLocationProvider.Register<MainWindow>(() => CreateMainViewModel());
+        }
+
+        private ScriptBuilderViewModel CreateMainViewModel()
+        {
+            var dataContext = new ScriptBuilderViewModel();
+
+            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+
+            dataContext.Components.Add(component);
+
+            dataContext.TimeLine = new TimelineViewModel() { Width = 1000 };
+            return dataContext;
+        }
+
+        /*private void Application_Startup(object sender, StartupEventArgs e)
         {
             Ioc.Default.ConfigureServices(GetServices().BuildServiceProvider());
 
@@ -49,6 +84,6 @@ namespace AdobeScriptMaker.UI
             services.AddTransient<TimelineViewModel>();
 
             return services;
-        }
+        }*/
     }
 }
