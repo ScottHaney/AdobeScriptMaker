@@ -37,6 +37,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Border BorderBrush="Black" BorderThickness="2" Grid.Row="1">
@@ -56,6 +57,11 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Border>
+
+            <Button Content="Generate"
+                    Grid.Row="2"
+                    Command="{Binding GenerateCommand}"
+                    HorizontalAlignment="Right"></Button>
         </Grid>
     </Grid>
 </Window>

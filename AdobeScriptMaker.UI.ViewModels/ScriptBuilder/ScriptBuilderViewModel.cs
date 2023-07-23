@@ -22,7 +22,7 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
     public partial class ScriptBuilderViewModel : ObservableObject
     {
         [ObservableProperty]
-        private List<ScriptBuilderComponentViewModel> components;
+        private List<ScriptBuilderComponentViewModel> components = new List<ScriptBuilderComponentViewModel>();
 
         [ObservableProperty]
         private TimelineViewModel timeLine;

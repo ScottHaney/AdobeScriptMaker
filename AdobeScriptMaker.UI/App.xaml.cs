@@ -10,6 +10,7 @@ using AdobeScriptMaker.UI.Core.DesignTimeData;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using AdobeScriptMaker.UI.Core.Timeline;
+using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
 
 namespace AdobeScriptMaker.UI
 {
@@ -22,8 +23,18 @@ namespace AdobeScriptMaker.UI
         {
             Ioc.Default.ConfigureServices(GetServices().BuildServiceProvider());
 
+            var dataContext = new ScriptBuilderViewModel();
+
+            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+
+            dataContext.Components.Add(component);
+
+            dataContext.TimeLine = new TimelineViewModel() { Width = 1000 };
+
             var mainWindow = new MainWindow();
-            mainWindow.DataContext = new DesignTimeScriptBuilderViewModel();
+            mainWindow.DataContext = dataContext;
             MainWindow = mainWindow;
             mainWindow.Show();
         }
