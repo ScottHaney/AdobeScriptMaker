@@ -9,10 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace AdobeScriptMaker.UI.Core.Timeline
 {
-    public partial class TimelineViewModel : ObservableRecipient, IRecipient<ResizeTimelineComponentMessage>, IRecipient<RepositionTimelineComponentMessage>
+    public partial class TimelineViewModel : ObservableRecipient,
+        IRecipient<ResizeTimelineComponentMessage>,
+        IRecipient<RepositionTimelineComponentMessage>,
+        IRecipient<AddTimelineComponentMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
@@ -24,6 +28,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         {
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<RepositionTimelineComponentMessage>(this);
+            WeakReferenceMessenger.Default.Register<AddTimelineComponentMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -53,6 +58,17 @@ namespace AdobeScriptMaker.UI.Core.Timeline
 
             message.Component.Start = message.Component.Start + updatedChange;
             message.Component.End = message.Component.End + updatedChange;
+        }
+
+        public void Receive(AddTimelineComponentMessage message)
+        {
+            double start;
+            if (!Components.Any())
+                start = 0;
+            else
+                start = Components.Max(x => x.End);
+
+            Components.Add(new TimelineComponentViewModel() { WrappedComponent = message.Component, Name = message.Component.Name, Start = start, End = start + 100 });
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)
