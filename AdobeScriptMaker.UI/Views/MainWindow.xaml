@@ -24,8 +24,10 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
+            <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PreviewRegionName}"></ContentControl>
+            
             <Border BorderBrush="Black" BorderThickness="2" Grid.Row="1">
-                <ContentControl Name="timelineRegion"  prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
+                <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
             </Border>
 
             <Button Content="Generate"

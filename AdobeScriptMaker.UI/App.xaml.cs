@@ -19,6 +19,8 @@ using AdobeScriptMaker.UI.Views.ScriptComponents;
 using Prism.Modularity;
 using AdobeScriptMaker.UI.PrismModules;
 using AdobeScriptMaker.UI.Core.MainWindows;
+using AdobeScriptMaker.UI.Views.Preview;
+using AdobeScriptMaker.UI.Core.Preview;
 
 namespace AdobeScriptMaker.UI
 {
@@ -45,6 +47,7 @@ namespace AdobeScriptMaker.UI
             ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000 });
             ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
             ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
+            ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel());
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
