@@ -18,7 +18,7 @@ namespace AdobeScriptMaker.UI.Core.MainWindows
     public partial class MainScriptBuilderViewModel : ObservableObject
     {
         [RelayCommand]
-        private void Generate(object parameter)
+        private void Generate()
         {
             WeakReferenceMessenger.Default.Send(new GenerateScriptMessage());
         }

@@ -31,7 +31,6 @@
             <Button Content="Generate"
                     Grid.Row="2"
                     Command="{Binding GenerateCommand}"
-                    CommandParameter="{Binding ElementName=timelineRegion, Path=DataContext}"
                     HorizontalAlignment="Right"></Button>
         </Grid>
     </Grid>
