@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdobeScriptMaker.UI.Core.MainWindows
 {
-    public class RequestTimelineComponentsMessage
+    public class GenerateScriptMessage
     {
     }
 }

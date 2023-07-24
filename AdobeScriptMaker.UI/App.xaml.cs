@@ -35,7 +35,7 @@ namespace AdobeScriptMaker.UI
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            
         }
 
         protected override void ConfigureViewModelLocator()

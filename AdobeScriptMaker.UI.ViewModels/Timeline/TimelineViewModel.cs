@@ -1,10 +1,18 @@
-﻿using AdobeScriptMaker.UI.Core.MainWindows;
+﻿using AdobeScriptMaker.Core.ComponentsConverters;
+using AdobeScriptMaker.Core;
+using AdobeScriptMaker.UI.Core.MainWindows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot;
+using RenderingDescriptions.Timing;
+using RenderingDescriptions.When;
+using RenderingDescriptions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +25,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         IRecipient<ResizeTimelineComponentMessage>,
         IRecipient<RepositionTimelineComponentMessage>,
         IRecipient<AddTimelineComponentMessage>,
-        IRecipient<RequestTimelineComponentsMessage>
+        IRecipient<GenerateScriptMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
@@ -30,7 +38,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<RepositionTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<AddTimelineComponentMessage>(this);
-            WeakReferenceMessenger.Default.Register<RequestTimelineComponentsMessage>(this);
+            WeakReferenceMessenger.Default.Register<GenerateScriptMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -73,9 +81,29 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             Components.Add(new TimelineComponentViewModel() { WrappedComponent = message.Component, Name = message.Component.Name, Start = start, End = start + 100 });
         }
 
-        public void Receive(RequestTimelineComponentsMessage message)
+        public void Receive(GenerateScriptMessage message)
         {
-            WeakReferenceMessenger.Default.Send(new ReceiveTimelineComponentsMessage(Components, Width));
+            foreach (var component in Components)
+            {
+                if (component.Name == "Plot Axes")
+                {
+                    var plotLayoutDescription = new PlotLayoutDescription(
+                        new PlotAxesLayoutDescription(
+                        new PlotAxisLayoutDescription(690, 0, 5),
+                        new PlotAxisLayoutDescription(690, 0, 5)), new PointF(100, 300));
+
+                    var axes = new AxesRenderingDescription("Axes",
+                        plotLayoutDescription);
+
+                    var axesToRender = new RenderingDescription(axes, new TimingForRender(new AbsoluteTiming(0), new AbsoluteTiming(Width)) { EntranceAnimationDuration = new AbsoluteTiming(0.5) }, null);
+
+                    var converter = new UpdatedComponentsConverter();
+                    var converted = converter.Convert(new List<RenderingDescription>() { axesToRender });
+
+                    var scriptCreator = new ComponentsScriptCreator();
+                    var script = scriptCreator.Visit(converted);
+                }
+            }
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)
