@@ -9,8 +9,17 @@
     <UserControl.Resources>
         <local:PrimitivesConverter x:Key="primitivesConverter"></local:PrimitivesConverter>
     </UserControl.Resources>
-    
-    <local:PreviewCanvas
-        Primitives="{Binding Primitives, Converter={StaticResource primitivesConverter}}">
-    </local:PreviewCanvas>
+
+    <ScrollViewer>
+        <Grid Background="Black">
+            <local:PreviewCanvas
+                Background="White"
+                Width="400"
+                Height="800"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Primitives="{Binding Primitives, Converter={StaticResource primitivesConverter}}">
+            </local:PreviewCanvas>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 
 namespace AdobeScriptMaker.UI.Views.Preview
 {
-    public class PreviewCanvas : FrameworkElement
+    public class PreviewCanvas : Control
     {
         public PreviewCanvasPrimitives Primitives
         {
@@ -25,6 +26,8 @@ namespace AdobeScriptMaker.UI.Views.Preview
         {
             if (Primitives == null || !Primitives.Items.Any())
                 return;
+
+            drawingContext.DrawRectangle(Background, null, new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
 
             foreach (var primitive in Primitives.Items)
             {
