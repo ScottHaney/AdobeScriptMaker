@@ -56,8 +56,8 @@ namespace AdobeScriptMaker.UI
                     new AxesRenderingDescription("test",
                         new PlotLayoutDescription(
                             new PlotAxesLayoutDescription(
-                                new PlotAxisLayoutDescription(200, 0, 100), new PlotAxisLayoutDescription(200, 0, 100)),
-                                new System.Drawing.PointF(100, 100)))
+                                new PlotAxisLayoutDescription(100, 0, 100), new PlotAxisLayoutDescription(100, 0, 100)),
+                                new System.Drawing.PointF(10, 10)))
                 }
             });
         }
@@ -78,6 +78,15 @@ namespace AdobeScriptMaker.UI
             var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
             component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
             component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+
+            component.SamplePrimitives = new[]
+                {
+                    new AxesRenderingDescription("test",
+                        new PlotLayoutDescription(
+                            new PlotAxesLayoutDescription(
+                                new PlotAxisLayoutDescription(100, 0, 100), new PlotAxisLayoutDescription(100, 0, 100)),
+                                new System.Drawing.PointF(0, 0)))
+                };
 
             dataContext.Components.Add(component);
             return dataContext;

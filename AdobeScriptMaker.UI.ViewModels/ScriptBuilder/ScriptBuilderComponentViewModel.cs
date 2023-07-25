@@ -3,6 +3,7 @@ using AdobeScriptMaker.UI.Core.Timeline;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +22,8 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
         [ObservableProperty]
         private List<IScriptBuilderParameter> parameters = new List<IScriptBuilderParameter>();
 
+        [ObservableProperty]
+        private IEnumerable<IWhatToRender> samplePrimitives;
 
         [RelayCommand]
         private void Selected()

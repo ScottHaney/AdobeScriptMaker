@@ -23,7 +23,7 @@ namespace AdobeScriptMaker.UI.Views.Preview
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (Primitives == null)
+            if (Primitives == null || !Primitives.Items.Any())
                 return;
 
             foreach (var primitive in Primitives.Items)
@@ -46,6 +46,7 @@ namespace AdobeScriptMaker.UI.Views.Preview
     public interface IPreviewCanvasPrimitive
     {
         void Draw(DrawingContext drawingContext);
+        Rect GetBounds();
     }
 
     public class PreviewCanvasLinePrimitive : IPreviewCanvasPrimitive
@@ -57,6 +58,17 @@ namespace AdobeScriptMaker.UI.Views.Preview
         {
             Start = new Point(start.X, start.Y);
             End = new Point(end.X, end.Y);
+        }
+
+        public Rect GetBounds()
+        {
+            var minX = Math.Min(Start.X, End.X);
+            var maxX = Math.Max(Start.X, End.X);
+
+            var minY = Math.Min(Start.Y, End.Y);
+            var maxY = Math.Max(Start.Y, End.Y);
+
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
         }
 
         public void Draw(DrawingContext drawingContext)
