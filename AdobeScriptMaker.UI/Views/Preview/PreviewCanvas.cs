@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
+
 namespace AdobeScriptMaker.UI.Views.Preview
 {
-    public class PreviewCanvas : UIElement
+    public class PreviewCanvas : FrameworkElement
     {
         public PreviewCanvasPrimitives Primitives
         {
@@ -52,10 +53,10 @@ namespace AdobeScriptMaker.UI.Views.Preview
         private readonly Point Start;
         private readonly Point End;
 
-        public PreviewCanvasLinePrimitive(Point start, Point end)
+        public PreviewCanvasLinePrimitive(System.Drawing.Point start, System.Drawing.Point end)
         {
-            Start = start;
-            End = end;
+            Start = new Point(start.X, start.Y);
+            End = new Point(end.X, end.Y);
         }
 
         public void Draw(DrawingContext drawingContext)

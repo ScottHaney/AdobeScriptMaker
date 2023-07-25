@@ -21,6 +21,8 @@ using AdobeScriptMaker.UI.PrismModules;
 using AdobeScriptMaker.UI.Core.MainWindows;
 using AdobeScriptMaker.UI.Views.Preview;
 using AdobeScriptMaker.UI.Core.Preview;
+using MathRenderingDescriptions.Plot.What;
+using MathRenderingDescriptions.Plot;
 
 namespace AdobeScriptMaker.UI
 {
@@ -47,7 +49,17 @@ namespace AdobeScriptMaker.UI
             ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000 });
             ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
             ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
-            ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel());
+            ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel()
+            {
+                Primitives = new[]
+                {
+                    new AxesRenderingDescription("test",
+                        new PlotLayoutDescription(
+                            new PlotAxesLayoutDescription(
+                                new PlotAxisLayoutDescription(200, 0, 100), new PlotAxisLayoutDescription(200, 0, 100)),
+                                new System.Drawing.PointF(100, 100)))
+                }
+            });
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -56,6 +68,7 @@ namespace AdobeScriptMaker.UI
 
             moduleCatalog.AddModule<TimelineModule>();
             moduleCatalog.AddModule<ScriptComponentsModule>();
+            moduleCatalog.AddModule<PreviewModule>();
         }
 
         private ScriptBuilderComponentsViewModel CreateScriptComponentsViewModel()

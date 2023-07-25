@@ -6,5 +6,11 @@
              xmlns:local="clr-namespace:AdobeScriptMaker.UI.Views.Preview"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <local:PreviewCanvas></local:PreviewCanvas>
+    <UserControl.Resources>
+        <local:PrimitivesConverter x:Key="primitivesConverter"></local:PrimitivesConverter>
+    </UserControl.Resources>
+    
+    <local:PreviewCanvas
+        Primitives="{Binding Primitives, Converter={StaticResource primitivesConverter}}">
+    </local:PreviewCanvas>
 </UserControl>
