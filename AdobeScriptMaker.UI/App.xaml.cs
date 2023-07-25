@@ -46,7 +46,7 @@ namespace AdobeScriptMaker.UI
         {
             base.ConfigureViewModelLocator();
 
-            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000 });
+            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000, Position = -1 });
             ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
             ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
             ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel()

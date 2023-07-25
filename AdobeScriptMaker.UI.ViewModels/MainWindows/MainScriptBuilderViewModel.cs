@@ -22,5 +22,11 @@ namespace AdobeScriptMaker.UI.Core.MainWindows
         {
             WeakReferenceMessenger.Default.Send(new GenerateScriptMessage());
         }
+
+        [RelayCommand]
+        private void Loaded()
+        {
+            WeakReferenceMessenger.Default.Send(new InitializeStateMessage(0));
+        }
     }
 }

@@ -24,10 +24,10 @@ namespace AdobeScriptMaker.UI.Views.Preview
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            drawingContext.DrawRectangle(Background, null, new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
+
             if (Primitives == null || !Primitives.Items.Any())
                 return;
-
-            drawingContext.DrawRectangle(Background, null, new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
 
             foreach (var primitive in Primitives.Items)
             {

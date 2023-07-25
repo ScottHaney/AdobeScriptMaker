@@ -25,7 +25,8 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         IRecipient<ResizeTimelineComponentMessage>,
         IRecipient<RepositionTimelineComponentMessage>,
         IRecipient<AddTimelineComponentMessage>,
-        IRecipient<GenerateScriptMessage>
+        IRecipient<GenerateScriptMessage>,
+        IRecipient<InitializeStateMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
@@ -33,12 +34,30 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         [ObservableProperty]
         private double width;
 
+        private double _position;
+        public double Position
+        {
+            get { return _position; }
+            set
+            {
+                if (_position != value)
+                {
+                    _position = value;
+                    OnPropertyChanged(nameof(Position));
+
+                    WeakReferenceMessenger.Default.Send(
+                        new TimelinePositionUpdatedMessage(_position, Components.Where(x => x.Start <= _position && _position <= x.End)));
+                }
+            }
+        }
+
         public TimelineViewModel()
         {
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<RepositionTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<AddTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<GenerateScriptMessage>(this);
+            WeakReferenceMessenger.Default.Register<InitializeStateMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -104,6 +123,11 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                     var script = scriptCreator.Visit(converted);
                 }
             }
+        }
+
+        public void Receive(InitializeStateMessage message)
+        {
+            Position = message.Position;
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)
