@@ -11,10 +11,7 @@
         <converters:DoubleToStringConverter x:Key="doubleToStringConverter"></converters:DoubleToStringConverter>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <TextBox Width="100"
-                 HorizontalAlignment="Center"
-                 Text="{Binding Position, Converter={StaticResource doubleToStringConverter}}">
-        </TextBox>
+        <local:TimelineRuler Position="{Binding Position, Converter={StaticResource doubleToStringConverter}}"></local:TimelineRuler>
         <ItemsControl Height="300" ItemsSource="{Binding Components}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
