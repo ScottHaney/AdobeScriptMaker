@@ -46,20 +46,10 @@ namespace AdobeScriptMaker.UI
         {
             base.ConfigureViewModelLocator();
 
-            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel() { Width = 1000, Position = -1 });
+            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel());
             ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
             ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
-            ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel()
-            {
-                Primitives = new[]
-                {
-                    new AxesRenderingDescription("test",
-                        new PlotLayoutDescription(
-                            new PlotAxesLayoutDescription(
-                                new PlotAxisLayoutDescription(100, 0, 100), new PlotAxisLayoutDescription(100, 0, 100)),
-                                new System.Drawing.PointF(10, 10)))
-                }
-            });
+            ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel());
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

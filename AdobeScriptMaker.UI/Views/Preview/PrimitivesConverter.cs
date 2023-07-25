@@ -18,17 +18,21 @@ namespace AdobeScriptMaker.UI.Views.Preview
             var items = (IEnumerable<IWhatToRender>)value;
 
             var convertedItems = new List<IPreviewCanvasPrimitive>();
-            foreach (var item in items)
-            {
-                if (item is AxesRenderingDescription axes)
-                {
-                    var topLeft = new Point((int)axes.PlotLayoutDescription.TopLeft.X, (int)axes.PlotLayoutDescription.TopLeft.Y);
-                    var yLength = axes.PlotLayoutDescription.AxesLayout.YAxis.Length;
-                    var xLength = axes.PlotLayoutDescription.AxesLayout.XAxis.Length;
 
-                    var intersectionPoint = new Point((int)topLeft.X, (int)(topLeft.Y + yLength));
-                    convertedItems.Add(new PreviewCanvasLinePrimitive(topLeft, intersectionPoint));
-                    convertedItems.Add(new PreviewCanvasLinePrimitive(intersectionPoint, new Point((int)(intersectionPoint.X + xLength), intersectionPoint.Y)));
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    if (item is AxesRenderingDescription axes)
+                    {
+                        var topLeft = new Point((int)axes.PlotLayoutDescription.TopLeft.X, (int)axes.PlotLayoutDescription.TopLeft.Y);
+                        var yLength = axes.PlotLayoutDescription.AxesLayout.YAxis.Length;
+                        var xLength = axes.PlotLayoutDescription.AxesLayout.XAxis.Length;
+
+                        var intersectionPoint = new Point((int)topLeft.X, (int)(topLeft.Y + yLength));
+                        convertedItems.Add(new PreviewCanvasLinePrimitive(topLeft, intersectionPoint));
+                        convertedItems.Add(new PreviewCanvasLinePrimitive(intersectionPoint, new Point((int)(intersectionPoint.X + xLength), intersectionPoint.Y)));
+                    }
                 }
             }
 
