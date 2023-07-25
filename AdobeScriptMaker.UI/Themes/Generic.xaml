@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:prism="http://prismlibrary.com/"
-    xmlns:timeline="clr-namespace:AdobeScriptMaker.UI.Views.Timeline">
+    xmlns:timeline="clr-namespace:AdobeScriptMaker.UI.Views.Timeline"
+    xmlns:converters="clr-namespace:AdobeScriptMaker.UI.TypeConverters">
 
 
     <Style TargetType="{x:Type timeline:TimelineItem}">
@@ -68,8 +69,22 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type timeline:TimelineRuler}">
                     <Grid>
+                        <Grid.Resources>
+                            <converters:RulerPositionConverter x:Key="rulerPositionConverter"></converters:RulerPositionConverter>
+                        </Grid.Resources>
+                        
                         <Rectangle Fill="Green"></Rectangle>
-                        <Thumb Panel.ZIndex="1" Width="10" HorizontalAlignment="Left"></Thumb>
+                        <Thumb Panel.ZIndex="1"
+                               Width="10"
+                               HorizontalAlignment="Left"
+                               Margin="{Binding Position, Mode=TwoWay, Converter={StaticResource rulerPositionConverter}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="DragDelta">
+                                    <prism:InvokeCommandAction Command="{Binding UpdatePositionCommand}"
+                                                                   TriggerParameterPath="HorizontalChange"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Thumb>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

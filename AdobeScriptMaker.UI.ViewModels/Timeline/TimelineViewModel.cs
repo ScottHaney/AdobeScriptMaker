@@ -51,6 +51,13 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             }
         }
 
+        [RelayCommand]
+        private void UpdatePosition(object arg)
+        {
+            var change = (double)arg;
+            Position += change;
+        }
+
         public TimelineViewModel()
         {
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);
