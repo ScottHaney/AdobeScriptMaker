@@ -55,7 +55,14 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         private void UpdatePosition(object arg)
         {
             var change = (double)arg;
-            Position += change;
+
+            var updatedPosition = Position + change;
+            if (updatedPosition < 0)
+                Position = 0;
+            else if (updatedPosition > Width)
+                Position = Width;
+            else
+                Position = updatedPosition;
         }
 
         public TimelineViewModel()

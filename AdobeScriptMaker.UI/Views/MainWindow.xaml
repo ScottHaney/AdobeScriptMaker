@@ -43,7 +43,6 @@
                 <Button Content="Generate"
                     Command="{Binding GenerateCommand}"></Button>
             </StackPanel>
-            
         </Grid>
     </Grid>
 </Window>
