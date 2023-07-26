@@ -1,5 +1,6 @@
 ﻿using AdobeScriptMaker.Core;
 using AdobeScriptMaker.Core.ComponentsConverters;
+using AdobeScriptMaker.UI.Core.Timeline;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -15,8 +16,22 @@ using System.Text;
 
 namespace AdobeScriptMaker.UI.Core.MainWindows
 {
-    public partial class MainScriptBuilderViewModel : ObservableObject
+    public partial class MainScriptBuilderViewModel : ObservableObject,
+        IRecipient<TimelinePositionUpdatedMessage>
     {
+        [ObservableProperty]
+        private double position;
+
+        public MainScriptBuilderViewModel()
+        {
+            WeakReferenceMessenger.Default.Register<TimelinePositionUpdatedMessage>(this);
+        }
+
+        public void Receive(TimelinePositionUpdatedMessage message)
+        {
+            Position = message.Position;
+        }
+
         [RelayCommand]
         private void Generate()
         {

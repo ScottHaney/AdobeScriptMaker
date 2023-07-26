@@ -36,10 +36,14 @@
                 <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
             </Border>
 
-            <Button Content="Generate"
-                    Grid.Row="2"
-                    Command="{Binding GenerateCommand}"
-                    HorizontalAlignment="Right"></Button>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Row="2">
+                <TextBlock Text="{Binding Position, StringFormat=Position: {0}}" Margin="0,0,15,0"></TextBlock>
+                <Button Content="Generate"
+                    Command="{Binding GenerateCommand}"></Button>
+            </StackPanel>
+            
         </Grid>
     </Grid>
 </Window>
