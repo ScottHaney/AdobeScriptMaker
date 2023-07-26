@@ -12,7 +12,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <local:TimelineRuler Position="{Binding Position, Converter={StaticResource doubleToStringConverter}}"></local:TimelineRuler>
-        <ItemsControl Height="300" ItemsSource="{Binding Components}">
+        <ItemsControl Height="200" ItemsSource="{Binding Components}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <local:TimelineTrackPanel></local:TimelineTrackPanel>
