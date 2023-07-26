@@ -19,6 +19,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.ScriptComponentsRegionName}"></ContentControl>
@@ -44,5 +45,8 @@
                     Command="{Binding GenerateCommand}"></Button>
             </StackPanel>
         </Grid>
+
+        <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"
+                        Grid.Column="2"></ContentControl>
     </Grid>
 </Window>

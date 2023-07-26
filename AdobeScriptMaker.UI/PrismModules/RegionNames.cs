@@ -11,5 +11,6 @@ namespace AdobeScriptMaker.UI.PrismModules
         public static readonly string TimelineRegionName = "Timeline";
         public static readonly string ScriptComponentsRegionName = "ScriptComponents";
         public static readonly string PreviewRegionName = "Preview";
+        public static readonly string PropertiesEditorRegionName = "PropertiesEditor";
     }
 }

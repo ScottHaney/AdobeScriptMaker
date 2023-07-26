@@ -59,6 +59,7 @@ namespace AdobeScriptMaker.UI
             moduleCatalog.AddModule<TimelineModule>();
             moduleCatalog.AddModule<ScriptComponentsModule>();
             moduleCatalog.AddModule<PreviewModule>();
+            moduleCatalog.AddModule<PropertiesEditorModule>();
         }
 
         private ScriptBuilderComponentsViewModel CreateScriptComponentsViewModel()
