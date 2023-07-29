@@ -23,6 +23,7 @@ using AdobeScriptMaker.UI.Views.Preview;
 using AdobeScriptMaker.UI.Core.Preview;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot;
+using AdobeScriptMaker.UI.Views.PropertiesEditor;
 
 namespace AdobeScriptMaker.UI
 {
@@ -46,10 +47,13 @@ namespace AdobeScriptMaker.UI
         {
             base.ConfigureViewModelLocator();
 
-            ViewModelLocationProvider.Register<Timeline>(() => new TimelineViewModel());
+            var timeLineViewModel = new TimelineViewModel();
+
+            ViewModelLocationProvider.Register<Timeline>(() => timeLineViewModel);
             ViewModelLocationProvider.Register<ScriptComponents>(() => CreateScriptComponentsViewModel());
             ViewModelLocationProvider.Register<MainWindow>(() => new MainScriptBuilderViewModel());
             ViewModelLocationProvider.Register<Preview>(() => new PreviewViewModel());
+            ViewModelLocationProvider.Register<PropertiesEditor>(() => timeLineViewModel);
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

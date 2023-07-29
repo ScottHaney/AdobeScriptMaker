@@ -26,13 +26,17 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         IRecipient<RepositionTimelineComponentMessage>,
         IRecipient<AddTimelineComponentMessage>,
         IRecipient<GenerateScriptMessage>,
-        IRecipient<InitializeStateMessage>
+        IRecipient<InitializeStateMessage>,
+        IRecipient<UpdateTimelineSelectionMessage>
     {
         [ObservableProperty]
         private ObservableCollection<TimelineComponentViewModel> components = new ObservableCollection<TimelineComponentViewModel>();
 
         [ObservableProperty]
         private double width;
+
+        [ObservableProperty]
+        private TimelineComponentViewModel selectedItem;
 
         private double _position;
         public double Position
@@ -72,6 +76,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             WeakReferenceMessenger.Default.Register<AddTimelineComponentMessage>(this);
             WeakReferenceMessenger.Default.Register<GenerateScriptMessage>(this);
             WeakReferenceMessenger.Default.Register<InitializeStateMessage>(this);
+            WeakReferenceMessenger.Default.Register<UpdateTimelineSelectionMessage>(this);
         }
 
         public void Receive(ResizeTimelineComponentMessage message)
@@ -152,6 +157,11 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         {
             Position = message.Position;
             Width = message.Width;
+        }
+
+        public void Receive(UpdateTimelineSelectionMessage message)
+        {
+            SelectedItem = message.SelectedItem;
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)

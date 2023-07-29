@@ -28,6 +28,9 @@
                                             <prism:InvokeCommandAction Command="{Binding UpdateStartCommand}"
                                                                    TriggerParameterPath="HorizontalChange"/>
                                         </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseDown">
+                                            <prism:InvokeCommandAction Command="{Binding ClickCommand}"/>
+                                        </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Thumb>
                                 <Thumb Grid.Column="1">
@@ -35,6 +38,9 @@
                                         <i:EventTrigger EventName="DragDelta">
                                             <prism:InvokeCommandAction Command="{Binding UpdatePositionCommand}"
                                                                    TriggerParameterPath="HorizontalChange"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseDown">
+                                            <prism:InvokeCommandAction Command="{Binding ClickCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Thumb>
@@ -45,6 +51,9 @@
                                         <i:EventTrigger EventName="DragDelta">
                                             <prism:InvokeCommandAction Command="{Binding UpdateEndCommand}"
                                                                    TriggerParameterPath="HorizontalChange"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="PreviewMouseDown">
+                                            <prism:InvokeCommandAction Command="{Binding ClickCommand}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Thumb>

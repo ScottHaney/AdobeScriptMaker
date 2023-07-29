@@ -23,6 +23,12 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         [ObservableProperty]
         private double end;
 
+        [RelayCommand]
+        private void Click()
+        {
+            WeakReferenceMessenger.Default.Send(new UpdateTimelineSelectionMessage(this));
+        }
+
         /// <summary>
         /// 
         /// </summary>
