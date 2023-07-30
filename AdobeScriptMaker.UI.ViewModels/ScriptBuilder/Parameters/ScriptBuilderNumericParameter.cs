@@ -11,6 +11,6 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters
         public string Name { get; set; }
         public double MinValue { get; set; }
         public double MaxValue { get; set; }
-        public double DefaultValue { get; set; }
+        public double Value { get; set; }
     }
 }

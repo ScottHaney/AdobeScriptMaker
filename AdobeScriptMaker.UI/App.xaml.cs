@@ -71,8 +71,8 @@ namespace AdobeScriptMaker.UI
             var dataContext = new ScriptBuilderComponentsViewModel();
 
             var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", DefaultValue = 100, MinValue = 0, MaxValue = double.MaxValue });
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", Value = 100, MinValue = 0, MaxValue = double.MaxValue });
+            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", Value = 100, MinValue = 0, MaxValue = double.MaxValue });
 
             component.SamplePrimitives = new[]
                 {

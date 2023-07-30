@@ -7,15 +7,23 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <Style x:Key="labelStyle" TargetType="{x:Type TextBlock}">
+            <Style.Setters>
+                <Setter Property="Margin" Value="0,0,10,0"></Setter>
+            </Style.Setters>
+        </Style>
         <DataTemplate x:Key="doubleTemplate">
-            <TextBlock Text="{Binding Name}"></TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource labelStyle}" Text="{Binding Name, StringFormat={}{0}:}"/>
+                <TextBox Text="{Binding Value, Mode=TwoWay}"/>
+            </StackPanel>
         </DataTemplate>
         <local:PropertyItemTemplateSelector x:Key="templateSelector"
                                             DoubleTemplate="{StaticResource doubleTemplate}"/>
-
     </UserControl.Resources>
     <Grid>
-        <ItemsControl ItemsSource="{Binding SelectedItem.WrappedComponent.Parameters}"
+        <ItemsControl Margin="10"
+                      ItemsSource="{Binding SelectedItem.WrappedComponent.Parameters}"
                       ItemTemplateSelector="{StaticResource templateSelector}"/>
     </Grid>
 </UserControl>
