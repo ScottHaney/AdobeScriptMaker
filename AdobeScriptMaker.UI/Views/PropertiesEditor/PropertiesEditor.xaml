@@ -6,13 +6,16 @@
              xmlns:local="clr-namespace:AdobeScriptMaker.UI.Views.PropertiesEditor"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="doubleTemplate">
+            <TextBlock Text="{Binding Name}"></TextBlock>
+        </DataTemplate>
+        <local:PropertyItemTemplateSelector x:Key="templateSelector"
+                                            DoubleTemplate="{StaticResource doubleTemplate}"/>
+
+    </UserControl.Resources>
     <Grid>
-        <ItemsControl ItemsSource="{Binding SelectedItem.WrappedComponent.Parameters}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}"></TextBlock>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SelectedItem.WrappedComponent.Parameters}"
+                      ItemTemplateSelector="{StaticResource templateSelector}"/>
     </Grid>
 </UserControl>
