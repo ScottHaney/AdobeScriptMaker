@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AdobeScriptMaker.UI.Views.Preview.Primitives
 {
-    public class PrimitivesConverter
+    public class PrimitivesConverter : IPrimitivesConverter
     {
         public PreviewCanvasPrimitives Convert(IEnumerable<IScriptComponentDataModel> items)
         {

@@ -25,6 +25,7 @@ using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot;
 using AdobeScriptMaker.UI.Views.PropertiesEditor;
 using AdobeScriptMaker.UI.Core.DataModels;
+using AdobeScriptMaker.UI.Views.Preview.Primitives;
 
 namespace AdobeScriptMaker.UI
 {
@@ -35,13 +36,15 @@ namespace AdobeScriptMaker.UI
     {
         protected override Window CreateShell()
         {
+            Resources["primitivesConverter"] = Container.Resolve(typeof(WPFPrimitivesConverter));
+
             var w = (MainWindow)Container.Resolve(typeof(MainWindow));
             return w;
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            
+            containerRegistry.RegisterSingleton<IPrimitivesConverter, PrimitivesConverter>();
         }
 
         protected override void ConfigureViewModelLocator()
