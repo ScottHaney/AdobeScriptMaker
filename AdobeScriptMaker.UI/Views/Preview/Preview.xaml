@@ -7,6 +7,9 @@
              xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <prism:ContainerProvider Type="{x:Type local:WPFPrimitivesConverter}" x:Key="primitivesConverter"/>
+    </UserControl.Resources>
     <ScrollViewer>
         <Grid Background="Black">
             <local:PreviewCanvas

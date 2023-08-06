@@ -36,8 +36,6 @@ namespace AdobeScriptMaker.UI
     {
         protected override Window CreateShell()
         {
-            Resources["primitivesConverter"] = Container.Resolve(typeof(WPFPrimitivesConverter));
-
             var w = (MainWindow)Container.Resolve(typeof(MainWindow));
             return w;
         }
