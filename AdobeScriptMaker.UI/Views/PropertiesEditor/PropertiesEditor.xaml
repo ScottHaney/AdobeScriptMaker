@@ -13,10 +13,15 @@
             </Style.Setters>
         </Style>
         <DataTemplate x:Key="doubleTemplate">
-            <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="PropertiesHeader"></ColumnDefinition>
+                    <ColumnDefinition SharedSizeGroup="PropertiesValue"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
                 <TextBlock Style="{StaticResource labelStyle}" Text="{Binding Name, StringFormat={}{0}:}"/>
-                <TextBox Text="{Binding Value, Mode=TwoWay}"/>
-            </StackPanel>
+                <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+            </Grid>
         </DataTemplate>
         <local:PropertyItemTemplateSelector x:Key="templateSelector"
                                             DoubleTemplate="{StaticResource doubleTemplate}"/>
@@ -24,6 +29,8 @@
     <Grid>
         <ItemsControl Margin="10"
                       ItemsSource="{Binding SelectedItem.ComponentData.Parameters}"
-                      ItemTemplateSelector="{StaticResource templateSelector}"/>
+                      ItemTemplateSelector="{StaticResource templateSelector}"
+                      Grid.IsSharedSizeScope="True">
+        </ItemsControl>
     </Grid>
 </UserControl>
