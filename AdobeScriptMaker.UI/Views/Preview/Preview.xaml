@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <local:PrimitivesConverter x:Key="primitivesConverter"></local:PrimitivesConverter>
+        <local:WPFPrimitivesConverter x:Key="primitivesConverter"></local:WPFPrimitivesConverter>
     </UserControl.Resources>
 
     <ScrollViewer>

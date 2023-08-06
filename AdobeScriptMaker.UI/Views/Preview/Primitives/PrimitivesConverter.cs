@@ -1,6 +1,5 @@
 ﻿using AdobeScriptMaker.UI.Core.DataModels;
 using MathRenderingDescriptions.Plot.What;
-using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,16 +7,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
 
-namespace AdobeScriptMaker.UI.Views.Preview
+namespace AdobeScriptMaker.UI.Views.Preview.Primitives
 {
-    public class PrimitivesConverter : IValueConverter
+    public class PrimitivesConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public PreviewCanvasPrimitives Convert(IEnumerable<IScriptComponentDataModel> items)
         {
-            var items = (IEnumerable<IScriptComponentDataModel>)value;
-
             var convertedItems = new List<IPreviewCanvasPrimitive>();
 
             if (items != null)
@@ -38,13 +34,8 @@ namespace AdobeScriptMaker.UI.Views.Preview
                     }
                 }
             }
-
+            
             return new PreviewCanvasPrimitives(convertedItems);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }
