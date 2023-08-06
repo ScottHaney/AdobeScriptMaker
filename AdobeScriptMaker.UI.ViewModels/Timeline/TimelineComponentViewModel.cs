@@ -1,4 +1,5 @@
-﻿using AdobeScriptMaker.UI.Core.ScriptBuilder;
+﻿using AdobeScriptMaker.UI.Core.DataModels;
+using AdobeScriptMaker.UI.Core.ScriptBuilder;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -12,7 +13,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
 {
     public partial class TimelineComponentViewModel : ObservableObject
     {
-        public ScriptBuilderComponentViewModel WrappedComponent { get; set; }
+        public IScriptComponentDataModel ComponentData { get; set; }
 
         [ObservableProperty]
         private string name;

@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
+using AdobeScriptMaker.UI.Core.DataModels;
 
 namespace AdobeScriptMaker.UI.Core.Timeline
 {
@@ -50,7 +51,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                     OnPropertyChanged(nameof(Position));
 
                     WeakReferenceMessenger.Default.Send(
-                        new TimelinePositionUpdatedMessage(_position, Components.Where(x => x.Start <= _position && _position <= x.End)));
+                        new TimelinePositionUpdatedMessage(_position, GetActiveData()));
                 }
             }
         }
@@ -93,7 +94,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             }
 
             WeakReferenceMessenger.Default.Send(
-                        new TimelinePositionUpdatedMessage(_position, Components.Where(x => x.Start <= _position && _position <= x.End)));
+                        new TimelinePositionUpdatedMessage(_position, GetActiveData()));
         }
 
         public void Receive(RepositionTimelineComponentMessage message)
@@ -111,7 +112,7 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             message.Component.End = message.Component.End + updatedChange;
 
             WeakReferenceMessenger.Default.Send(
-                        new TimelinePositionUpdatedMessage(_position, Components.Where(x => x.Start <= _position && _position <= x.End)));
+                        new TimelinePositionUpdatedMessage(_position, GetActiveData()));
         }
 
         public void Receive(AddTimelineComponentMessage message)
@@ -122,10 +123,20 @@ namespace AdobeScriptMaker.UI.Core.Timeline
             else
                 start = Components.Max(x => x.End);
 
-            Components.Add(new TimelineComponentViewModel() { WrappedComponent = message.Component, Name = message.Component.Name, Start = start, End = start + 100 });
+            Components.Add(new TimelineComponentViewModel() { ComponentData = message.Component.ComponentData, Name = message.Component.Name, Start = start, End = start + 100 });
 
             WeakReferenceMessenger.Default.Send(
-                        new TimelinePositionUpdatedMessage(_position, Components.Where(x => x.Start <= _position && _position <= x.End)));
+                        new TimelinePositionUpdatedMessage(_position, GetActiveData()));
+        }
+
+        private IEnumerable<TimelineComponentViewModel> GetActiveComponents()
+        {
+            return Components.Where(x => x.Start <= _position && _position <= x.End);
+        }
+
+        private IEnumerable<IScriptComponentDataModel> GetActiveData()
+        {
+            return GetActiveComponents().Select(x => x.ComponentData);
         }
 
         public void Receive(GenerateScriptMessage message)

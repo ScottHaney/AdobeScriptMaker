@@ -24,6 +24,7 @@ using AdobeScriptMaker.UI.Core.Preview;
 using MathRenderingDescriptions.Plot.What;
 using MathRenderingDescriptions.Plot;
 using AdobeScriptMaker.UI.Views.PropertiesEditor;
+using AdobeScriptMaker.UI.Core.DataModels;
 
 namespace AdobeScriptMaker.UI
 {
@@ -70,17 +71,11 @@ namespace AdobeScriptMaker.UI
         {
             var dataContext = new ScriptBuilderComponentsViewModel();
 
-            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes" };
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "X Range", Value = 100, MinValue = 0, MaxValue = double.MaxValue });
-            component.Parameters.Add(new ScriptBuilderNumericParameter() { Name = "Y Range", Value = 100, MinValue = 0, MaxValue = double.MaxValue });
+            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes", ComponentData = new AxesDataModel() };
 
             component.SamplePrimitives = new[]
                 {
-                    new AxesRenderingDescription("test",
-                        new PlotLayoutDescription(
-                            new PlotAxesLayoutDescription(
-                                new PlotAxisLayoutDescription(100, 0, 100), new PlotAxisLayoutDescription(100, 0, 100)),
-                                new System.Drawing.PointF(0, 0)))
+                    new AxesDataModel()
                 };
 
             dataContext.Components.Add(component);

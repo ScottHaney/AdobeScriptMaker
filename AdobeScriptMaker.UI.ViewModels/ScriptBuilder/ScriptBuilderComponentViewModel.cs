@@ -1,4 +1,5 @@
-﻿using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
+﻿using AdobeScriptMaker.UI.Core.DataModels;
+using AdobeScriptMaker.UI.Core.ScriptBuilder.Parameters;
 using AdobeScriptMaker.UI.Core.Timeline;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,10 +21,10 @@ namespace AdobeScriptMaker.UI.Core.ScriptBuilder
         private string name;
 
         [ObservableProperty]
-        private List<IScriptBuilderParameter> parameters = new List<IScriptBuilderParameter>();
+        private IScriptComponentDataModel componentData;
 
         [ObservableProperty]
-        private IEnumerable<IWhatToRender> samplePrimitives;
+        private IEnumerable<IScriptComponentDataModel> samplePrimitives;
 
         [RelayCommand]
         private void Selected()

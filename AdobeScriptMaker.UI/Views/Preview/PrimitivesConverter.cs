@@ -1,4 +1,5 @@
-﻿using MathRenderingDescriptions.Plot.What;
+﻿using AdobeScriptMaker.UI.Core.DataModels;
+using MathRenderingDescriptions.Plot.What;
 using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace AdobeScriptMaker.UI.Views.Preview
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var items = (IEnumerable<IWhatToRender>)value;
+            var items = (IEnumerable<IScriptComponentDataModel>)value;
 
             var convertedItems = new List<IPreviewCanvasPrimitive>();
 
@@ -23,8 +24,10 @@ namespace AdobeScriptMaker.UI.Views.Preview
             {
                 foreach (var item in items)
                 {
-                    if (item is AxesRenderingDescription axes)
+                    if (item is AxesDataModel axesDataModel)
                     {
+                        var axes = (AxesRenderingDescription)axesDataModel.ToRenderingData();
+
                         var topLeft = new Point((int)axes.PlotLayoutDescription.TopLeft.X, (int)axes.PlotLayoutDescription.TopLeft.Y);
                         var yLength = axes.PlotLayoutDescription.AxesLayout.YAxis.Length;
                         var xLength = axes.PlotLayoutDescription.AxesLayout.XAxis.Length;

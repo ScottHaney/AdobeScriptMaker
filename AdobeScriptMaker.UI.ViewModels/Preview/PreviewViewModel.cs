@@ -7,6 +7,7 @@ using RenderingDescriptions.What;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AdobeScriptMaker.UI.Core.DataModels;
 
 namespace AdobeScriptMaker.UI.Core.Preview
 {
@@ -14,7 +15,7 @@ namespace AdobeScriptMaker.UI.Core.Preview
         IRecipient<TimelinePositionUpdatedMessage>
     {
         [ObservableProperty]
-        private IEnumerable<IWhatToRender> primitives;
+        private IEnumerable<IScriptComponentDataModel> primitives;
 
         public PreviewViewModel()
         {
@@ -23,20 +24,7 @@ namespace AdobeScriptMaker.UI.Core.Preview
 
         public void Receive(TimelinePositionUpdatedMessage message)
         {
-            var updatedPrimitives = new List<IWhatToRender>();
-            if (message.Components.Any())
-            {
-                foreach (var component in message.Components)
-                {
-                    updatedPrimitives.Add(new AxesRenderingDescription("test",
-                        new PlotLayoutDescription(
-                            new PlotAxesLayoutDescription(
-                                new PlotAxisLayoutDescription(100, 0, 100), new PlotAxisLayoutDescription(100, 0, 100)),
-                                new System.Drawing.PointF(0, 0))));
-                }
-            }
-
-            Primitives = updatedPrimitives;
+            Primitives = message.Components.ToList();
         }
     }
 }
