@@ -20,7 +20,7 @@
                 </Grid.ColumnDefinitions>
                 
                 <TextBlock VerticalAlignment="Center" Style="{StaticResource labelStyle}" Text="{Binding Name, StringFormat={}{0}:}"/>
-                <TextBox VerticalAlignment="Center" Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+                <TextBox VerticalAlignment="Center" TextAlignment="Right" Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
             </Grid>
         </DataTemplate>
         <local:PropertyItemTemplateSelector x:Key="templateSelector"
