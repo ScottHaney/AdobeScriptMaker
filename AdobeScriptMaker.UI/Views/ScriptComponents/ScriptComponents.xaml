@@ -23,7 +23,9 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <materialDesign:Card>
+                    <materialDesign:Card materialDesign:ShadowAssist.ShadowEdges="All" 
+                                         materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                         materialDesign:ShadowAssist.Darken="False">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <prism:InvokeCommandAction Command="{Binding SelectedCommand}"/>
