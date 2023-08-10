@@ -36,7 +36,9 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.ColumnSpan="3">
-                <Rectangle Fill="White"
+                <Rectangle Fill="LightGray"
+                           RadiusX="2"
+                           RadiusY="2"
                            MouseDown="Header_MouseDown">
                 </Rectangle>
                 <StackPanel 
