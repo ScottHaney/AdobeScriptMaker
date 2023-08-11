@@ -55,6 +55,12 @@
                     <Button Background="Transparent"
                             Foreground="Black"
                             BorderThickness="0"
+                            Click="MaximizeWindow_Click">
+                        <materialDesign:PackIcon Kind="Maximize"/>
+                    </Button>
+                    <Button Background="Transparent"
+                            Foreground="Black"
+                            BorderThickness="0"
                             Click="CloseWindow_Click">
                         <materialDesign:PackIcon Kind="Close"/>
                     </Button>

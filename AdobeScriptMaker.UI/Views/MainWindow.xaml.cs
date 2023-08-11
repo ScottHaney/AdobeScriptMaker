@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace AdobeScriptMaker.UI
 {
@@ -24,6 +26,7 @@ namespace AdobeScriptMaker.UI
         public MainWindow()
         {
             InitializeComponent();
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
@@ -36,10 +39,21 @@ namespace AdobeScriptMaker.UI
             WindowState = WindowState.Minimized;
         }
 
+        private void MaximizeWindow_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
         private void Header_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                DragMove();
+            {
+                var helper = new WindowInteropHelper(this);
+                SendMessage(helper.Handle, 161, 2, 0);
+            }
         }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
     }
 }
