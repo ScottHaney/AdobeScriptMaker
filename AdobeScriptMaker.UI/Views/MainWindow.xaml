@@ -72,14 +72,16 @@
             </ContentControl>
 
             <Grid Grid.Row="1"
-              Grid.Column="1">
+              Grid.Column="1"
+              Margin="0,15,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PreviewRegionName}"></ContentControl>
+                <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PreviewRegionName}"
+                                Margin="0,0,0,15"></ContentControl>
 
                 <Border BorderBrush="Black" BorderThickness="2" Grid.Row="1">
                     <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
