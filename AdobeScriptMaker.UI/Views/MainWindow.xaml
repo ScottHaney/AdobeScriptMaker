@@ -87,8 +87,11 @@
 
                 <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
+                        Margin="0,10"
                         Grid.Row="2">
-                    <TextBlock Text="{Binding Position, StringFormat=Position: {0}}" Margin="0,0,15,0"></TextBlock>
+                    <TextBlock Text="{Binding Position, StringFormat=Position: {0}}"
+                               Margin="0,0,25,0"
+                               VerticalAlignment="Center"></TextBlock>
                     <Button Content="Generate"
                     Command="{Binding GenerateCommand}"></Button>
                 </StackPanel>
