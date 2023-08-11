@@ -8,6 +8,7 @@
         xmlns:prismModules="clr-namespace:AdobeScriptMaker.UI.PrismModules"
         xmlns:designTimeData="clr-namespace:AdobeScriptMaker.UI.Core.DesignTimeData;assembly=AdobeScriptMaker.UI.Core"
         xmlns:preview="clr-namespace:AdobeScriptMaker.UI.Views.Preview"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="{x:Null}"
@@ -21,8 +22,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Border BorderBrush="Black"
-            BorderThickness="2"
-            CornerRadius="5"
+            BorderThickness="1"
             Background="White">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -35,8 +35,9 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Grid Grid.ColumnSpan="3">
-                <Rectangle Fill="LightGray"
+            <Grid Grid.ColumnSpan="3"
+                  Background="Transparent">
+                <Rectangle Fill="Transparent"
                            RadiusX="2"
                            RadiusY="2"
                            MouseDown="Header_MouseDown">
@@ -44,9 +45,19 @@
                 <StackPanel 
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
-                    Background="White">
-                    <Button Click="MinimizeWindow_Click">_</Button>
-                    <Button Click="CloseWindow_Click">X</Button>
+                    Background="Transparent">
+                    <Button Background="Transparent"
+                            Foreground="Black"
+                            BorderThickness="0"
+                            Click="MinimizeWindow_Click">
+                        <materialDesign:PackIcon Kind="Minimize"/>
+                    </Button>
+                    <Button Background="Transparent"
+                            Foreground="Black"
+                            BorderThickness="0"
+                            Click="CloseWindow_Click">
+                        <materialDesign:PackIcon Kind="Close"/>
+                    </Button>
                 </StackPanel>
             </Grid>
             
