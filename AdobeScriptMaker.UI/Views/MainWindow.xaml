@@ -91,6 +91,7 @@
                         Grid.Row="2">
                     <TextBlock Text="{Binding Position, StringFormat=Position: {0}}"
                                Margin="0,0,25,0"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                VerticalAlignment="Center"></TextBlock>
                     <Button Content="Generate"
                     Command="{Binding GenerateCommand}"></Button>

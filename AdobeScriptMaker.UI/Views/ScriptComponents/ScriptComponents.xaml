@@ -41,6 +41,7 @@
                                                    Primitives="{Binding SamplePrimitives, Converter={StaticResource primitivesConverter}}"></preview:PreviewCanvas>
                             <TextBlock HorizontalAlignment="Center"
                                        Margin="0,10,0,0"
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}"
                                        Text="{Binding Name}"></TextBlock>
                         </StackPanel>
                     </materialDesign:Card>
