@@ -10,12 +10,13 @@
     <UserControl.Resources>
         <prism:ContainerProvider Type="{x:Type local:WPFPrimitivesConverter}" x:Key="primitivesConverter"/>
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer >
         <Grid Background="Black">
             <local:PreviewCanvas
                 Background="White"
                 Width="400"
                 Height="800"
+                Margin="0,25,0,25"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Primitives="{Binding Primitives, Converter={StaticResource primitivesConverter}}">
