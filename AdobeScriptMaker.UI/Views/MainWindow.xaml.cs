@@ -41,7 +41,10 @@ namespace AdobeScriptMaker.UI
 
         private void MaximizeWindow_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
+            if (WindowState == WindowState.Normal)
+                WindowState = WindowState.Maximized;
+            else
+                WindowState = WindowState.Normal;
         }
 
         private void Header_MouseDown(object sender, MouseButtonEventArgs e)
