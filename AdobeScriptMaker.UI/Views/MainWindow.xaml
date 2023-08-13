@@ -120,10 +120,7 @@
                                              CornerRadius="0"
                                              Margin="0,-15,0,0"
                                              Grid.Row="2">
-                        <Border BorderBrush="Black"
-                                BorderThickness="2">
-                            <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
-                        </Border>
+                        <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
                     </mainViews:WindowSection>
                 </Grid>
 
