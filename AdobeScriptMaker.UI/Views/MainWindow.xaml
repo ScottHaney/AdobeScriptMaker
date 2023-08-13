@@ -9,6 +9,7 @@
         xmlns:designTimeData="clr-namespace:AdobeScriptMaker.UI.Core.DesignTimeData;assembly=AdobeScriptMaker.UI.Core"
         xmlns:preview="clr-namespace:AdobeScriptMaker.UI.Views.Preview"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mainViews="clr-namespace:AdobeScriptMaker.UI.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="{x:Null}"
@@ -18,7 +19,7 @@
         d:DataContext="{d:DesignInstance {x:Type designTimeData:DesignTimeScriptBuilderViewModel}, IsDesignTimeCreatable=True}">
     
     <Window.Resources>
-        <Style TargetType="{x:Type GroupBox}">
+        <Style TargetType="{x:Type mainViews:WindowSection}">
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -26,9 +27,12 @@
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="BorderBrush" Value="{StaticResource MaterialDesignDarkSeparatorBackground}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Margin" Value="0,-6,0,0"/>
         </Style>
     </Window.Resources>
-        
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <prism:InvokeCommandAction Command="{Binding LoadedCommand}"/>
@@ -73,8 +77,8 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1"
-                  Margin="10">
+            <Grid Margin="10,0,10,10"
+                  Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -86,28 +90,41 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox Header="Components">
+                <mainViews:WindowSection Header="Components"
+                                         CornerRadius="6">
                     <ContentControl
                         prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.ScriptComponentsRegionName}">
                     </ContentControl>
-                </GroupBox>
+                </mainViews:WindowSection>
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Header="Preview">
+                    <mainViews:WindowSection Header="Preview"
+                                             CornerRadius="0">
                         <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PreviewRegionName}"></ContentControl>
-                    </GroupBox>
+                    </mainViews:WindowSection>
 
-                    <GroupBox Grid.Row="1"
-                          Header="Timeline">
-                        <Border BorderBrush="Black" BorderThickness="2">
+                    <GridSplitter Grid.Row="1"
+                                  Height="3"
+                                  Margin="0,0,0,0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Center"
+                                  Background="Transparent"/>
+
+                    <mainViews:WindowSection Header="Timeline"
+                                             CornerRadius="0"
+                                             Margin="0,-15,0,0"
+                                             Grid.Row="2">
+                        <Border BorderBrush="Black"
+                                BorderThickness="2">
                             <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.TimelineRegionName}"></ContentControl>
                         </Border>
-                    </GroupBox>
+                    </mainViews:WindowSection>
                 </Grid>
 
                 <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"
