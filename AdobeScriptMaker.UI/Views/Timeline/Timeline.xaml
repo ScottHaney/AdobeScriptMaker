@@ -13,9 +13,15 @@
     <UserControl.Resources>
         <converters:DoubleToStringConverter x:Key="doubleToStringConverter"></converters:DoubleToStringConverter>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
         <local:TimelineRuler Position="{Binding Position, Converter={StaticResource doubleToStringConverter}}"></local:TimelineRuler>
-        <ItemsControl Height="200" ItemsSource="{Binding Components}">
+        <ItemsControl Grid.Row="1"
+                      VerticalAlignment="Stretch"
+                      ItemsSource="{Binding Components}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <local:TimelineTrackPanel></local:TimelineTrackPanel>
@@ -31,5 +37,5 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </StackPanel>
+    </Grid>
 </UserControl>
