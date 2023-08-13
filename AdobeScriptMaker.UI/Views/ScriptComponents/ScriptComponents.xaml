@@ -18,7 +18,7 @@
         <Style TargetType="{x:Type Button}"/>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
-        <ItemsControl Margin="15" ItemsSource="{Binding Components}">
+        <ItemsControl Margin="10" ItemsSource="{Binding Components}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical"></StackPanel>

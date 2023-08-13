@@ -16,6 +16,7 @@
                 Background="White"
                 Width="400"
                 Height="800"
+                Margin="0 25"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Primitives="{Binding Primitives, Converter={StaticResource primitivesConverter}}">
