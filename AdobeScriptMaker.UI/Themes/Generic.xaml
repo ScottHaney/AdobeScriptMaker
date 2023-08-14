@@ -26,7 +26,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Thumb Name="_leftResize"
-                                       Cursor="ScrollWE">
+                                       Cursor="SizeWE">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="DragDelta">
                                             <prism:InvokeCommandAction Command="{Binding UpdateStartCommand}"
@@ -37,7 +37,8 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Thumb>
-                                <Thumb Grid.Column="1">
+                                <Thumb Grid.Column="1"
+                                       Cursor="ScrollWE">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="DragDelta">
                                             <prism:InvokeCommandAction Command="{Binding UpdatePositionCommand}"
@@ -49,7 +50,7 @@
                                     </i:Interaction.Triggers>
                                 </Thumb>
                                 <Thumb Name="_rightResize"
-                                       Cursor="ScrollWE"
+                                       Cursor="SizeWE"
                                        Grid.Column="2">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="DragDelta">
@@ -87,7 +88,7 @@
                                     <ControlTemplate TargetType="Thumb">
                                         <Polygon Points="0,0 10,0, 5,10"
                                                  ClipToBounds="False"
-                                                 Fill="Gray">
+                                                 Fill="#2b2c2e">
                                         </Polygon>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -96,11 +97,6 @@
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Cursor" Value="Hand"/>
-                                    <Setter Property="RenderTransform">
-                                        <Setter.Value>
-                                            <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
-                                        </Setter.Value>
-                                    </Setter>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -109,8 +105,8 @@
                         <Grid.Resources>
                             <converters:RulerPositionConverter x:Key="rulerPositionConverter"></converters:RulerPositionConverter>
                         </Grid.Resources>
-                        
-                        <Rectangle Fill="LightGray"
+
+                        <Rectangle Fill="#d8daee"
                                    Margin="5,0,5,0"
                                    Panel.ZIndex="0"></Rectangle>
                         <Thumb Panel.ZIndex="1"
