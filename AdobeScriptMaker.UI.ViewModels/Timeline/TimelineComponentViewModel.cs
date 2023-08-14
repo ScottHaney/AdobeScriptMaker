@@ -27,7 +27,8 @@ namespace AdobeScriptMaker.UI.Core.Timeline
         [RelayCommand]
         private void Click()
         {
-            WeakReferenceMessenger.Default.Send(new UpdateTimelineSelectionMessage(this));
+            //Temporarily comment out the properties window...
+            //WeakReferenceMessenger.Default.Send(new UpdateTimelineSelectionMessage(this));
         }
 
         /// <summary>

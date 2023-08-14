@@ -124,8 +124,9 @@
                     </mainViews:WindowSection>
                 </Grid>
 
-                <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"
-                        Grid.Column="2"></ContentControl>
+                <!--Temporarily comment out the properties window-->
+                <!--<ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"
+                        Grid.Column="2"></ContentControl>-->
 
                 <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
