@@ -27,7 +27,10 @@
             <ItemsControl ItemsSource="{Binding Components}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <local:TimelineTrackPanel Width="{Binding Width}"></local:TimelineTrackPanel>
+                        <local:TimelineTrackPanel Width="{Binding Width}"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="5,0,0,0">
+                        </local:TimelineTrackPanel>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
