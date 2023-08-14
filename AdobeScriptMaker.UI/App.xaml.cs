@@ -72,7 +72,11 @@ namespace AdobeScriptMaker.UI
         {
             var dataContext = new ScriptBuilderComponentsViewModel();
 
-            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes", ComponentData = new AxesDataModel() };
+            var displayAxes = new AxesDataModel();
+            displayAxes.SetParameter("X Top", 100);
+            displayAxes.SetParameter("Y Top", 150);
+
+            var component = new ScriptBuilderComponentViewModel() { Name = "Plot Axes", ComponentData = displayAxes };
 
             component.SamplePrimitives = new[]
                 {

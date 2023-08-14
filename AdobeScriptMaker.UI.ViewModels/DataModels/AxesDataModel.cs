@@ -28,6 +28,12 @@ namespace AdobeScriptMaker.UI.Core.DataModels
             };
         }
 
+        public void SetParameter(string name, double value)
+        {
+            var param = (ScriptBuilderNumericParameter)Parameters.First(x => x.Name == name);
+            param.Value = value;
+        }
+
         public IWhatToRender ToRenderingData()
         {
             var xAxisLayout = new PlotAxisLayoutDescription(GetNumericValue("X Length"),
