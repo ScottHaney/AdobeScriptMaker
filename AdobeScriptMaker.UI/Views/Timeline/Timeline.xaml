@@ -35,10 +35,16 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <local:TimelineItem
-                    Background="Orange"
-                    local:TimelineTrackPanel.Left="{Binding Start, Mode=TwoWay}"
-                    local:TimelineTrackPanel.Right="{Binding End, Mode=TwoWay}">
+                        <local:TimelineItem TextBlock.Foreground="{StaticResource MaterialDesignDarkForeground}"
+                                            TextBlock.FontSize="14"
+                                            TextBlock.FontWeight="Bold"
+                                            local:TimelineTrackPanel.Left="{Binding Start, Mode=TwoWay}"
+                                            local:TimelineTrackPanel.Right="{Binding End, Mode=TwoWay}">
+                            <local:TimelineItem.Background>
+                                <ImageBrush ImageSource="pack://application:,,,/VisualResources/GrainTextureForTimelineItem.png"
+                                            Stretch="UniformToFill"
+                                            TileMode="Tile"/>
+                            </local:TimelineItem.Background>
                         </local:TimelineItem>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

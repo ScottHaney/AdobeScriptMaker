@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="VisualResources\GrainTextureForTimelineItem.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
@@ -18,6 +22,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="VisualResources\GrainTextureForTimelineItem.png" />
   </ItemGroup>
 
 </Project>
