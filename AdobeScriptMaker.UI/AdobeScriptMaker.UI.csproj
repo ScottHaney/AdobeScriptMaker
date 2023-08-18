@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdobeScriptMaker.UI.ViewModels\AdobeScriptMaker.UI.Core.csproj" />
+    <ProjectReference Include="..\WPFCustomControls\WPFCustomControls.csproj" />
   </ItemGroup>
 
   <ItemGroup>
