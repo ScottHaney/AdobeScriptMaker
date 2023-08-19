@@ -5,9 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AdobeScriptMaker.UI.Views.PropertiesEditor"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
+             xmlns:converters="clr-namespace:AdobeScriptMaker.UI.TypeConverters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <converters:SelectedItemToActiveConverter x:Key="selectedItemToActiveConverter"></converters:SelectedItemToActiveConverter>
         <Style x:Key="labelStyle" TargetType="{x:Type TextBlock}">
             <Style.Setters>
                 <Setter Property="Margin" Value="0,0,10,0"></Setter>
@@ -27,10 +30,12 @@
         <local:PropertyItemTemplateSelector x:Key="templateSelector"
                                             DoubleTemplate="{StaticResource doubleTemplate}"/>
     </UserControl.Resources>
-    <Grid Margin="10">
-        <ItemsControl ItemsSource="{Binding SelectedItem.ComponentData.Parameters}"
+    <customControls:SideSheet IsActive="{Binding SelectedItem, Converter={StaticResource selectedItemToActiveConverter}}">
+        <Grid Margin="10">
+            <ItemsControl ItemsSource="{Binding SelectedItem.ComponentData.Parameters}"
                       ItemTemplateSelector="{StaticResource templateSelector}"
                       Grid.IsSharedSizeScope="True">
-        </ItemsControl>
-    </Grid>
+            </ItemsControl>
+        </Grid>
+    </customControls:SideSheet>
 </UserControl>

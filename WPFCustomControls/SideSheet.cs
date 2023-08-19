@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace WPFCustomControls
 {
@@ -32,20 +33,29 @@ namespace WPFCustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SideSheet), new FrameworkPropertyMetadata(typeof(SideSheet)));
         }
 
-        private static void IsActiveChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
+        public SideSheet()
         {
-            var uiElement = (UIElement)o;
-            var newValue = (bool)args.NewValue;
-
-            var targetValue = newValue ? uiElement.DesiredSize.Width : 0;
-
-            var animation = new DoubleAnimation() { To = targetValue, Duration = new Duration(TimeSpan.FromSeconds(2)) };
-            uiElement.BeginAnimation(WidthProperty, animation);
+            Loaded += SideSheet_Loaded;
         }
 
-        protected override Size MeasureOverride(Size constraint)
+        private void SideSheet_Loaded(object sender, RoutedEventArgs e)
         {
-            return base.MeasureOverride(constraint);
+            RenderTransform = new TranslateTransform(ActualWidth, 0);
+        }
+
+        private static void IsActiveChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)
+        {
+            var sideSheet = (SideSheet)o;
+            var isActive = (bool)args.NewValue;
+
+            sideSheet.RenderTransform = new TranslateTransform(isActive ? 0 : sideSheet.ActualWidth, 0);
+
+            /*sideSheet.SetValue(WidthProperty, DependencyProperty.UnsetValue);
+
+            var targetValue = isActive ? sideSheet.DesiredSize.Width : 0;
+
+            var animation = new DoubleAnimation() { To = targetValue, Duration = new Duration(TimeSpan.FromSeconds(2)) };
+            sideSheet.BeginAnimation(WidthProperty, animation);*/
         }
     }
 }

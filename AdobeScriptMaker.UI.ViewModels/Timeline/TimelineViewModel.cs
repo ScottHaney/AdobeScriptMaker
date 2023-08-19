@@ -172,7 +172,10 @@ namespace AdobeScriptMaker.UI.Core.Timeline
 
         public void Receive(UpdateTimelineSelectionMessage message)
         {
-            SelectedItem = message.SelectedItem;
+            if (SelectedItem != message.SelectedItem)
+                SelectedItem = message.SelectedItem;
+            else
+                SelectedItem = null;
         }
 
         private MovementBounds GetEndMovementBounds(TimelineComponentViewModel component)
