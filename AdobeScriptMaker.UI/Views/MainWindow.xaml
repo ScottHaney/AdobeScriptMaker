@@ -10,6 +10,7 @@
         xmlns:preview="clr-namespace:AdobeScriptMaker.UI.Views.Preview"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mainViews="clr-namespace:AdobeScriptMaker.UI.Views"
+        xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1300"
         Background="{x:Null}"
@@ -124,9 +125,10 @@
                     </mainViews:WindowSection>
                 </Grid>
 
-                <!--Temporarily comment out the properties window-->
-                <!--<ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"
-                        Grid.Column="2"></ContentControl>-->
+                <customControls:SideSheet Grid.Column="2">
+                    <ContentControl prism:RegionManager.RegionName="{x:Static prismModules:RegionNames.PropertiesEditorRegionName}"></ContentControl>
+                </customControls:SideSheet>
+                
 
                 <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
