@@ -70,6 +70,12 @@ namespace AdobeScriptMaker.UI.Core.Timeline
                 Position = updatedPosition;
         }
 
+        [RelayCommand]
+        private void PropertiesClosed()
+        {
+            SelectedItem = null;
+        }
+
         public TimelineViewModel()
         {
             WeakReferenceMessenger.Default.Register<ResizeTimelineComponentMessage>(this);

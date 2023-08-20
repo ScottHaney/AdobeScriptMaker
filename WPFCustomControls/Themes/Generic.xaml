@@ -14,10 +14,21 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Visibility="{TemplateBinding IsActive, Converter={StaticResource booleanToVisibilityConverter}}">
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                      VerticalScrollBarVisibility="Auto">
-                            <ContentPresenter></ContentPresenter>
-                        </ScrollViewer>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Button Name="PART_CloseButton"
+                                    HorizontalAlignment="Right"
+                                    Margin="3">X</Button>
+                            <ScrollViewer Grid.Row="1"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ContentPresenter></ContentPresenter>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

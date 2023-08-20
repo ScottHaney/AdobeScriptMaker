@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:AdobeScriptMaker.UI.Views.PropertiesEditor"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:customControls="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
@@ -31,6 +33,11 @@
                                             DoubleTemplate="{StaticResource doubleTemplate}"/>
     </UserControl.Resources>
     <customControls:SideSheet IsActive="{Binding SelectedItem, Converter={StaticResource selectedItemToActiveConverter}}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="CloseClick">
+                <prism:InvokeCommandAction Command="{Binding PropertiesClosedCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
         <Grid Margin="10">
             <ItemsControl ItemsSource="{Binding SelectedItem.ComponentData.Parameters}"
                       ItemTemplateSelector="{StaticResource templateSelector}"

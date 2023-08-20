@@ -43,5 +43,11 @@ namespace AdobeScriptMaker.UI.Core.MainWindows
         {
             WeakReferenceMessenger.Default.Send(new InitializeStateMessage(1000, 0));
         }
+
+        [RelayCommand]
+        private void PropertiesClosed()
+        {
+            int x = 2;
+        }
     }
 }
