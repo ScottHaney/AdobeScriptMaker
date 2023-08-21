@@ -23,8 +23,8 @@
 
                             <Button Name="PART_CloseButton"
                                     HorizontalAlignment="Right"
-                                    Margin="3"
-                                    Style="{DynamicResource MaterialDesignFlatButton}">
+                                    Style="{DynamicResource MaterialDesignFlatButton}"
+                                    Padding="0">
                                 <materialDesign:PackIcon Kind="Close"/>
                             </Button>
                             <ScrollViewer Grid.Row="1"
