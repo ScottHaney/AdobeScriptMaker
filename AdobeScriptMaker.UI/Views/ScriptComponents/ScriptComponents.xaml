@@ -34,15 +34,37 @@
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Cursor" Value="Hand"/>
-                                        <Setter Property="RenderTransform">
-                                            <Setter.Value>
-                                                <TranslateTransform X="2"/>
-                                            </Setter.Value>
-                                        </Setter>
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0:0:0.05"
+                                                                    Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="1.05"></DoubleAnimation>
+                                                    <DoubleAnimation Duration="0:0:0.05"
+                                                                    Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="1.05"></DoubleAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0:0:0.05"
+                                                                    Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                                    To="1"></DoubleAnimation>
+                                                    <DoubleAnimation Duration="0:0:0.05"
+                                                                    Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                                    To="1"></DoubleAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </materialDesign:Card.Style>
+                        <materialDesign:Card.RenderTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5"></ScaleTransform>
+                        </materialDesign:Card.RenderTransform>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <prism:InvokeCommandAction Command="{Binding SelectedCommand}"/>
