@@ -18,6 +18,7 @@ using System.Windows.Controls.Primitives;
 
 namespace WPFCustomControls
 {
+    [TemplatePart(Name = "PART_CloseButton", Type = typeof(ButtonBase))]
     public class SideSheet : ContentControl
     {
         public bool IsActive
