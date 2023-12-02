@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdobeDocsParser", "AdobeDoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeDocsRunner", "AdobeDocsRunner\AdobeDocsRunner.csproj", "{2AD10B1C-A933-45C8-B890-8E4BFAE33A7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdobeDocsRunner.Tests", "AdobeDocsRunner.Tests\AdobeDocsRunner.Tests.csproj", "{F37DC8AB-FDD8-4F10-BD31-C89F08AC6111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{2AD10B1C-A933-45C8-B890-8E4BFAE33A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AD10B1C-A933-45C8-B890-8E4BFAE33A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AD10B1C-A933-45C8-B890-8E4BFAE33A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F37DC8AB-FDD8-4F10-BD31-C89F08AC6111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37DC8AB-FDD8-4F10-BD31-C89F08AC6111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F37DC8AB-FDD8-4F10-BD31-C89F08AC6111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F37DC8AB-FDD8-4F10-BD31-C89F08AC6111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

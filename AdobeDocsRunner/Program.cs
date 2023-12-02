@@ -2,5 +2,5 @@
 
 using AdobeDocsParser;
 
-var parser = new Parser(@"\\Mac\Home\Desktop\ae-scripting-docsforadobe-dev-en-latest.pdf");
+var parser = new Parser(@"https://ae-scripting.docsforadobe.dev/general/application.html");
 parser.Test();

@@ -2,26 +2,33 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UglyToad.PdfPig.Content;
-using UglyToad.PdfPig;
 using System.Linq;
+using HtmlAgilityPack;
 
 namespace AdobeDocsParser;
 
-public class Parser(string _pdfFilePath)
+public class Parser
 {
-    public void Test()
+    public bool TryParseHeader(HtmlNode node, out HeaderNode header)
     {
-        using var document = PdfDocument.Open(_pdfFilePath);
-
-        foreach (Page page in document.GetPages())
+        if (node.Name == "p")
         {
-            var letters = page.Letters;
-            var example = string.Join(string.Empty, letters.Select(x => x.Value));
-
-            var words = page.GetWords();
-
-            var images = page.GetImages();
+            if (node.FirstChild?.Name == "strong")
+            {
+                header = new(node.FirstChild.InnerText);
+                return true;
+            }    
         }
+
+        header = new(string.Empty);
+        return false;
     }
+}
+
+public record class HeaderNode(string Header);
+
+public static class AgilityPackExtensions
+{
+    public static IEnumerable<HtmlNode> GetDirectDescendents(this HtmlNode node)
+        => node.SelectNodes("*");
 }
